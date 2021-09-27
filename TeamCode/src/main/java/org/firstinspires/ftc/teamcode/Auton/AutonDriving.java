@@ -75,9 +75,9 @@ public class AutonDriving extends LinearOpMode {
 
     // Class Members
     public OpenGLMatrix lastLocation = null;
-    public VuforiaLocalizer vuforia = null;
+    public VuforiaLocalizer vuforia = null; // Vuforia is for planar images
 
-    public TFObjectDetector tfod;
+    public TFObjectDetector tfod; // TensorFlow for 3d detection
 
     public WebcamName webcamName = null;
 
