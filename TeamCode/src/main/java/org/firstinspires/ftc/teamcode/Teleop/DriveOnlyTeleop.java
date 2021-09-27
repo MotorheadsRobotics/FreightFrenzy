@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareIntake;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="Basic", group="Teleop")
+@TeleOp(name="BasicDrive&Intake", group="Teleop")
 
 //@Disabled
 
