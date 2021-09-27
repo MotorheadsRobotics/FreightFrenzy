@@ -9,15 +9,17 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareIntake;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="DriveOnlyTeleop", group="Teleop")
+@TeleOp(name="Basic", group="Teleop")
 
 //@Disabled
 
 public class DriveOnlyTeleop extends OpMode {
 
-    HardwareIntake robot = new HardwareIntake();
+    Hardware robot = new Hardware();
 
-    private float drive = .4f;
+    private float drivePower = 1.0f;
+    private float turnPower = 1.0f;
+    private float stickAxesThreshold = .4f;
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
@@ -48,7 +50,34 @@ public class DriveOnlyTeleop extends OpMode {
         {
             robot.intakeMotor.setPower(0);
         }
-        mecanumMove();
+
+        if(gamepad1.left_stick_y > stickAxesThreshold)
+        {
+            standardDrive(-drivePower);
+        }
+        else if(gamepad1.left_stick_y < -stickAxesThreshold)
+        {
+            standardDrive(drivePower);
+        }
+        else
+        {
+            standardDrive(0);
+        }
+
+        if(gamepad1.right_stick_x > stickAxesThreshold)
+        {
+            standardDrive(turnPower, -turnPower);
+        }
+        else if(gamepad1.right_stick_x < -stickAxesThreshold)
+        {
+            standardDrive(-turnPower, turnPower);
+        }
+        else
+        {
+            standardDrive(0);
+        }
+
+        //mecanumMove();
 
     }
 
@@ -68,10 +97,10 @@ public class DriveOnlyTeleop extends OpMode {
 //        robot.bLMotor.setPower(-drive * v3);
 //        robot.bRMotor.setPower(-drive * v4);
 
-        telemetry.addData("fLPower", -drive * v1);
-        telemetry.addData("fRPower", -drive * v2);
-        telemetry.addData("bLPower", -drive * v3);
-        telemetry.addData("bRPower", -drive * v4);
+        telemetry.addData("fLPower", -drivePower * v1);
+        telemetry.addData("fRPower", -drivePower * v2);
+        telemetry.addData("bLPower", -drivePower * v3);
+        telemetry.addData("bRPower", -drivePower * v4);
 
 //        telemetry.addData("Encoder port 1 back left",  robot.bLMotor.getCurrentPosition());
 //        telemetry.addData("Encoder port 2 front right", robot.fRMotor.getCurrentPosition());
@@ -80,5 +109,21 @@ public class DriveOnlyTeleop extends OpMode {
         //telemetry.addData("MagnetLimitSwitch", robot.magnetLimit.isPressed());
 
         telemetry.update();
+    }
+
+    public void standardDrive(float lPower, float rPower)
+    {
+        robot.fLMotor.setPower(lPower);
+        robot.fRMotor.setPower(rPower);
+        robot.bLMotor.setPower(lPower);
+        robot.bRMotor.setPower(rPower);
+    }
+
+    public void standardDrive(float power)
+    {
+        robot.fLMotor.setPower(power);
+        robot.fRMotor.setPower(power);
+        robot.bLMotor.setPower(power);
+        robot.bRMotor.setPower(power);
     }
 }
