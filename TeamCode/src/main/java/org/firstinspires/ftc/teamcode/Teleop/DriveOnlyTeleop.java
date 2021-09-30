@@ -23,6 +23,7 @@ public class DriveOnlyTeleop extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
+    private float carouselMotorPower = .5f;
 
     @Override
     public void init()
@@ -49,6 +50,19 @@ public class DriveOnlyTeleop extends OpMode {
         else
         {
             robot.intakeMotor.setPower(0);
+        }
+
+        if(gamepad1.left_trigger > 0.3)
+        {
+            robot.carouselMotor.setPower(carouselMotorPower);
+        }
+        else if(gamepad1.right_trigger > 0.3)
+        {
+            robot.carouselMotor.setPower(-carouselMotorPower);
+        }
+        else
+        {
+            robot.carouselMotor.setPower(0);
         }
 
         if(gamepad1.left_stick_y > stickAxesThreshold)

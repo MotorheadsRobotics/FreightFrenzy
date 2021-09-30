@@ -23,6 +23,7 @@ public class Hardware
     public DcMotor bRMotor;
 
     public DcMotor intakeMotor;
+    public DcMotor carouselMotor;
 
 //    public DcMotor launcherMotor;
 //
@@ -67,6 +68,7 @@ public class Hardware
         bLMotor = hwMap.get(DcMotor.class, "bLMotor");
 
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
+        carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
 
 //        launcherMotor = hwMap.get(DcMotor.class, "launcherMotor");
 //
@@ -89,6 +91,7 @@ public class Hardware
         bRMotor.setPower(0);
 
         intakeMotor.setPower(0);
+        carouselMotor.setPower(0);
 //        intakeMotor.setPower(0);
 //        conveyorMotor.setPower(0);
 //
@@ -108,6 +111,7 @@ public class Hardware
         bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        carouselMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        launcherMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        conveyorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -119,6 +123,7 @@ public class Hardware
         bRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        launcherMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 //        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        conveyorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -131,6 +136,7 @@ public class Hardware
         bRMotor.setDirection(DcMotor.Direction.FORWARD);
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 //        launcherMotor.setDirection(DcMotor.Direction.REVERSE);
 //        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
 //        conveyorMotor.setDirection(DcMotor.Direction.REVERSE);
