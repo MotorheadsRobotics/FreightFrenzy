@@ -130,10 +130,10 @@ public class Hardware
 //        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        fLMotor.setDirection(DcMotor.Direction.REVERSE);
-        fRMotor.setDirection(DcMotor.Direction.FORWARD);
-        bLMotor.setDirection(DcMotor.Direction.REVERSE);
-        bRMotor.setDirection(DcMotor.Direction.FORWARD);
+        fLMotor.setDirection(DcMotor.Direction.FORWARD);
+        fRMotor.setDirection(DcMotor.Direction.REVERSE);
+        bLMotor.setDirection(DcMotor.Direction.FORWARD);
+        bRMotor.setDirection(DcMotor.Direction.REVERSE);
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);

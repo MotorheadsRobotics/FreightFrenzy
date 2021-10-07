@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareIntake;
@@ -25,6 +26,8 @@ public class DriveOnlyTeleop extends OpMode {
     //private float BRDrive = 1f;
     private float carouselMotorPower = .5f;
 
+    private ElapsedTime runtime = new ElapsedTime();
+
     @Override
     public void init()
     {
@@ -39,6 +42,7 @@ public class DriveOnlyTeleop extends OpMode {
     public void loop()
 
     {
+        // Intake Motor: LB and RB
         if(gamepad1.left_bumper)
         {
             robot.intakeMotor.setPower(intakeMotorPower);
@@ -52,6 +56,7 @@ public class DriveOnlyTeleop extends OpMode {
             robot.intakeMotor.setPower(0);
         }
 
+        // Carousel Motor: LT and RT
         if(gamepad1.left_trigger > 0.3)
         {
             robot.carouselMotor.setPower(carouselMotorPower);
@@ -65,30 +70,38 @@ public class DriveOnlyTeleop extends OpMode {
             robot.carouselMotor.setPower(0);
         }
 
+        // Forward Drive: Left Stick
         if(gamepad1.left_stick_y > stickAxesThreshold)
         {
-            standardDrive(-drivePower);
+            standardDrive(drivePower);
         }
         else if(gamepad1.left_stick_y < -stickAxesThreshold)
         {
-            standardDrive(drivePower);
+            standardDrive(-drivePower);
         }
         else
         {
             standardDrive(0);
         }
 
+        // Drive Turning: Right Stick
         if(gamepad1.right_stick_x > stickAxesThreshold)
         {
-            standardDrive(turnPower, -turnPower);
+            standardDrive(-turnPower, turnPower);
         }
         else if(gamepad1.right_stick_x < -stickAxesThreshold)
         {
-            standardDrive(-turnPower, turnPower);
+            standardDrive(turnPower, -turnPower);
         }
         else
         {
             standardDrive(0);
+        }
+
+        // Strafe :) - D-pad
+        if(gamepad1.dpad_left)
+        {
+            strafeDrive(drivePower);
         }
 
         //mecanumMove();
@@ -131,6 +144,43 @@ public class DriveOnlyTeleop extends OpMode {
         robot.fRMotor.setPower(rPower);
         robot.bLMotor.setPower(lPower);
         robot.bRMotor.setPower(rPower);
+    }
+
+    private void strafeDrive(float drivePower)
+    {
+        int strafeTime = 90;
+        runtime.reset();
+        robot.bRMotor.setPower(0);
+        robot.fRMotor.setPower(0);
+        robot.bLMotor.setPower(0);
+        robot.fLMotor.setPower(0);
+        while (runtime.milliseconds() < strafeTime) {
+            robot.bRMotor.setPower(-drivePower);
+            robot.fRMotor.setPower(-drivePower);
+        }
+        robot.bRMotor.setPower(0);
+        robot.fRMotor.setPower(0);
+        runtime.reset();
+        while (runtime.milliseconds() < strafeTime + 20) {
+            robot.bLMotor.setPower(-drivePower);
+            robot.fLMotor.setPower(-drivePower);
+        }
+        robot.bLMotor.setPower(0);
+        robot.fLMotor.setPower(0);
+        runtime.reset();
+        while (runtime.milliseconds() < strafeTime) {
+            robot.bRMotor.setPower(drivePower);
+            robot.fRMotor.setPower(drivePower);
+        }
+        robot.bRMotor.setPower(0);
+        robot.fRMotor.setPower(0);
+        runtime.reset();
+        while (runtime.milliseconds() < strafeTime + 20) {
+            robot.bLMotor.setPower(drivePower);
+            robot.fLMotor.setPower(drivePower);
+        }
+        robot.bLMotor.setPower(0);
+        robot.fLMotor.setPower(0);
     }
 
     public void standardDrive(float power)
