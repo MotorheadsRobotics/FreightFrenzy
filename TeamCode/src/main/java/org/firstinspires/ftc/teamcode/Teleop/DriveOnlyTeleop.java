@@ -148,7 +148,7 @@ public class DriveOnlyTeleop extends OpMode {
 
     private void strafeDrive(float drivePower)
     {
-        int strafeTime = 90;
+        int strafeTime = 150;
         runtime.reset();
         robot.bRMotor.setPower(0);
         robot.fRMotor.setPower(0);
@@ -161,7 +161,7 @@ public class DriveOnlyTeleop extends OpMode {
         robot.bRMotor.setPower(0);
         robot.fRMotor.setPower(0);
         runtime.reset();
-        while (runtime.milliseconds() < strafeTime + 20) {
+        while (runtime.milliseconds() < strafeTime) {
             robot.bLMotor.setPower(-drivePower);
             robot.fLMotor.setPower(-drivePower);
         }
@@ -175,7 +175,7 @@ public class DriveOnlyTeleop extends OpMode {
         robot.bRMotor.setPower(0);
         robot.fRMotor.setPower(0);
         runtime.reset();
-        while (runtime.milliseconds() < strafeTime + 20) {
+        while (runtime.milliseconds() < strafeTime + 40) {
             robot.bLMotor.setPower(drivePower);
             robot.fLMotor.setPower(drivePower);
         }

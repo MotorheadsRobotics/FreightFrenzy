@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="Testing Driving", group="Teleop")
+@TeleOp(name="Testing Driving timmy moment", group="Teleop")
 
 //@Disabled
 
@@ -17,7 +17,7 @@ public class TestTeleop extends OpMode {
 
     Hardware robot = new Hardware();
 
-    private float drivePower = 0.8f;
+    private float drivePower = 0.65f;
     private float stickAxesThreshold = .1f;
 
     private float intakeMotorPower = .8f;
@@ -71,9 +71,9 @@ public class TestTeleop extends OpMode {
         turn /= 2;
         if (Math.abs(turn) > stickAxesThreshold) {
             if (turn > 0) {
-                robot.fLMotor.setPower(power + turn);
+                robot.fLMotor.setPower(power - turn);
                 robot.fRMotor.setPower(power);
-                robot.bLMotor.setPower(power + turn);
+                robot.bLMotor.setPower(power - turn);
                 robot.bRMotor.setPower(power);
             }
             else {
@@ -84,13 +84,24 @@ public class TestTeleop extends OpMode {
             }
         }
         else {
-            robot.fLMotor.setPower(power);
-            robot.fRMotor.setPower(power);
-            robot.bLMotor.setPower(power);
-            robot.bRMotor.setPower(power);
+            if (gamepad1.left_stick_y > 0) {
+                robot.fLMotor.setPower(1);
+                robot.fRMotor.setPower(1);
+                robot.bLMotor.setPower(1);
+                robot.bRMotor.setPower(1);
+            }
+            else {
+                robot.fLMotor.setPower(-1);
+                robot.fRMotor.setPower(-1);
+                robot.bLMotor.setPower(-1);
+                robot.bRMotor.setPower(-1);
+            }
         }
     }
     public void stopMotion() {
-        drive(0);
+        robot.fLMotor.setPower(0);
+        robot.fRMotor.setPower(0);
+        robot.bLMotor.setPower(0);
+        robot.bRMotor.setPower(0);
     }
 }
