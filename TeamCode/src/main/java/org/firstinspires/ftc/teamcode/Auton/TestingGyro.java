@@ -69,7 +69,6 @@ public class TestingGyro extends AutonDriving {
     public static final double     WHEEL_DIAMETER_INCHES = 3.7795;     // For figuring circumference
     public static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-
     BNO055IMU imu;
 
     public TestingGyro() {
@@ -94,14 +93,10 @@ public class TestingGyro extends AutonDriving {
         waitForStart();
 
         runtime.reset();
-        do {
-            telemetry.addData("X: ", readAngle("x"));
-            telemetry.addData("Y: ", readAngle("y"));
-            telemetry.addData("Z: ", readAngle("z"));
-        } while (runtime.milliseconds() < 30000);
-//        turnToPosition(90, "z", 0.5, 5, false);
-//        sleep(500);
-//        turnToPosition(0, "z", 0.5, 5, false);
+
+        turnToPosition(90, "z", 0.2, 5, true);
+        sleep(500);
+        turnToPosition(0, "z", 0.5, 5, true);
     }
     public void turnToPosition (double target, String xyz, double topPower, double timeoutS, boolean isCorrection) {
         //Write code to correct to a target position (NOT FINISHED)
@@ -118,11 +113,13 @@ public class TestingGyro extends AutonDriving {
             angle = readAngle(xyz);
             error = angle - target;
             if (!isCorrection) {
-                powerScaled = topPower * (error / 180) * pidMultiplierTurning(error);
+                powerScaled = topPower * error/(originalAngle - target);
             }
 
             //double powerScaled = power*pidMultiplier(error);
             telemetry.addData("original angle", originalAngle);
+            telemetry.addData("target", target);
+            telemetry.addData("PowerScaled", powerScaled);
             telemetry.addData("current angle", readAngle(xyz));
             telemetry.addData("error", error);
             telemetry.update();
