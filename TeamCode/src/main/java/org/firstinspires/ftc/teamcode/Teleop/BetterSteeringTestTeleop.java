@@ -9,16 +9,15 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="Testing Driving timmy moment", group="TeleopTest")
+@TeleOp(name="Testing Driving but betterer", group="TeleopTest")
 
 //@Disabled
 
-public class TestTeleop extends OpMode {
+public class BetterSteeringTestTeleop extends OpMode {
 
     Hardware robot = new Hardware();
 
-    private float drivePower = 0.65f;
-    private float stickAxesThreshold = .1f;
+    private float stickAxesThreshold = .2f;
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
@@ -55,30 +54,36 @@ public class TestTeleop extends OpMode {
         } else {
             robot.carouselMotor.setPower(0);
         }
+        drive();
+    }
 
-        // Forward Drive: Left Stick
-        if (Math.abs(gamepad1.right_stick_x) > stickAxesThreshold) {
-            turn(gamepad1.right_stick_x);
-        } else if (Math.abs(gamepad1.left_stick_y) > stickAxesThreshold) {
-            drive(gamepad1.left_stick_y);
-        } else {
-            stopMotion();
+    public void drive() {
+        if (Math.abs(gamepad1.left_stick_y) > stickAxesThreshold || Math.abs(gamepad1.right_stick_x) > stickAxesThreshold) {
+            double power = gamepad1.left_stick_y;
+            power *= .85;
+            double turn = gamepad1.right_stick_x;
+            if (turn < 0) {
+                turn = -Math.sqrt(Math.abs(turn));
+            }
+            else {
+                turn = Math.sqrt(Math.abs(turn));
+            }
+            turn *= .7;
+            double rightPower = power + turn;
+            double leftPower = power - turn;
+            telemetry.addData("Right Power", rightPower);
+            telemetry.addData("Left Power", leftPower);
+            telemetry.update();
+            robot.fRMotor.setPower(rightPower);
+            robot.fLMotor.setPower(leftPower);
+            robot.bLMotor.setPower(leftPower);
+            robot.bRMotor.setPower(rightPower);
         }
-    }
-
-    public void drive(double power) {
-        robot.fLMotor.setPower(power);
-        robot.fRMotor.setPower(power);
-        robot.bLMotor.setPower(power);
-        robot.bRMotor.setPower(power);
-    }
-    public void turn(double power) {
-        robot.fLMotor.setPower(power);
-        robot.bLMotor.setPower(power);
-        robot.bRMotor.setPower(-power);
-        robot.fRMotor.setPower(-power);
-    }
-    public void stopMotion() {
-        drive(0);
+        else {
+            robot.fRMotor.setPower(0);
+            robot.fLMotor.setPower(0);
+            robot.bLMotor.setPower(0);
+            robot.bRMotor.setPower(0);
+        }
     }
 }
