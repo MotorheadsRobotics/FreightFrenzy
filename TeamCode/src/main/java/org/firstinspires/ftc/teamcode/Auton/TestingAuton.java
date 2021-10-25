@@ -50,7 +50,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 import java.util.List;
 
-@Autonomous(name="Blue Auton", group="Test")
+@Autonomous(name="Auton Testing", group="Test")
 //@Disabled
 public class TestingAuton extends AutonDriving {
 
@@ -105,12 +105,12 @@ public class TestingAuton extends AutonDriving {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        this.initVuforia(); //this should ensure that it calls the Vuforia of this class not the one from the AutonDrivingWIP class. This is a test given an error that appeared to happen during Vuforia initialization.
-        initTfod();
-
-        if (tfod != null) {
-            tfod.activate();
-        }
+//        this.initVuforia(); //this should ensure that it calls the Vuforia of this class not the one from the AutonDrivingWIP class. This is a test given an error that appeared to happen during Vuforia initialization.
+//        initTfod();
+//
+//        if (tfod != null) {
+//            tfod.activate();
+//        }
 
         robot.init(hardwareMap);
 
@@ -118,80 +118,80 @@ public class TestingAuton extends AutonDriving {
 
         encoderDrive(0.4, 'f', 14, 5);
 
-        if (opModeIsActive()) {
-            runtime.reset();
-            do {
-                telemetry.addData("Runtime", runtime.milliseconds());
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        // step through the list of recognitions and display boundary info.
-                        int i = 0;
-                        for (Recognition recognition : updatedRecognitions) {
-                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-
-                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f", recognition.getLeft(), recognition.getTop());
-                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f", recognition.getRight(), recognition.getBottom());
-
-                            telemetry.update();
-
-                            if (recognition.getLabel().equals("Quad") || recognition.getLabel().equals("Single")) {
-                                ringLabel = recognition.getLabel();
-                                objectInVision = true;
-                            }
-                        }
-                    }
-                }
-                telemetry.update();
-            } while ((runtime.milliseconds() < 5000 && !(objectInVision)) || runtime.milliseconds() < 1000);
-        }
-        if (ringLabel.equals("Quad")) {
-            telemetry.addData("Target Zone", "C");
-            telemetry.update();
-            encoderDrive(FORWARD_SPEED,'f',100,10);
-            turnToPosition(90,xyz,0.8,2.5,false);
-            encoderDrive(FORWARD_SPEED,'f',24,5);
-            turnToPosition(0, xyz, 0.8, 2.5, false);
-            encoderDrive(FORWARD_SPEED, 'b', 52, 4);
-            encoderDrive(FORWARD_SPEED, 'l', 32, 4);
-            turnToPosition(-7, xyz, 0.8, 2, false);
-        }
-        else if (ringLabel.equals("Single")) {
-            telemetry.addData("Target Zone", "B");
-            telemetry.update();
-            encoderDrive(FORWARD_SPEED,'f',81,7);
-            turnToPosition(90,xyz,0.8,2.5,false);
-            encoderDrive(FORWARD_SPEED,'f',8,5);
-            turnToPosition(0, xyz, 0.8, 2.5, false);
-            encoderDrive(FORWARD_SPEED, 'b', 36, 4);
-            turnToPosition(-7, xyz, 0.8, 2, false);
-        }
-        else {
-            telemetry.addData("Target Zone", "A");
-            telemetry.update();
-            encoderDrive(FORWARD_SPEED,'f',52,5);
-            turnToPosition(90,xyz,0.8,2.5,false);
-            encoderDrive(FORWARD_SPEED,'f',24,5);
-            turnToPosition(0, xyz, 0.8, 2.5, false);
-            encoderDrive(FORWARD_SPEED, 'b', 10, 4);
-            encoderDrive(FORWARD_SPEED, 'l', 40, 4);
-            turnToPosition(-7, xyz, 0.8, 2, false);
-        }
+//        if (opModeIsActive()) {
+//            runtime.reset();
+//            do {
+//                telemetry.addData("Runtime", runtime.milliseconds());
+//                if (tfod != null) {
+//                    // getUpdatedRecognitions() will return null if no new information is available since
+//                    // the last time that call was made.
+//                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+//                    if (updatedRecognitions != null) {
+//                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+//                        // step through the list of recognitions and display boundary info.
+//                        int i = 0;
+//                        for (Recognition recognition : updatedRecognitions) {
+//                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+//
+//                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f", recognition.getLeft(), recognition.getTop());
+//                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f", recognition.getRight(), recognition.getBottom());
+//
+//                            telemetry.update();
+//
+//                            if (recognition.getLabel().equals("Quad") || recognition.getLabel().equals("Single")) {
+//                                ringLabel = recognition.getLabel();
+//                                objectInVision = true;
+//                            }
+//                        }
+//                    }
+//                }
+//                telemetry.update();
+//            } while ((runtime.milliseconds() < 5000 && !(objectInVision)) || runtime.milliseconds() < 1000);
+//        }
+//        if (ringLabel.equals("Quad")) {
+//            telemetry.addData("Target Zone", "C");
+//            telemetry.update();
+//            encoderDrive(FORWARD_SPEED,'f',100,10);
+//            turnToPosition(90,xyz,0.8,2.5,false);
+//            encoderDrive(FORWARD_SPEED,'f',24,5);
+//            turnToPosition(0, xyz, 0.8, 2.5, false);
+//            encoderDrive(FORWARD_SPEED, 'b', 52, 4);
+//            encoderDrive(FORWARD_SPEED, 'l', 32, 4);
+//            turnToPosition(-7, xyz, 0.8, 2, false);
+//        }
+//        else if (ringLabel.equals("Single")) {
+//            telemetry.addData("Target Zone", "B");
+//            telemetry.update();
+//            encoderDrive(FORWARD_SPEED,'f',81,7);
+//            turnToPosition(90,xyz,0.8,2.5,false);
+//            encoderDrive(FORWARD_SPEED,'f',8,5);
+//            turnToPosition(0, xyz, 0.8, 2.5, false);
+//            encoderDrive(FORWARD_SPEED, 'b', 36, 4);
+//            turnToPosition(-7, xyz, 0.8, 2, false);
+//        }
+//        else {
+//            telemetry.addData("Target Zone", "A");
+//            telemetry.update();
+//            encoderDrive(FORWARD_SPEED,'f',52,5);
+//            turnToPosition(90,xyz,0.8,2.5,false);
+//            encoderDrive(FORWARD_SPEED,'f',24,5);
+//            turnToPosition(0, xyz, 0.8, 2.5, false);
+//            encoderDrive(FORWARD_SPEED, 'b', 10, 4);
+//            encoderDrive(FORWARD_SPEED, 'l', 40, 4);
+//            turnToPosition(-7, xyz, 0.8, 2, false);
+//        }
 
 
         //robot.launcherMotor.setPower(LAUNCHER_SPEED);
 
-        sleep(2250);
-
-        for (int i = 0; i < 3; i++) {
-            encoderDrive(FORWARD_SPEED, 'l', 8, 2.5);
-            //shoot();
-            //robot.launcherMotor.setPower(LAUNCHER_SPEED += (.005 * i));
-        }
-        encoderDrive(FORWARD_SPEED,'f',12,5);
+//        sleep(2250);
+//
+//        for (int i = 0; i < 3; i++) {
+//            encoderDrive(FORWARD_SPEED, 'l', 8, 2.5);
+//            //shoot();
+//            //robot.launcherMotor.setPower(LAUNCHER_SPEED += (.005 * i));
+//        }
+//        encoderDrive(FORWARD_SPEED,'f',12,5);
     }
 
     public void initVuforia() {
