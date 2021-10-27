@@ -376,9 +376,9 @@ public class AutonDriving extends LinearOpMode {
 
     }
 
-    public void turnToPosition (double degrees, String xyz, double topPower, double timeoutS, boolean fast) {
+    public void turnToPosition (double degrees, String xyz, double topPower, double timeoutS) {
         //stopAndReset();\
-        degrees *= -1;
+        //degrees *= -1;
 
         double originalAngle = readAngle(xyz);
 
@@ -401,7 +401,7 @@ public class AutonDriving extends LinearOpMode {
         telemetry.addData("error", error);
         telemetry.addData("target", target);
         telemetry.update();
-        sleep(1500);
+        sleep(250);
         do {
             //telemetry.addData("hello", "2");
             //sleep(1000);
@@ -419,14 +419,14 @@ public class AutonDriving extends LinearOpMode {
 //            {
 //                powerScaled = topPower * Math.abs(error/90) * pidMultiplierTurning(error);
 //            }
-            if(Math.abs(error) > 10)
-            {
-                powerScaled += gyroTurnBoost;
-            }
-            else if (Math.abs(degreesTurned) < 10)
-            {
-                powerScaled += gyroTurnBoost;
-            }
+//            if(Math.abs(error) > 10)
+//            {
+//                powerScaled += gyroTurnBoost;
+//            }
+//            else if (Math.abs(degreesTurned) < 10)
+//            {
+//                powerScaled += gyroTurnBoost;
+//            }
 
             //double powerScaled = power*pidMultiplier(error);
             telemetry.addData("original angle", originalAngle);
@@ -435,11 +435,11 @@ public class AutonDriving extends LinearOpMode {
             telemetry.addData("target", target);
             //telemetry.addData("degrees", degrees);
             telemetry.update();
-            if (error > 0)
+            if (error < 0)
             {
                 normalDrive(powerScaled, -powerScaled);
             }
-            else if (error < 0)
+            else if (error > 0)
             {
 
                 normalDrive(-powerScaled, powerScaled);
@@ -970,7 +970,7 @@ public class AutonDriving extends LinearOpMode {
                     robot.bRMotor.setPower(robot.bRMotor.getPower()*inc);
                 }
                 normalDrive(0, 0); // stops it after 1 second
-                turnToPosition(Angle, "z", turnSpeed-.05, 500, false);
+                turnToPosition(Angle, "z", turnSpeed-.05, 500);
                 //turnToPosition(-angle, "z", turnSpeed, 4); //corrects at the end of each motion set
                 sleep(300);
                 //telemetry.addData("Target", "%7d:%7d:%7d:%7d", fLTarget, fRTarget, bLTarget, bRTarget);
