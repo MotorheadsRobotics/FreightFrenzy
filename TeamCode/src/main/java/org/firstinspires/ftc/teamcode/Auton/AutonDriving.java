@@ -236,12 +236,12 @@ public class AutonDriving extends LinearOpMode {
     {
 
         if (opModeIsActive()) {
-            robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.fLMotor.setPower(lpower);
-            robot.fRMotor.setPower(rpower);
+            //robot.fLMotor.setPower(lpower);
+            //robot.fRMotor.setPower(rpower);
             robot.bLMotor.setPower(lpower);
             robot.bRMotor.setPower(rpower);
         }
@@ -307,14 +307,14 @@ public class AutonDriving extends LinearOpMode {
         //stopAndReset();
 
         degrees *= -1;
-        if(degrees < 0)
-        {
-            degrees += degreeError;
-        }
-        else
-        {
-            degrees -= degreeError;
-        }
+//        if(degrees < 0)
+//        {
+//            degrees += degreeError;
+//        }
+//        else
+//        {
+//            degrees -= degreeError;
+//        }
         double originalAngle = readAngle(xyz);
 
         double target = originalAngle + degrees;
@@ -394,8 +394,10 @@ public class AutonDriving extends LinearOpMode {
 
         double angle = readAngle(xyz); //variable for gyro correction around z axis
         double error = target - angle;
+        double errorABS = Math.abs(error);
         double powerScaled = topPower;
         double degreesTurned;
+        double degreesTurnedABS;
         telemetry.addData("original angle", originalAngle);
         telemetry.addData("current angle", readAngle(xyz));
         telemetry.addData("error", error);
@@ -408,7 +410,9 @@ public class AutonDriving extends LinearOpMode {
             //telemetry.update();
             angle = readAngle(xyz);
             error = target - angle;
+
             degreesTurned = angle - originalAngle;
+            degreesTurnedABS = Math.abs(degreesTurned);
 
             //things to make the turn faster at the beginning and end so it doesn't slow down to basically a stop
 //            if(!fast)
@@ -437,14 +441,14 @@ public class AutonDriving extends LinearOpMode {
             telemetry.update();
             if (error < 0)
             {
-                normalDrive(powerScaled, -powerScaled);
+                normalDrive(powerScaled/degreesTurnedABS*errorABS, -powerScaled/degreesTurnedABS*errorABS);
             }
             else if (error > 0)
             {
 
-                normalDrive(-powerScaled, powerScaled);
+                normalDrive(-powerScaled/degreesTurnedABS*errorABS, powerScaled/degreesTurnedABS*errorABS);
             }
-        } while (opModeIsActive() && (Math.abs(error) > 15) && (runtime.seconds() < timeoutS));
+        } while (opModeIsActive() && (Math.abs(error) > 10) && (runtime.seconds() < timeoutS));
 
         normalDrive(0, 0);
         //stopAndReset();
