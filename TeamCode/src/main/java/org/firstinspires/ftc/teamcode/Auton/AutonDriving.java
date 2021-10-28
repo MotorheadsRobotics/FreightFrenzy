@@ -394,7 +394,7 @@ public class AutonDriving extends LinearOpMode {
 
         double angle = readAngle(xyz); //variable for gyro correction around z axis
         double error = target - angle;
-        double errorABS = Math.abs(error);
+        //double errorABS = Math.abs(error);
         double powerScaled = topPower;
         double degreesTurned;
         double degreesTurnedABS;
@@ -441,12 +441,12 @@ public class AutonDriving extends LinearOpMode {
             telemetry.update();
             if (error < 0)
             {
-                normalDrive(powerScaled/degreesTurnedABS*errorABS, -powerScaled/degreesTurnedABS*errorABS);
+                normalDrive(powerScaled/degreesTurnedABS*error, -powerScaled/degreesTurnedABS*error);
             }
             else if (error > 0)
             {
 
-                normalDrive(-powerScaled/degreesTurnedABS*errorABS, powerScaled/degreesTurnedABS*errorABS);
+                normalDrive(-powerScaled/degreesTurnedABS*error, powerScaled/degreesTurnedABS*error);
             }
         } while (opModeIsActive() && (Math.abs(error) > 10) && (runtime.seconds() < timeoutS));
 
