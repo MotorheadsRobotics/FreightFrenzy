@@ -236,6 +236,21 @@ public class AutonDriving extends LinearOpMode {
     {
 
         if (opModeIsActive()) {
+            robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.fLMotor.setPower(lpower);
+            robot.fRMotor.setPower(rpower);
+            robot.bLMotor.setPower(lpower);
+            robot.bRMotor.setPower(rpower);
+        }
+    }
+
+    public void normalDriveTurn(double lpower, double rpower)
+    {
+
+        if (opModeIsActive()) {
             //robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -246,7 +261,6 @@ public class AutonDriving extends LinearOpMode {
             robot.bRMotor.setPower(rpower);
         }
     }
-
 
 //    public void turnToPosition (double target, String xyz, double topPower, double timeoutS) {
 //        //stopAndReset();
@@ -441,19 +455,19 @@ public class AutonDriving extends LinearOpMode {
             telemetry.update();
             if (error < 0)
             {
-                normalDrive(powerScaled/degreesTurnedABS*error, -powerScaled/degreesTurnedABS*error);
+                normalDriveTurn(powerScaled/degreesTurnedABS*error, -powerScaled/degreesTurnedABS*error);
             }
             else if (error > 0)
             {
 
-                normalDrive(-powerScaled/degreesTurnedABS*error, powerScaled/degreesTurnedABS*error);
+                normalDriveTurn(-powerScaled/degreesTurnedABS*error, powerScaled/degreesTurnedABS*error);
             }
         } while (opModeIsActive() && (Math.abs(error) > 10) && (runtime.seconds() < timeoutS));
 
         normalDrive(0, 0);
         //stopAndReset();
         updateAngles();
-
+        sleep(500);
     }
 
 //    public void turnToPosition (double degrees, String xyz, double topPower, double timeoutS, boolean fast, boolean clock) {
@@ -1322,7 +1336,7 @@ public class AutonDriving extends LinearOpMode {
 
 
 
-            //sleep(500);   // optional pause after each move
+            sleep(500);   // optional pause after each move
         }
     }
     public int getErrorEncoder(double speed) { //me being stupid

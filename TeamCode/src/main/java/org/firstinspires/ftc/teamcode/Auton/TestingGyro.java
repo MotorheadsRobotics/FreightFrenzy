@@ -113,7 +113,7 @@ public class TestingGyro extends AutonDriving {
             angle = readAngle(xyz);
             error = angle - target;
             if (!isCorrection) {
-                powerScaled = topPower * error/(originalAngle - target);
+                powerScaled = topPower * error / (originalAngle - target);
             }
 
             //double powerScaled = power*pidMultiplier(error);
@@ -136,7 +136,6 @@ public class TestingGyro extends AutonDriving {
         normalDrive(0, 0);
 
     }
-
     public double pidMultiplierDriving(double error) {
         //equation for power multiplier is x/sqrt(x^2 + C)
         int C = 100;
