@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.android.dex.Code;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public class AutonDriving extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public Hardware robot = new Hardware();
+    public org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();
     public ElapsedTime runtime = new ElapsedTime();
     public String xyz = "z";
     //CONTAINS ALL METHODS AND VARIABlES TO BE EXTENDED BY OTHER AUTON CLASSES
@@ -232,33 +233,78 @@ public class AutonDriving extends LinearOpMode {
 
 
 
-    public void normalDrive(double lpower, double rpower)
+    public void normalDrive(double lpower, double rpower, boolean encoder)
     {
 
         if (opModeIsActive()) {
-            robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.fLMotor.setPower(lpower);
-            robot.fRMotor.setPower(rpower);
-            robot.bLMotor.setPower(lpower);
-            robot.bRMotor.setPower(rpower);
+            //stopAndReset();
+            if(encoder)
+            {
+                TryMotors();
+                robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.fLMotor.setPower(lpower);
+                robot.fRMotor.setPower(rpower);
+                robot.bLMotor.setPower(lpower);
+                robot.bRMotor.setPower(rpower);
+            }
+            else
+            {
+                TryMotors();
+
+                robot.fLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.fLMotor.setPower(lpower);
+                robot.fRMotor.setPower(rpower);
+                robot.bLMotor.setPower(lpower);
+                robot.bRMotor.setPower(rpower);
+            }
         }
     }
 
-    public void normalDriveTurn(double lpower, double rpower)
+    public void normalDriveTurn(double lpower, double rpower, boolean encoder)
     {
 
         if (opModeIsActive()) {
-            //robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            //robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            //robot.fLMotor.setPower(lpower);
-            //robot.fRMotor.setPower(rpower);
-            robot.bLMotor.setPower(lpower);
-            robot.bRMotor.setPower(rpower);
+            //stopAndReset();
+            if(encoder)
+            {
+                //robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                //robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                telemetry.addData("Reached normalDriveTurn", "True");
+//                telemetry.update();
+                TryMotors();
+                if((robot.bLMotor != null) && (robot.bRMotor != null))
+                {
+                    robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                }
+
+                //robot.fLMotor.setPower(lpower);
+                //robot.fRMotor.setPower(rpower);
+                robot.bLMotor.setPower(lpower);
+                robot.bRMotor.setPower(rpower);
+            }
+            else
+            {
+                TryMotors();
+                if((robot.bLMotor != null) && (robot.bRMotor != null))
+                {
+                    robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+
+//                telemetry.addData("gabeTest", "True");
+//                telemetry.update();
+                //robot.fLMotor.setPower(lpower);
+                //robot.fRMotor.setPower(rpower);
+                robot.bLMotor.setPower(lpower);
+                robot.bRMotor.setPower(rpower);
+            }
         }
     }
 
@@ -373,15 +419,15 @@ public class AutonDriving extends LinearOpMode {
             telemetry.update();
             if (error > 0)
             {
-                normalDrive(-powerScaled, powerScaled);
+                normalDrive(-powerScaled, powerScaled, false);
             }
             else if (error < 0)
             {
 
-                normalDrive(powerScaled, -powerScaled);
+                normalDrive(powerScaled, -powerScaled, false);
             }
         } while (opModeIsActive() && (Math.abs(error) > 10) && (Math.abs(degrees - degreesTurned) > 10) && (runtime.seconds() < timeoutS));
-        normalDrive(0, 0);
+        normalDrive(0, 0, false);
         //stopAndReset();
 
         sleep(300);
@@ -428,24 +474,6 @@ public class AutonDriving extends LinearOpMode {
             degreesTurned = angle - originalAngle;
             degreesTurnedABS = Math.abs(degreesTurned);
 
-            //things to make the turn faster at the beginning and end so it doesn't slow down to basically a stop
-//            if(!fast)
-//            {
-//                powerScaled = topPower * Math.abs(error/180) * pidMultiplierTurning(error);
-//            }
-//            else
-//            {
-//                powerScaled = topPower * Math.abs(error/90) * pidMultiplierTurning(error);
-//            }
-//            if(Math.abs(error) > 10)
-//            {
-//                powerScaled += gyroTurnBoost;
-//            }
-//            else if (Math.abs(degreesTurned) < 10)
-//            {
-//                powerScaled += gyroTurnBoost;
-//            }
-
             //double powerScaled = power*pidMultiplier(error);
             telemetry.addData("original angle", originalAngle);
             telemetry.addData("current angle", readAngle(xyz));
@@ -455,16 +483,16 @@ public class AutonDriving extends LinearOpMode {
             telemetry.update();
             if (error < 0)
             {
-                normalDriveTurn(powerScaled/degreesTurnedABS*error, -powerScaled/degreesTurnedABS*error);
+                normalDriveTurn(powerScaled/degreesTurnedABS*error, -powerScaled/degreesTurnedABS*error, true);
             }
             else if (error > 0)
             {
 
-                normalDriveTurn(-powerScaled/degreesTurnedABS*error, powerScaled/degreesTurnedABS*error);
+                normalDriveTurn(-powerScaled/degreesTurnedABS*error, powerScaled/degreesTurnedABS*error, true);
             }
         } while (opModeIsActive() && (Math.abs(error) > 10) && (runtime.seconds() < timeoutS));
 
-        normalDrive(0, 0);
+        normalDrive(0, 0, false);
         //stopAndReset();
         updateAngles();
         sleep(500);
@@ -587,14 +615,14 @@ public class AutonDriving extends LinearOpMode {
             telemetry.update();
             if (error > 0)
             {
-                normalDrive(0, powerScaled);
+                normalDrive(0, powerScaled, false);
             }
             else if (error < 0)
             {
-                normalDrive(powerScaled, 0);
+                normalDrive(powerScaled, 0, false);
             }
         } while (opModeIsActive() && (Math.abs(error) > gyroTurnThreshold) && (runtime.seconds() < timeoutS));
-        normalDrive(0, 0);
+        normalDrive(0, 0, false);
         //stopAndReset();
 
     }
@@ -758,7 +786,7 @@ public class AutonDriving extends LinearOpMode {
             }
 
             // Stop all motion;
-            normalDrive(0, 0);
+            normalDrive(0, 0, false);
 
             //correct for drift during drive
             //turnToPosition(-angle, "z", turnSpeed, 3);
@@ -987,7 +1015,7 @@ public class AutonDriving extends LinearOpMode {
                     robot.bLMotor.setPower(robot.bLMotor.getPower()*inc);
                     robot.bRMotor.setPower(robot.bRMotor.getPower()*inc);
                 }
-                normalDrive(0, 0); // stops it after 1 second
+                normalDrive(0, 0, false); // stops it after 1 second
                 turnToPosition(Angle, "z", turnSpeed-.05, 500);
                 //turnToPosition(-angle, "z", turnSpeed, 4); //corrects at the end of each motion set
                 sleep(300);
@@ -995,7 +1023,7 @@ public class AutonDriving extends LinearOpMode {
             }
 
             // Stop all motion;
-            normalDrive(0, 0);
+            normalDrive(0, 0, false);
 
             //correct for drift during drive
             //turnToPosition(-angle, "z", turnSpeed, 3);
@@ -1341,5 +1369,19 @@ public class AutonDriving extends LinearOpMode {
     }
     public int getErrorEncoder(double speed) { //me being stupid
         return (int) (speed * 200);
+    }
+
+    public void TryMotors()
+    {
+        for(int i = 0; i < robot.motors.length; i++)
+        {
+            try {
+                robot.motors[i] = hardwareMap.dcMotor.get(robot.motorNames[i]);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
     }
 }

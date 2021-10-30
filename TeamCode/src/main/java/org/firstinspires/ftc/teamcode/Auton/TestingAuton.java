@@ -95,6 +95,7 @@ public class TestingAuton extends AutonDriving {
     public void runOpMode() {
 
         robot.init(hardwareMap);
+        
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -118,9 +119,9 @@ public class TestingAuton extends AutonDriving {
 
         //encoderDrive(0.275, 'f', 14, 5);
         turnToPosition(90, "z", .15, 5);
-        encoderDrive(0.5, 'f', 10, 10);
+        encoderDrive(0.5, 'f', 5, 10);
         turnToPosition(0, "z", 0.15, 5); // position is absolute, turnDegrees is relative
-        encoderDrive(0.5, 'b', 10, 10);
+        encoderDrive(0.5, 'b', 5, 10);
 
 //        if (opModeIsActive()) {
 //            runtime.reset();

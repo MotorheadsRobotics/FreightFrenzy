@@ -25,6 +25,8 @@ public class Hardware
     public DcMotor intakeMotor;
     public DcMotor carouselMotor;
 
+    public DcMotor[] motors = {fLMotor, fRMotor, bLMotor, bRMotor, intakeMotor, carouselMotor};
+    public String[] motorNames = {"fLMotor", "fRMotor", "bLMotor", "bRMotor", "intakeMotor", "carouselMotor"};
 //    public DcMotor launcherMotor;
 //
 //    public DcMotor liftMotor;
@@ -56,6 +58,7 @@ public class Hardware
     /* Local OpMode members. */
     HardwareMap hwMap;
 
+
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // save reference to HW Map
@@ -67,8 +70,15 @@ public class Hardware
         bRMotor = hwMap.get(DcMotor.class, "bRMotor");
         bLMotor = hwMap.get(DcMotor.class, "bLMotor");
 
+//        fLMotor = hwMap.dcMotor.get("fLMotor");
+//        fRMotor = hwMap.dcMotor.get("fRMotor");
+//        bRMotor = hwMap.dcMotor.get("bRMotor");
+//        bLMotor = hwMap.dcMotor.get("bLMotor");
+
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
         carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
+
+        motors[0] = fLMotor;
 
 //        launcherMotor = hwMap.get(DcMotor.class, "launcherMotor");
 //
