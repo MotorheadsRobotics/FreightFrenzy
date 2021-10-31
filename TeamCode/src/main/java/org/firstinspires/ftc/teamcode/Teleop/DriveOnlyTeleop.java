@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareIntake;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="BasicDrive&Intake", group="Teleop")
+@TeleOp(name="Updated Teleop", group="Teleop")
 
 //@Disabled
 
@@ -24,7 +24,7 @@ public class DriveOnlyTeleop extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = .5f;
+    private float carouselMotorPower = 1.0f;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -73,11 +73,11 @@ public class DriveOnlyTeleop extends OpMode {
         // Forward Drive: Left Stick
         if(gamepad1.left_stick_y > stickAxesThreshold)
         {
-            standardDrive(drivePower);
+            standardDrive(-drivePower);
         }
         else if(gamepad1.left_stick_y < -stickAxesThreshold)
         {
-            standardDrive(-drivePower);
+            standardDrive(drivePower);
         }
         else
         {
@@ -87,11 +87,11 @@ public class DriveOnlyTeleop extends OpMode {
         // Drive Turning: Right Stick
         if(gamepad1.right_stick_x > stickAxesThreshold)
         {
-            standardDrive(-turnPower, turnPower);
+            standardDrive(turnPower, -turnPower);
         }
         else if(gamepad1.right_stick_x < -stickAxesThreshold)
         {
-            standardDrive(turnPower, -turnPower);
+            standardDrive(-turnPower, turnPower);
         }
         else
         {

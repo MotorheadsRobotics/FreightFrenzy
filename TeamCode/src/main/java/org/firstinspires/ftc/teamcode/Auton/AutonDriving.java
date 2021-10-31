@@ -240,7 +240,7 @@ public class AutonDriving extends LinearOpMode {
             //stopAndReset();
             if(encoder)
             {
-                TryMotors();
+                //TryMotors();
                 robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -252,7 +252,7 @@ public class AutonDriving extends LinearOpMode {
             }
             else
             {
-                TryMotors();
+                //TryMotors();
 
                 robot.fLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -277,13 +277,14 @@ public class AutonDriving extends LinearOpMode {
                 //robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //                telemetry.addData("Reached normalDriveTurn", "True");
 //                telemetry.update();
-                TryMotors();
-                if((robot.bLMotor != null) && (robot.bRMotor != null))
-                {
-                    robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                }
+//                TryMotors();
+//                if((robot.bLMotor != null) && (robot.bRMotor != null))
+//                {
+//
+//                }
 
+                robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 //robot.fLMotor.setPower(lpower);
                 //robot.fRMotor.setPower(rpower);
                 robot.bLMotor.setPower(lpower);
@@ -291,13 +292,14 @@ public class AutonDriving extends LinearOpMode {
             }
             else
             {
-                TryMotors();
-                if((robot.bLMotor != null) && (robot.bRMotor != null))
-                {
-                    robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                }
+//                TryMotors();
+//                if((robot.bLMotor != null) && (robot.bRMotor != null))
+//                {
+//
+//                }
 
+                robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //                telemetry.addData("gabeTest", "True");
 //                telemetry.update();
                 //robot.fLMotor.setPower(lpower);
@@ -483,14 +485,14 @@ public class AutonDriving extends LinearOpMode {
             telemetry.update();
             if (error < 0)
             {
-                normalDriveTurn(powerScaled/degreesTurnedABS*error, -powerScaled/degreesTurnedABS*error, true);
+                normalDrive(powerScaled/degreesTurnedABS*error, -powerScaled/degreesTurnedABS*error, true);
             }
             else if (error > 0)
             {
 
-                normalDriveTurn(-powerScaled/degreesTurnedABS*error, powerScaled/degreesTurnedABS*error, true);
+                normalDrive(-powerScaled/degreesTurnedABS*error, powerScaled/degreesTurnedABS*error, true);
             }
-        } while (opModeIsActive() && (Math.abs(error) > 10) && (runtime.seconds() < timeoutS));
+        } while (opModeIsActive() && (Math.abs(error) > 1) && (runtime.seconds() < timeoutS));
 
         normalDrive(0, 0, false);
         //stopAndReset();
@@ -1381,6 +1383,22 @@ public class AutonDriving extends LinearOpMode {
             catch (Exception e)
             {
 
+            }
+        }
+    }
+
+    public void CarouselSpin(double speed, boolean clockwise, double timeoutSec)
+    {
+        runtime.reset();
+        while(opModeIsActive() && (runtime.seconds() < timeoutSec))
+        {
+            if (clockwise)
+            {
+                robot.carouselMotor.setPower(speed);
+            }
+            else
+            {
+                robot.carouselMotor.setPower(-speed);
             }
         }
     }

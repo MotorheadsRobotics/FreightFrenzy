@@ -43,16 +43,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Auton.AutonDriving;
-import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
-import java.util.List;
-
-@Autonomous(name="Auton Testing", group="Test")
+@Autonomous(name="Auton Red Far", group="Test")
 //@Disabled
-public class TestingAuton extends AutonDriving {
+public class AutonRedFar extends AutonDriving {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
@@ -88,7 +83,7 @@ public class TestingAuton extends AutonDriving {
     public static final String VUFORIA_KEY =
             "AYy6NYn/////AAABmTW3q+TyLUMbg/IXWlIG3BkMMq0okH0hLmwj3CxhPhvUlEZHaOAmESqfePJ57KC2g6UdWLN7OYvc8ihGAZSUJ2JPWAsHQGv6GUAj4BlrMCjHvqhY0w3tV/Azw2wlPmls4FcUCRTzidzVEDy+dtxqQ7U5ZtiQhjBZetAcnLsCYb58dgwZEjTx2+36jiqcFYvS+FlNJBpbwmnPUyEEb32YBBZj4ra5jB0v4IW4wYYRKTNijAQKxco33VYSCbH0at99SqhXECURA55dtmmJxYpFlT/sMmj0iblOqoG/auapQmmyEEXt/T8hv9StyirabxhbVVSe7fPsAueiXOWVm0kCPO+KN/TyWYB9Hg/mSfnNu9i9";
 
-    public TestingAuton() {
+    public AutonRedFar() {
     }
 
     @Override
@@ -118,13 +113,18 @@ public class TestingAuton extends AutonDriving {
         waitForStart();
 
         //encoderDrive(0.275, 'f', 14, 5);
-        turnToPosition(90, "z", .4, 5);
+        /*turnToPosition(90, "z", .15, 5);
         encoderDrive(0.5, 'f', 5, 10);
-        turnToPosition(0, "z", .4, 5); // position is absolute, turnDegrees is relative
+        turnToPosition(0, "z", 0.15, 5); // position is absolute, turnDegrees is relative
         encoderDrive(0.5, 'b', 5, 10);
-        CarouselSpin(.5, false, 2);
-
-
+        */
+        encoderDrive(.5, 'f', 5, 5);
+        turnToPosition(100, "z", .5, 5);
+        encoderDrive(.5, 'f', 5, 5);
+        CarouselSpin(.5, true, 2);
+        encoderDrive(.5, 'b', 5, 5);
+        turnToPosition(90, "z", .5, 5);
+        encoderDrive(1.0, 'b', 40, 5);
 //        if (opModeIsActive()) {
 //            runtime.reset();
 //            do {
