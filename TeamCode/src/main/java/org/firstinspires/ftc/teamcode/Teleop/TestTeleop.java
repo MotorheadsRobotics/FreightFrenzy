@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 @TeleOp(name="Testing Teleop", group="TeleopTest")
 
-@Disabled
+//@Disabled
 
 public class TestTeleop extends OpMode {
 
