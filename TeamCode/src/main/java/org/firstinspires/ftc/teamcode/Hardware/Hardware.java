@@ -25,8 +25,14 @@ public class Hardware
     public DcMotor intakeMotor;
     public DcMotor carouselMotor;
 
-    public DcMotor[] motors = {fLMotor, fRMotor, bLMotor, bRMotor, intakeMotor, carouselMotor};
-    public String[] motorNames = {"fLMotor", "fRMotor", "bLMotor", "bRMotor", "intakeMotor", "carouselMotor"};
+    public DcMotor pulleyMotorL;
+    public DcMotor pulleyMotorR;
+
+    public Servo bucketServo;
+
+    public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
+    public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
+    public boolean[] motorDirections =  {false,     true,       false,      true,       true,           true,               true,           true};
 //    public DcMotor launcherMotor;
 //
 //    public DcMotor liftMotor;
@@ -64,7 +70,9 @@ public class Hardware
         // save reference to HW Map
         hwMap = ahwMap;
 
-        // Define Motors
+        // Set up Motors
+        DCMotorSetup(motors, motorNames, motorDirections);
+        /*
         fLMotor = hwMap.get(DcMotor.class, "fLMotor");
         fRMotor = hwMap.get(DcMotor.class, "fRMotor");
         bRMotor = hwMap.get(DcMotor.class, "bRMotor");
@@ -78,22 +86,10 @@ public class Hardware
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
         carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
 
-        motors[0] = fLMotor;
+        pulleyMotorL = hwMap.get(DcMotor.class, "pulleyMotorL");
+        pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
 
-//        launcherMotor = hwMap.get(DcMotor.class, "launcherMotor");
-//
-//        liftMotor = hwMap.get(DcMotor.class, "liftMotor");
-//
-//        intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
-//
-//        conveyorMotor = hwMap.get(DcMotor.class, "conveyorMotor");
-//
-//        launcherServo = hwMap.get(Servo.class, "launcherServo");
-//
-//        claw = hwMap.get(Servo.class, "clawServo");
-//
-//        rightColor = hwMap.get(ColorSensor.class, "rightColorSensor");
-//        leftColor = hwMap.get(ColorSensor.class, "leftColorSensor");
+        motors[0] = fLMotor;
 
         fLMotor.setPower(0);
         bLMotor.setPower(0);
@@ -102,12 +98,9 @@ public class Hardware
 
         intakeMotor.setPower(0);
         carouselMotor.setPower(0);
-//        intakeMotor.setPower(0);
-//        conveyorMotor.setPower(0);
-//
-//        launcherMotor.setPower(0);
-//        liftMotor.setPower(0);
 
+        pulleyMotorL.setPower(0);
+        pulleyMotorR.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -122,10 +115,9 @@ public class Hardware
 
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         carouselMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        launcherMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        conveyorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        pulleyMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pulleyMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         fLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -134,11 +126,9 @@ public class Hardware
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        launcherMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-//        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        conveyorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        pulleyMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pulleyMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         fLMotor.setDirection(DcMotor.Direction.REVERSE);
         fRMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -147,14 +137,29 @@ public class Hardware
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-//        launcherMotor.setDirection(DcMotor.Direction.REVERSE);
-//        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
-//        conveyorMotor.setDirection(DcMotor.Direction.REVERSE);
-//
-//        claw.scaleRange(0,0.5);
-//
-//        launcherServo.setPosition(.7);
-//
-//        claw.setPosition(0);
+
+        pulleyMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
+        pulleyMotorR.setDirection(DcMotorSimple.Direction.FORWARD);
+        */
+
+        // Set up Servos
+        bucketServo = hwMap.get(Servo.class, "bucketServo");
+
+    }
+    public void DCMotorSetup(DcMotor[] motors, String[] motorNames, boolean[] motorDirections) {
+        // Define Motors
+        for(int i = 0; i < motors.length; i++) {
+            String deviceName = motorNames[i];
+            motors[i] = hwMap.get(DcMotor.class, deviceName);
+            motors[i].setPower(0);
+            motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            if(motorDirections[i]) {
+                motors[i].setDirection(DcMotor.Direction.FORWARD);
+            }
+            else {
+                motors[i].setDirection(DcMotor.Direction.REVERSE);
+            }
+        }
     }
 }

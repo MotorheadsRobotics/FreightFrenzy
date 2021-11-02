@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="Testing Driving timmy moment", group="TeleopTest")
+@TeleOp(name="Testing Teleop", group="TeleopTest")
 
 @Disabled
 
@@ -24,6 +24,8 @@ public class TestTeleop extends OpMode {
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
     private float carouselMotorPower = .5f;
+
+    private float pulleyMotorPower = .2f;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -39,6 +41,18 @@ public class TestTeleop extends OpMode {
 
     @Override
     public void loop() {
+        // Pulley Motors: D-pad Up and D-pad Down
+        if (gamepad1.dpad_up) {
+            robot.pulleyMotorR.setPower(pulleyMotorPower);
+            robot.pulleyMotorL.setPower(pulleyMotorPower);
+        } else if (gamepad1.dpad_down) {
+            robot.pulleyMotorR.setPower(-pulleyMotorPower);
+            robot.pulleyMotorL.setPower(-pulleyMotorPower);
+        } else {
+            robot.pulleyMotorR.setPower(0);
+            robot.pulleyMotorL.setPower(0);
+        }
+
         // Intake Motor: LB and RB
         if (gamepad1.left_bumper) {
             robot.intakeMotor.setPower(intakeMotorPower);

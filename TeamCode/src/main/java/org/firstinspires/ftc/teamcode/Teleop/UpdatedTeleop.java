@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareIntake;
 
 //@Disabled
 
-public class DriveOnlyTeleop extends OpMode {
+public class UpdatedTeleop extends OpMode {
 
     Hardware robot = new Hardware();
 
@@ -25,6 +25,8 @@ public class DriveOnlyTeleop extends OpMode {
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
     private float carouselMotorPower = 1.0f;
+
+    private float pulleyMotorPower = .2f;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -42,6 +44,18 @@ public class DriveOnlyTeleop extends OpMode {
     public void loop()
 
     {
+        // Pulley Motors: D-pad Up and D-pad Down
+        if (gamepad1.dpad_up) {
+            robot.pulleyMotorR.setPower(pulleyMotorPower);
+            robot.pulleyMotorL.setPower(pulleyMotorPower);
+        } else if (gamepad1.dpad_down) {
+            robot.pulleyMotorR.setPower(-pulleyMotorPower);
+            robot.pulleyMotorL.setPower(-pulleyMotorPower);
+        } else {
+            robot.pulleyMotorR.setPower(0);
+            robot.pulleyMotorL.setPower(0);
+        }
+
         // Intake Motor: LB and RB
         if(gamepad1.left_bumper)
         {
