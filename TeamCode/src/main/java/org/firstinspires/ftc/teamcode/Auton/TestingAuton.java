@@ -113,7 +113,7 @@ public class TestingAuton extends AutonDriving {
 //            tfod.activate();
 //        }
 
-        robot.init(hardwareMap);
+        // om nom nom ;)
 
         waitForStart();
 

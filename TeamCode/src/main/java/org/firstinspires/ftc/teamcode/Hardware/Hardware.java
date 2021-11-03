@@ -33,7 +33,9 @@ public class Hardware
     public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
     public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
     public boolean[] motorDirections =  {false,     true,       false,      true,       true,           true,               true,           true};
-//    public DcMotor launcherMotor;
+
+
+    //    public DcMotor launcherMotor;
 //
 //    public DcMotor liftMotor;
 //
@@ -71,8 +73,25 @@ public class Hardware
         hwMap = ahwMap;
 
         // Set up Motors
-        DCMotorSetup(motors, motorNames, motorDirections);
-        /*
+        /*for(int i = 0; i < motors.length; i++)
+        {
+            motors[i] = hwMap.get(DcMotor.class, motorNames[i]);
+            motors[i].setPower(0);
+            motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            if(motorDirections[i])
+            {
+                motors[i].setDirection(DcMotor.Direction.FORWARD);
+            }
+            else
+            {
+                motors[i].setDirection(DcMotor.Direction.REVERSE);
+            }
+        }
+        */
+
+        //DCMotorSetup(motors, motorNames, motorDirections);
+
         fLMotor = hwMap.get(DcMotor.class, "fLMotor");
         fRMotor = hwMap.get(DcMotor.class, "fRMotor");
         bRMotor = hwMap.get(DcMotor.class, "bRMotor");
@@ -140,7 +159,7 @@ public class Hardware
 
         pulleyMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
         pulleyMotorR.setDirection(DcMotorSimple.Direction.FORWARD);
-        */
+
 
         // Set up Servos
         bucketServo = hwMap.get(Servo.class, "bucketServo");
@@ -148,16 +167,18 @@ public class Hardware
     }
     public void DCMotorSetup(DcMotor[] motors, String[] motorNames, boolean[] motorDirections) {
         // Define Motors
-        for(int i = 0; i < motors.length; i++) {
-            String deviceName = motorNames[i];
-            motors[i] = hwMap.get(DcMotor.class, deviceName);
+        for(int i = 0; i < motors.length; i++)
+        {
+            motors[i] = hwMap.get(DcMotor.class, motorNames[i]);
             motors[i].setPower(0);
             motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            if(motorDirections[i]) {
+            if(motorDirections[i])
+            {
                 motors[i].setDirection(DcMotor.Direction.FORWARD);
             }
-            else {
+            else
+            {
                 motors[i].setDirection(DcMotor.Direction.REVERSE);
             }
         }

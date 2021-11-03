@@ -24,7 +24,7 @@ public class UpdatedTeleop extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = 1.0f;
+    private float carouselMotorPower = 0.5f;
 
     private float pulleyMotorPower = .2f;
 
@@ -120,6 +120,16 @@ public class UpdatedTeleop extends OpMode {
 
         //mecanumMove();
 
+        // Carousel Motor: LT and RT
+        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
+            if (gamepad1.left_trigger > 0.3) {
+                robot.carouselMotor.setPower(carouselMotorPower * 2);
+            } else if (gamepad1.right_trigger > 0.3) {
+                robot.carouselMotor.setPower(-carouselMotorPower * 2);
+            } else {
+                robot.carouselMotor.setPower(0);
+            }
+        }
     }
 
     public void mecanumMove()
