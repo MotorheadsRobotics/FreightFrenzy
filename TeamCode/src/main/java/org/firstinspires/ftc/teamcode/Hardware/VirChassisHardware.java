@@ -52,10 +52,10 @@ public class VirChassisHardware
     public static final double     COUNTS_PER_MOTOR_REV = 383.6;    // Currently: Andymark Neverest 40
     public static final double     COUNTS_PER_REV_ARM = 1440;
     public static final double     COUNTS_PER_INCH_ARM = COUNTS_PER_REV_ARM/4;
-    public static final double     DRIVE_GEAR_REDUCTION = .666;     // This is < 1.0 if geared UP //On OUR CENTER MOTOR THE GEAR REDUCTION IS .5
-    public static final double     WHEEL_DIAMETER_INCHES = 3.7795;     // For figuring circumference
+    public static final double     DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP //On OUR CENTER MOTOR THE GEAR REDUCTION IS .5
+    public static final double     WHEEL_DIAMETER_INCHES = 1.75;     // For figuring circumference
     public static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+            (WHEEL_DIAMETER_INCHES * Math.PI);
 
 
     /* Local OpMode members. */
