@@ -1,28 +1,23 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-import android.graphics.Color;
-
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 //public class package org.firstinspires.ftc.teamcode.src;
 
 //import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 
-public class Hardware
+public class VirChassisHardware
 {
     public DcMotor fLMotor;
     public DcMotor fRMotor;
     public DcMotor bLMotor;
     public DcMotor bRMotor;
 
-    public DcMotor intakeMotor;
+    /*public DcMotor intakeMotor;
     public DcMotor carouselMotor;
 
     public DcMotor pulleyMotorL;
@@ -33,7 +28,7 @@ public class Hardware
     public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
     public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
     public boolean[] motorDirections =  {false,     true,       false,      true,       true,           true,               true,           true};
-
+*/
 
     //    public DcMotor launcherMotor;
 //
@@ -102,25 +97,25 @@ public class Hardware
 //        bRMotor = hwMap.dcMotor.get("bRMotor");
 //        bLMotor = hwMap.dcMotor.get("bLMotor");
 
-        intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
+/*        intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
         carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
 
         pulleyMotorL = hwMap.get(DcMotor.class, "pulleyMotorL");
         pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
-
+*/
         //motors[0] = fLMotor;
 
         fLMotor.setPower(0);
         bLMotor.setPower(0);
         fRMotor.setPower(0);
         bRMotor.setPower(0);
-
+/*
         intakeMotor.setPower(0);
         carouselMotor.setPower(0);
 
         pulleyMotorL.setPower(0);
         pulleyMotorR.setPower(0);
-
+*/
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
 //        fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -131,38 +126,38 @@ public class Hardware
         fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+/*
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         carouselMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pulleyMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+*/
         fLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+/*
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         pulleyMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pulleyMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+*/
         fLMotor.setDirection(DcMotor.Direction.REVERSE);
         fRMotor.setDirection(DcMotor.Direction.FORWARD);
         bLMotor.setDirection(DcMotor.Direction.REVERSE);
         bRMotor.setDirection(DcMotor.Direction.FORWARD);
-
+/*
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         pulleyMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
         pulleyMotorR.setDirection(DcMotorSimple.Direction.FORWARD);
-
+*/
 
         // Set up Servos
-        bucketServo = hwMap.get(Servo.class, "bucketServo");
+  //      bucketServo = hwMap.get(Servo.class, "bucketServo");
 
     }
     public void DCMotorSetup(DcMotor[] motors, String[] motorNames, boolean[] motorDirections) {

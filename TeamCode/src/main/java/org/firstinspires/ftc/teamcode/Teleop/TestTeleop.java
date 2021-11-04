@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
@@ -70,14 +71,31 @@ public class TestTeleop extends OpMode {
         } else {
             robot.carouselMotor.setPower(0);
         }
+        // Carousel Motor fast: LT and RT + x
+        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
+            if (gamepad1.left_trigger > 0.3) {
+                robot.carouselMotor.setPower(carouselMotorPower * 2);
+            } else if (gamepad1.right_trigger > 0.3) {
+                robot.carouselMotor.setPower(-carouselMotorPower * 2);
+            } else {
+                robot.carouselMotor.setPower(0);
+            }
+        }
 
-        // Forward Drive: Left Stick
+        // Drive: Left and Right Stick
         if (Math.abs(gamepad1.right_stick_x) > stickAxesThreshold) {
             turn(gamepad1.right_stick_x);
         } else if (Math.abs(gamepad1.left_stick_y) > stickAxesThreshold) {
             drive(gamepad1.left_stick_y);
         } else {
             stopMotion();
+        }
+
+        // Close Hatch Servo: A
+        if (gamepad1.a) {
+            robot.bucketServo.setPosition(1);
+        } else {
+            robot.bucketServo.setPosition(0);
         }
     }
 

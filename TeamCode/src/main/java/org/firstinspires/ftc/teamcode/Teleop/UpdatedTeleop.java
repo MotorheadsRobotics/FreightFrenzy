@@ -120,7 +120,7 @@ public class UpdatedTeleop extends OpMode {
 
         //mecanumMove();
 
-        // Carousel Motor: LT and RT
+        // Carousel Motor fast: LT and RT
         if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
             if (gamepad1.left_trigger > 0.3) {
                 robot.carouselMotor.setPower(carouselMotorPower * 2);
