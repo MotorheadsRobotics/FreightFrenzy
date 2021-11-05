@@ -33,25 +33,9 @@ public class Hardware
 
     public Servo bucketServo;
 
-    //
+    // motors whose directions need to be reversed
     private int flMotorPort = 1; // not true just haven't checked
     private int blMotorPort = 3; // this one too
-
-    //    public DcMotor launcherMotor;
-//
-//    public DcMotor liftMotor;
-//
-//    public Servo launcherServo;
-//
-//    public Servo claw;
-//
-//    public DcMotor intakeMotor;
-//
-//    public DcMotor conveyorMotor;
-//
-//    public ColorSensor leftColor;
-//    public ColorSensor rightColor;
-//    public TouchSensor magnetLimit;
 
     //declaring values for use with encoders
     public String xyz = "z";
