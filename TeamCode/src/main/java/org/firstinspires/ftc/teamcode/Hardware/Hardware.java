@@ -6,9 +6,12 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+
+import java.util.Iterator;
 
 //public class package org.firstinspires.ftc.teamcode.src;
 
@@ -30,10 +33,9 @@ public class Hardware
 
     public Servo bucketServo;
 
-    public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
-    public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
-    public boolean[] motorDirections =  {false,     true,       false,      true,       true,           true,               true,           true};
-
+    //
+    private int flMotorPort = 1; // not true just haven't checked
+    private int blMotorPort = 3; // this one too
 
     //    public DcMotor launcherMotor;
 //
@@ -71,6 +73,12 @@ public class Hardware
     public void init(HardwareMap ahwMap) {
         // save reference to HW Map
         hwMap = ahwMap;
+
+        // Initialize motors
+
+        // Initialize motors array
+
+
 
         // Set up Motors
         /*for(int i = 0; i < motors.length; i++)
@@ -165,22 +173,38 @@ public class Hardware
         bucketServo = hwMap.get(Servo.class, "bucketServo");
 
     }
-    public void DCMotorSetup(DcMotor[] motors, String[] motorNames, boolean[] motorDirections) {
+    public void DCMotorSetup(DcMotor[] motors, String[] motorNames) {
         // Define Motors
-        for(int i = 0; i < motors.length; i++)
-        {
-            motors[i] = hwMap.get(DcMotor.class, motorNames[i]);
-            motors[i].setPower(0);
-            motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            if(motorDirections[i])
+        Iterator<HardwareDevice> hardwareDevices = hwMap.iterator();
+        while (hardwareDevices.hasNext()) {
+            DcMotor currentMotor = (DcMotor) hardwareDevices.next();
+            currentMotor.setPower(0);
+            currentMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            currentMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            int portNumber = currentMotor.getPortNumber();
+            if(portNumber == flMotorPort || portNumber == blMotorPort) //
             {
-                motors[i].setDirection(DcMotor.Direction.FORWARD);
+                currentMotor.setDirection(DcMotor.Direction.REVERSE);
             }
             else
             {
-                motors[i].setDirection(DcMotor.Direction.REVERSE);
+                currentMotor.setDirection(DcMotor.Direction.FORWARD);
             }
         }
+//        for(int i = 0; i < motors.length; i++)
+//        {
+//            motors[i] = hwMap.get(DcMotor.class, motorNames[i]);
+//            motors[i].setPower(0);
+//            motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//            if(i == 0 || i == 2) //
+//            {
+//                motors[i].setDirection(DcMotor.Direction.REVERSE);
+//            }
+//            else
+//            {
+//                motors[i].setDirection(DcMotor.Direction.FORWARD);
+//            }
+//        }
     }
 }
