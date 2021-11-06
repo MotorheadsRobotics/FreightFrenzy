@@ -43,7 +43,7 @@ public class VirChassisAutonDriving extends LinearOpMode {
     //static final double     PULLEY_DIAMETER = 1.3;
     // static final double     COUNTS_PER_INCH_ARM = COUNTS_PER_REV_ARM/(PULLEY_DIAMETER * Math.PI);
     static final double     DRIVE_GEAR_REDUCTION = 1.0;    // This is < 1.0 if geared UP //On OUR CENTER MOTOR THE GEAR REDUCTION IS .5
-    static final double     WHEEL_DIAMETER_INCHES = 1.75;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES = 3.75;     // For figuring circumference
     static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
 
@@ -1248,7 +1248,18 @@ public class VirChassisAutonDriving extends LinearOpMode {
         int newFrontRightTarget = 0;
         int newBackRightTarget = 0;
 
-        int error = getErrorEncoder(speed);
+        stopAndReset();
+
+        int fLOriginal = robot.fLMotor.getCurrentPosition();
+        int fROriginal = robot.fLMotor.getCurrentPosition();
+        int bLOriginal = robot.fLMotor.getCurrentPosition();
+        int bROriginal = robot.fLMotor.getCurrentPosition();
+
+        int targetCounts = (int)(inches * COUNTS_PER_INCH);
+
+        //int error = getErrorEncoder(speed);
+
+        //int error =
 
         boolean directionIsTrue = true;
 
@@ -1258,10 +1269,10 @@ public class VirChassisAutonDriving extends LinearOpMode {
             switch (direction) {
                 case 'f':
                     //these four statements original had (- error) appended. Seems like a jank fix
-                    newFrontLeftTarget = robot.fLMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
-                    newFrontRightTarget = robot.fRMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
-                    newBackLeftTarget = robot.bLMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
-                    newBackRightTarget = robot.bRMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+                    newFrontLeftTarget = robot.fLMotor.getCurrentPosition() + targetCounts;
+                    newFrontRightTarget = robot.fRMotor.getCurrentPosition() + targetCounts;
+                    newBackLeftTarget = robot.bLMotor.getCurrentPosition() + targetCounts;
+                    newBackRightTarget = robot.bRMotor.getCurrentPosition() + targetCounts;
                     robot.fLMotor.setTargetPosition(newFrontLeftTarget);
                     robot.fRMotor.setTargetPosition(newFrontRightTarget);
                     robot.bLMotor.setTargetPosition(newBackLeftTarget);
@@ -1269,16 +1280,16 @@ public class VirChassisAutonDriving extends LinearOpMode {
                     break;
                 case 'b':
                     //same as f
-                    newFrontLeftTarget = robot.fLMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
-                    newFrontRightTarget = robot.fRMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
-                    newBackLeftTarget = robot.bLMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
-                    newBackRightTarget = robot.bRMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+                    newFrontLeftTarget = robot.fLMotor.getCurrentPosition() - targetCounts;
+                    newFrontRightTarget = robot.fRMotor.getCurrentPosition() - targetCounts;
+                    newBackLeftTarget = robot.bLMotor.getCurrentPosition() - targetCounts;
+                    newBackRightTarget = robot.bRMotor.getCurrentPosition() - targetCounts;
                     robot.fLMotor.setTargetPosition(newFrontLeftTarget);
                     robot.fRMotor.setTargetPosition(newFrontRightTarget);
                     robot.bLMotor.setTargetPosition(newBackLeftTarget);
                     robot.bRMotor.setTargetPosition(newBackRightTarget);
                     break;
-                case 'l':
+                /*case 'l':
                     newFrontLeftTarget = robot.fLMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH) + error;
                     newFrontRightTarget = robot.fRMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH) - error;
                     newBackLeftTarget = robot.bLMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH) - error;
@@ -1297,7 +1308,7 @@ public class VirChassisAutonDriving extends LinearOpMode {
                     robot.fRMotor.setTargetPosition(newFrontRightTarget);
                     robot.bLMotor.setTargetPosition(newBackLeftTarget);
                     robot.bRMotor.setTargetPosition(newBackRightTarget);
-                    break;
+                    break;*/
                 default:
                     directionIsTrue = false;
             }
@@ -1342,10 +1353,77 @@ public class VirChassisAutonDriving extends LinearOpMode {
                         robot.bRMotor.getCurrentPosition());
                 telemetry.update();
 
-                if (Math.abs(newFrontLeftTarget - robot.fLMotor.getCurrentPosition()) < 50 ||
-                        Math.abs(newFrontRightTarget - robot.fRMotor.getCurrentPosition()) < 50 ||
-                        Math.abs(newBackLeftTarget - robot.bLMotor.getCurrentPosition()) < 50 ||
-                        Math.abs(newBackRightTarget - robot.bRMotor.getCurrentPosition()) < 50) {
+
+                int fRError = targetCounts - robot.fRMotor.getCurrentPosition();
+                int fLError = targetCounts - robot.fLMotor.getCurrentPosition();
+                int bRError = targetCounts - robot.bRMotor.getCurrentPosition();
+                int bLError = targetCounts - robot.bLMotor.getCurrentPosition();
+
+                int errors[] = {fRError, fLError, bRError, bLError};
+
+                double fRSpeedAdjust = 1, fLSpeedAdjust = 1, bRSpeedAdjust = 1, bLSpeedAdjust = 1;
+                double speedAdjusts[] = {fRSpeedAdjust, fLSpeedAdjust, bRSpeedAdjust, bLSpeedAdjust};
+
+                int inchSlowThresh = 5;
+
+
+
+                int fRInchesTrav = (int) Math.abs(((robot.fRMotor.getCurrentPosition() - fROriginal) / COUNTS_PER_INCH));
+                int fLInchesTrav = (int) Math.abs(((robot.fLMotor.getCurrentPosition() - fLOriginal) / COUNTS_PER_INCH));
+                int bRInchesTrav = (int) Math.abs(((robot.bRMotor.getCurrentPosition() - bROriginal) / COUNTS_PER_INCH));
+                int bLInchesTrav = (int) Math.abs(((robot.bLMotor.getCurrentPosition() - bLOriginal) / COUNTS_PER_INCH));
+
+                int inchesTrav[] = {fRInchesTrav, fLInchesTrav, bRInchesTrav, bLInchesTrav};
+
+                for(int i = 0; i < errors.length; i++)
+                {
+                    speedAdjusts[i] = Math.abs((errors[i]/COUNTS_PER_INCH)/inches);
+                    if(speedAdjusts[i] > 1 && inchesTrav[i] > 1)
+                    {
+                        speedAdjusts[i] = inchesTrav[i]/speedAdjusts[i];
+                    }
+                }
+
+                /*
+                fRSpeedAdjust = Math.abs((fRError/COUNTS_PER_INCH)/inches);
+                if(fRSpeedAdjust > 1)
+                {
+                    fRSpeedAdjust = fRInchesTrav/(fRSpeedAdjust);
+                }
+                fLSpeedAdjust = Math.abs((fLError/COUNTS_PER_INCH)/inches);
+                if(fLSpeedAdjust > 1)
+                {
+                    fLSpeedAdjust = fLInchesTrav/(fLSpeedAdjust);
+                }
+                bRSpeedAdjust = Math.abs((bRError/COUNTS_PER_INCH)/inches);
+                if(bRSpeedAdjust > 1)
+                {
+                    bRSpeedAdjust = bRInchesTrav/(bRSpeedAdjust);
+                }
+                bLSpeedAdjust = Math.abs((bLError/COUNTS_PER_INCH)/inches);
+                if(bLSpeedAdjust > 1)
+                {
+                    bLSpeedAdjust = bLInchesTrav/(bLSpeedAdjust);
+                }
+                */
+
+
+                telemetry.addData("Speed Adjust FR", fRSpeedAdjust);
+                telemetry.addData("Speed Adjust FL", fLSpeedAdjust);
+                telemetry.addData("Speed Adjust BR", bRSpeedAdjust);
+                telemetry.addData("Speed Adjust BL", bLSpeedAdjust);
+                telemetry.update();
+
+                robot.fLMotor.setPower(Math.abs(speed) * fLSpeedAdjust); // * fLError
+                robot.fRMotor.setPower(Math.abs(speed) * fRSpeedAdjust); // * fRError
+                robot.bLMotor.setPower(Math.abs(speed) * bLSpeedAdjust); // * bLError
+                robot.bRMotor.setPower(Math.abs(speed) * bRSpeedAdjust); // * bRError
+
+                int countThresh = 10;
+                if (Math.abs(newFrontLeftTarget - robot.fLMotor.getCurrentPosition()) < countThresh ||
+                        Math.abs(newFrontRightTarget - robot.fRMotor.getCurrentPosition()) < countThresh ||
+                        Math.abs(newBackLeftTarget - robot.bLMotor.getCurrentPosition()) < countThresh ||
+                        Math.abs(newBackRightTarget - robot.bRMotor.getCurrentPosition()) < countThresh) {
                     break;
                 }
             }
@@ -1358,6 +1436,7 @@ public class VirChassisAutonDriving extends LinearOpMode {
 
             // Turn off RUN_TO_POSITIOn
 
+
             robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -1365,12 +1444,13 @@ public class VirChassisAutonDriving extends LinearOpMode {
 
 
 
-            sleep(500);   // optional pause after each move
+            sleep(3500);   // optional pause after each move
         }
     }
-    public int getErrorEncoder(double speed) { //me being stupid
+    /*public int getErrorEncoder(double speed) { //me being stupid
         return (int) (speed * 200);
-    }
+    }*/
+    //public int getErrorEncoder()
 
 //    public void TryMotors()
 //    {

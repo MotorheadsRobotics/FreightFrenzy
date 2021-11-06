@@ -112,11 +112,11 @@ public class VirChassisTestingAuton extends VirChassisAutonDriving {
 
         waitForStart();
 
-        encoderDrive(0.275, 'f', 14, 5);
+        encoderDrive(.75, 'f', 14, 5);
         //turnToPosition(90, "z", .4, 5);
-        encoderDrive(0.5, 'b', 5, 10);
+        encoderDrive(1.0, 'b', 5, 10);
         //turnToPosition(0, "z", .4, 5); // position is absolute, turnDegrees is relative
-        encoderDrive(0.5, 'b', 9, 10);
+        encoderDrive(1.0, 'b', 9, 10);
         //CarouselSpin(.5, false, 2);
 
 

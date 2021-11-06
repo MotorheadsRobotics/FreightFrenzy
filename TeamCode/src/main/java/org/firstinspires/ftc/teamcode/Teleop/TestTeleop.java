@@ -26,7 +26,7 @@ public class TestTeleop extends OpMode {
     //private float BRDrive = 1f;
     private float carouselMotorPower = .5f;
 
-    private float pulleyMotorPower = .2f;
+    private float pulleyMotorPower = .65f;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -97,6 +97,10 @@ public class TestTeleop extends OpMode {
         } else {
             robot.bucketServo.setPosition(0);
         }
+
+
+        telemetry.addData("Lift Limit", robot.liftLimit.getState());
+        telemetry.update();
     }
 
     public void drive(double power) {

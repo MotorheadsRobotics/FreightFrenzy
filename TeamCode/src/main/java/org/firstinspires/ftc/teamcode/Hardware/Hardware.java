@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -29,6 +30,8 @@ public class Hardware
     public DcMotor pulleyMotorR;
 
     public Servo bucketServo;
+
+    public DigitalChannel liftLimit;
 
     public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
     public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
@@ -157,12 +160,19 @@ public class Hardware
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        pulleyMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
-        pulleyMotorR.setDirection(DcMotorSimple.Direction.FORWARD);
+        pulleyMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
+        pulleyMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         // Set up Servos
         bucketServo = hwMap.get(Servo.class, "bucketServo");
+
+
+
+        //enable lift limit switch
+        liftLimit =hwMap.get(DigitalChannel.class, "liftLimit");
+
+
 
     }
     public void DCMotorSetup(DcMotor[] motors, String[] motorNames, boolean[] motorDirections) {
