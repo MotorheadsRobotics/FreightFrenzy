@@ -72,6 +72,8 @@ public class AutonRedClose extends AutonDriving {
     public static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
 
+    public static final double BEST_TURN_SPEED = .14;
+
     private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
@@ -118,13 +120,26 @@ public class AutonRedClose extends AutonDriving {
         turnToPosition(0, "z", 0.15, 5); // position is absolute, turnDegrees is relative
         encoderDrive(0.5, 'b', 5, 10);
         */
-        encoderDrive(.5, 'f', 5, 5);
-        turnToPosition(100, "z", .5, 5);
-        encoderDrive(.5, 'f', 5, 5);
-        CarouselSpin(.5, true, 2);
-        encoderDrive(.5, 'b', 5, 5);
-        turnToPosition(90, "z", .5, 5);
-        encoderDrive(1.0, 'b', 40, 5);
+        encoderDrive(.4, 'f', 6.0, 5);
+        turnToPosition(-90, "z", BEST_TURN_SPEED, 5);
+        encoderDrive(.3, 'b', 5.5, 5);//TODO: Change this to go forward slowly while waiting until one of the sensors hits or the distance travelled is equivalent to one shift of the squares
+        sleep(500);//scan for object
+        encoderDrive(.3, 'f', 20.0, 5);
+        turnToPosition(-145, "z",   BEST_TURN_SPEED, 5);
+        double startTime = runtime.seconds();
+        while(!DistanceCheck(15.0, 3.5, 20, 20, startTime, runtime.seconds(), 2))
+        {
+            normalDrive(.05, .05);
+        }
+        CarouselSpin(1.0, false, 2.5);
+        encoderDrive(.3, 'b', 5, 5);
+        turnToPosition(-134, "z",   BEST_TURN_SPEED, 5);
+        encoderDrive(.3, 'b', 17, 5);//TODO: this depends on the scanned level from the start
+        //TODO:insert lift code here to place on appropriate level
+        turnToPosition(0, "z",   BEST_TURN_SPEED, 5);
+        encoderDrive(.3, 'b', 5, 5);
+        turnToPosition(90, "z",   BEST_TURN_SPEED, 5);
+        encoderDrive(.6, 'f', 72, 5);
 //        if (opModeIsActive()) {
 //            runtime.reset();
 //            do {

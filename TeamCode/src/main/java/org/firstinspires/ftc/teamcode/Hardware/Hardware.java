@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -32,6 +33,11 @@ public class Hardware
     public Servo bucketServo;
 
     public DigitalChannel liftLimit;
+
+    public DistanceSensor fRDist;
+    public DistanceSensor fLDist;
+    public DistanceSensor bLDist;
+    public DistanceSensor bRDist;
 
     public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
     public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
@@ -172,6 +178,10 @@ public class Hardware
         //enable lift limit switch
         liftLimit =hwMap.get(DigitalChannel.class, "liftLimit");
 
+        fLDist = hwMap.get(DistanceSensor.class, "fLDist");
+        fRDist = hwMap.get(DistanceSensor.class, "fRDist");
+        bLDist = hwMap.get(DistanceSensor.class, "bLDist");
+        bRDist = hwMap.get(DistanceSensor.class, "bRDist");
 
 
     }

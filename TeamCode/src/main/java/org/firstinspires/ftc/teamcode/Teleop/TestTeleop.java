@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
@@ -84,9 +85,9 @@ public class TestTeleop extends OpMode {
 
         // Drive: Left and Right Stick
         if (Math.abs(gamepad1.right_stick_x) > stickAxesThreshold) {
-            turn(gamepad1.right_stick_x);
+            turn(-gamepad1.right_stick_x);
         } else if (Math.abs(gamepad1.left_stick_y) > stickAxesThreshold) {
-            drive(gamepad1.left_stick_y);
+            drive(-gamepad1.left_stick_y);
         } else {
             stopMotion();
         }
@@ -99,7 +100,11 @@ public class TestTeleop extends OpMode {
         }
 
 
-        telemetry.addData("Lift Limit", robot.liftLimit.getState());
+        //telemetry.addData("Lift Limit", robot.liftLimit.getState());
+        telemetry.addData("fLDist", robot.fLDist.getDistance(DistanceUnit.INCH));
+        telemetry.addData("fRDist", robot.fRDist.getDistance(DistanceUnit.INCH));
+        telemetry.addData("bLDist", robot.bLDist.getDistance(DistanceUnit.INCH));
+        telemetry.addData("bRDist", robot.bRDist.getDistance(DistanceUnit.INCH));
         telemetry.update();
     }
 
