@@ -85,7 +85,7 @@ public class TestTeleop extends OpMode {
 
         // Drive: Left and Right Stick
         if (Math.abs(gamepad1.right_stick_x) > stickAxesThreshold) {
-            turn(-gamepad1.right_stick_x);
+            turn(gamepad1.right_stick_x);
         } else if (Math.abs(gamepad1.left_stick_y) > stickAxesThreshold) {
             drive(-gamepad1.left_stick_y);
         } else {

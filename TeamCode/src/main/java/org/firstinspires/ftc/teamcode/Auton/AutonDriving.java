@@ -96,6 +96,11 @@ public class AutonDriving extends LinearOpMode {
     public Acceleration gravity;
     public double startAngle = 0;
 
+    public enum MarkerPlacement {
+        LEFT,
+        MIDDLE,
+        RIGHT
+    }
 
     //gyro drive variables
     public double gyroDriveThreshold = 10;
@@ -1500,5 +1505,21 @@ public class AutonDriving extends LinearOpMode {
             }
         }
         robot.carouselMotor.setPower(0);
+    }
+
+    public MarkerPlacement GetPlacement(boolean redSide)
+    {
+        if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
+        {
+            return MarkerPlacement.LEFT;
+        }
+        else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
+        {
+            return MarkerPlacement.MIDDLE;
+        }
+        else
+        {
+            return  MarkerPlacement.RIGHT;
+        }
     }
 }
