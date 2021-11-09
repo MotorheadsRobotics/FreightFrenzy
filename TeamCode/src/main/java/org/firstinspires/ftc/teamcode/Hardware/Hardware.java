@@ -68,6 +68,7 @@ public class Hardware
         Iterator<HardwareDevice> hardwareDevices = hwMap.iterator();
         while (hardwareDevices.hasNext()) {
             DcMotor currentMotor = (DcMotor) hardwareDevices.next();
+
             currentMotor.setPower(0);
             currentMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             currentMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

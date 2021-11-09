@@ -1373,19 +1373,19 @@ public class AutonDriving extends LinearOpMode {
         return (int) (speed * 200);
     }
 
-    public void TryMotors()
-    {
-        for(int i = 0; i < robot.motors.length; i++)
-        {
-            try {
-                robot.motors[i] = hardwareMap.dcMotor.get(robot.motorNames[i]);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-    }
+//    public void TryMotors()
+//    {
+//        for(int i = 0; i < robot.motors.length; i++)
+//        {
+//            try {
+//                robot.motors[i] = hardwareMap.dcMotor.get(robot.motorNames[i]);
+//            }
+//            catch (Exception e)
+//            {
+//
+//            }
+//        }
+//    }
 
     public void CarouselSpin(double speed, boolean clockwise, double timeoutSec)
     {
