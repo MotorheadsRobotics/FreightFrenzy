@@ -1522,4 +1522,9 @@ public class AutonDriving extends LinearOpMode {
             return  MarkerPlacement.RIGHT;
         }
     }
+
+    public void LiftExtend()
+    {
+        
+    }
 }
