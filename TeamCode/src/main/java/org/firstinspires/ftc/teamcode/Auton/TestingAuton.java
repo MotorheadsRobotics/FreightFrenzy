@@ -79,6 +79,8 @@ public class TestingAuton extends AutonDriving {
     public static final double DISTANCE_MAX = 333.3;
     public static final double BEST_TURN_SPEED = .14;
 
+    public static final double LIFT_SPEED = .5;
+
     private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
@@ -126,9 +128,7 @@ public class TestingAuton extends AutonDriving {
 //        encoderDrive(0.5, 'b', 5, 10);
 //        CarouselSpin(.5, false, 2);
 
-        turnToPosition(90, "z", BEST_TURN_SPEED, 5);
-        turnToPosition(0, "z", BEST_TURN_SPEED, 5);
-        turnToPosition(10, "z", BEST_TURN_SPEED, 5);
+        LiftExtend(2, LIFT_SPEED);
         //turnToPosition(90, "z", .1, 5);
 
 

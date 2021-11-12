@@ -82,6 +82,12 @@ public class AutonRedClose extends AutonDriving {
 
     public static final double BEST_TURN_SPEED = .14;
 
+//    public static final double LIFT_SPEED_SLOW = .2;
+//    public static final double LIFT_SPEED_MED = .5;
+//    public static final double LIFT_SPEED_FAST = .8;
+
+    public static final double LIFT_SPEED = .5;
+
     private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
@@ -155,27 +161,28 @@ public class AutonRedClose extends AutonDriving {
         CarouselSpin(1.0, false, 2.5);
         encoderDrive(.3, 'b', 5, 5);
         turnToPosition(-137, "z",   BEST_TURN_SPEED, 5);
-//        switch(placement)
-//        {
-//            case LEFT:
-//            {
-//                break;
-//            }
-//            case MIDDLE:
-//            {
-//                break;
-//            }
-//            case RIGHT:
-//            {
-//                break;
-//            }
-//        }
-        encoderDrive(.3, 'b', 17, 5);//TODO: this depends on the scanned level from the start
-        //TODO:insert lift code here to place on appropriate level
-        turnToPosition(0, "z",   BEST_TURN_SPEED, 5);
-        encoderDrive(.3, 'b', 5, 5);
-        turnToPosition(90, "z",   BEST_TURN_SPEED, 5);
-        encoderDrive(.6, 'f', 72, 5);
+        switch(placement)
+        {
+            case LEFT:
+            {
+                encoderDrive(.3, 'b', 17, 5);//TODO: this depends on the scanned level from the start
+                LiftExtend(2, LIFT_SPEED);
+                turnToPosition(0, "z",   BEST_TURN_SPEED, 5);
+                encoderDrive(.3, 'b', 5, 5);
+                turnToPosition(90, "z",   BEST_TURN_SPEED, 5);
+                encoderDrive(.6, 'f', 72, 5);
+                break;
+            }
+            case MIDDLE:
+            {
+                break;
+            }
+            case RIGHT:
+            {
+                break;
+            }
+        }
+
 
 
 //        if (opModeIsActive()) {

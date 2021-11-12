@@ -1523,8 +1523,13 @@ public class AutonDriving extends LinearOpMode {
         }
     }
 
-    public void LiftExtend()
+    public void LiftExtend(double timeOutSec, double liftSpeed)
     {
-        
+        double startTime = runtime.seconds();
+        while(runtime.seconds() - startTime < timeOutSec)
+        {
+            robot.pulleyMotorL.setPower(liftSpeed);
+            robot.pulleyMotorR.setPower(liftSpeed);
+        }
     }
 }
