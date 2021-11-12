@@ -104,9 +104,10 @@ public class AutonRedClose extends AutonDriving {
 
     @Override
     public void runOpMode() {
-
+        // Initiate Hardware
         robot.init(hardwareMap);
-        
+
+        // Set up Gyro Sensor
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -117,48 +118,28 @@ public class AutonRedClose extends AutonDriving {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-//        this.initVuforia(); //this should ensure that it calls the Vuforia of this class not the one from the AutonDrivingWIP class. This is a test given an error that appeared to happen during Vuforia initialization.
-//        initTfod();
-//
-//        if (tfod != null) {
-//            tfod.activate();
-//        }
-
-        robot.init(hardwareMap);
-
         waitForStart();
 
-        //encoderDrive(0.275, 'f', 14, 5);
-        /*turnToPosition(90, "z", .15, 5);
-        encoderDrive(0.5, 'f', 5, 10);
-        turnToPosition(0, "z", 0.15, 5); // position is absolute, turnDegrees is relative
-        encoderDrive(0.5, 'b', 5, 10);
-        */
-
+        // Go forward and get placement of team shipping element
         encoderDrive(.4, 'f', 7.5, 5);
         turnToPosition(-90, "z", BEST_TURN_SPEED, 5);
         encoderDrive(.3, 'b', 6, 5);//TODO: Change this to go forward slowly while waiting until one of the sensors hits or the distance travelled is equivalent to one shift of the squares
         placement = GetPlacement(true);
-        double startTime = runtime.seconds();
-//        while((runtime.seconds() - startTime < 2) && (placement == MarkerPlacement.RIGHT)) {
-//            normalDrive(.1, .1);
-//            placement = GetPlacement(true);
-//            telemetry.addData("Placement", placement);
-//            telemetry.update();
-//        }
-        placement = GetPlacement(true);
         telemetry.addData("Placement", placement);
         telemetry.update();
+
+        // Go to and spin carousel
         normalDrive(0, 0);
-        sleep(1000);//scan for object
         encoderDrive(.3, 'f', 20.0, 5);
         turnToPosition(-145, "z",   BEST_TURN_SPEED, 5);
-        startTime = runtime.seconds();
+        double startTime = runtime.seconds();
         while(!DistanceCheck(15.0, 3.5, 20, 20, startTime, runtime.seconds(), 2))
         {
             normalDrive(.05, .05);
         }
         CarouselSpin(1.0, false, 2.5);
+
+        // Go to alliance hub and place team shipping element on correct level
         encoderDrive(.3, 'b', 5, 5);
         turnToPosition(-137, "z",   BEST_TURN_SPEED, 5);
         switch(placement)
@@ -182,83 +163,6 @@ public class AutonRedClose extends AutonDriving {
                 break;
             }
         }
-
-
-
-//        if (opModeIsActive()) {
-//            runtime.reset();
-//            do {
-//                telemetry.addData("Runtime", runtime.milliseconds());
-//                if (tfod != null) {
-//                    // getUpdatedRecognitions() will return null if no new information is available since
-//                    // the last time that call was made.
-//                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-//                    if (updatedRecognitions != null) {
-//                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-//                        // step through the list of recognitions and display boundary info.
-//                        int i = 0;
-//                        for (Recognition recognition : updatedRecognitions) {
-//                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-//
-//                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f", recognition.getLeft(), recognition.getTop());
-//                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f", recognition.getRight(), recognition.getBottom());
-//
-//                            telemetry.update();
-//
-//                            if (recognition.getLabel().equals("Quad") || recognition.getLabel().equals("Single")) {
-//                                ringLabel = recognition.getLabel();
-//                                objectInVision = true;
-//                            }
-//                        }
-//                    }
-//                }
-//                telemetry.update();
-//            } while ((runtime.milliseconds() < 5000 && !(objectInVision)) || runtime.milliseconds() < 1000);
-//        }
-//        if (ringLabel.equals("Quad")) {
-//            telemetry.addData("Target Zone", "C");
-//            telemetry.update();
-//            encoderDrive(FORWARD_SPEED,'f',100,10);
-//            turnToPosition(90,xyz,0.8,2.5,false);
-//            encoderDrive(FORWARD_SPEED,'f',24,5);
-//            turnToPosition(0, xyz, 0.8, 2.5, false);
-//            encoderDrive(FORWARD_SPEED, 'b', 52, 4);
-//            encoderDrive(FORWARD_SPEED, 'l', 32, 4);
-//            turnToPosition(-7, xyz, 0.8, 2, false);
-//        }
-//        else if (ringLabel.equals("Single")) {
-//            telemetry.addData("Target Zone", "B");
-//            telemetry.update();
-//            encoderDrive(FORWARD_SPEED,'f',81,7);
-//            turnToPosition(90,xyz,0.8,2.5,false);
-//            encoderDrive(FORWARD_SPEED,'f',8,5);
-//            turnToPosition(0, xyz, 0.8, 2.5, false);
-//            encoderDrive(FORWARD_SPEED, 'b', 36, 4);
-//            turnToPosition(-7, xyz, 0.8, 2, false);
-//        }
-//        else {
-//            telemetry.addData("Target Zone", "A");
-//            telemetry.update();
-//            encoderDrive(FORWARD_SPEED,'f',52,5);
-//            turnToPosition(90,xyz,0.8,2.5,false);
-//            encoderDrive(FORWARD_SPEED,'f',24,5);
-//            turnToPosition(0, xyz, 0.8, 2.5, false);
-//            encoderDrive(FORWARD_SPEED, 'b', 10, 4);
-//            encoderDrive(FORWARD_SPEED, 'l', 40, 4);
-//            turnToPosition(-7, xyz, 0.8, 2, false);
-//        }
-
-
-        //robot.launcherMotor.setPower(LAUNCHER_SPEED);
-
-//        sleep(2250);
-//
-//        for (int i = 0; i < 3; i++) {
-//            encoderDrive(FORWARD_SPEED, 'l', 8, 2.5);
-//            //shoot();
-//            //robot.launcherMotor.setPower(LAUNCHER_SPEED += (.005 * i));
-//        }
-//        encoderDrive(FORWARD_SPEED,'f',12,5);
     }
 
     public void initVuforia() {

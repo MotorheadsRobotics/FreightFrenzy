@@ -49,6 +49,8 @@ public class AutonDriving extends LinearOpMode {
     static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
 
+    static final double MARKER_THRESH = 20.0;
+
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
@@ -1509,17 +1511,14 @@ public class AutonDriving extends LinearOpMode {
 
     public MarkerPlacement GetPlacement(boolean redSide)
     {
-        if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
-        {
+        if(robot.bLDist.getDistance(DistanceUnit.INCH) < MARKER_THRESH) {
             return MarkerPlacement.LEFT;
         }
-        else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
-        {
+        else if(robot.fLDist.getDistance(DistanceUnit.INCH) < MARKER_THRESH) {
             return MarkerPlacement.MIDDLE;
         }
-        else
-        {
-            return  MarkerPlacement.RIGHT;
+        else {
+            return MarkerPlacement.RIGHT;
         }
     }
 
