@@ -176,7 +176,7 @@ public class Hardware
 
 
         //enable lift limit switch
-        liftLimit =hwMap.get(DigitalChannel.class, "liftLimit");
+        liftLimit = hwMap.get(DigitalChannel.class, "liftLimit");
 
         fLDist = hwMap.get(DistanceSensor.class, "fLDist");
         fRDist = hwMap.get(DistanceSensor.class, "fRDist");
