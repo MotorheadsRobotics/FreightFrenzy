@@ -45,9 +45,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-@Autonomous(name="Auton Blue Far", group="Test")
+@Autonomous(name="Auton Blue Barrier Park", group="Test")
 //@Disabled
-public class AutonBlueFar extends AutonDriving {
+public class AutonBlueBarrierPark extends AutonDriving {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
@@ -83,7 +83,7 @@ public class AutonBlueFar extends AutonDriving {
     public static final String VUFORIA_KEY =
             "AYy6NYn/////AAABmTW3q+TyLUMbg/IXWlIG3BkMMq0okH0hLmwj3CxhPhvUlEZHaOAmESqfePJ57KC2g6UdWLN7OYvc8ihGAZSUJ2JPWAsHQGv6GUAj4BlrMCjHvqhY0w3tV/Azw2wlPmls4FcUCRTzidzVEDy+dtxqQ7U5ZtiQhjBZetAcnLsCYb58dgwZEjTx2+36jiqcFYvS+FlNJBpbwmnPUyEEb32YBBZj4ra5jB0v4IW4wYYRKTNijAQKxco33VYSCbH0at99SqhXECURA55dtmmJxYpFlT/sMmj0iblOqoG/auapQmmyEEXt/T8hv9StyirabxhbVVSe7fPsAueiXOWVm0kCPO+KN/TyWYB9Hg/mSfnNu9i9";
 
-    public AutonBlueFar() {
+    public AutonBlueBarrierPark() {
     }
 
     @Override
@@ -119,11 +119,11 @@ public class AutonBlueFar extends AutonDriving {
         encoderDrive(0.5, 'b', 5, 10);
         */
         encoderDrive(.5, 'f', 5, 5);
-        turnToPosition(-80, "z", .5, 5);
+        turnToPosition(100, "z", .5, 5);
         encoderDrive(.5, 'f', 5, 5);
-        CarouselSpin(.5, false, 2);
+        CarouselSpin(.5, .05, true, 2);
         encoderDrive(.5, 'b', 5, 5);
-        turnToPosition(-90, "z", .5, 5);
+        turnToPosition(90, "z", .5, 5);
         encoderDrive(1.0, 'b', 40, 5);
 //        if (opModeIsActive()) {
 //            runtime.reset();

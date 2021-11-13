@@ -45,9 +45,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-@Autonomous(name="Auton Red Close", group="Test")
+@Autonomous(name="Auton Red Barrier Park", group="Test")
 //@Disabled
-public class AutonRedClose extends AutonDriving {
+public class AutonRedBarrierPark extends AutonDriving {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
@@ -57,14 +57,6 @@ public class AutonRedClose extends AutonDriving {
     static double     LAUNCHER_SPEED = 0.62;
 
     private boolean objectInVision = false;
-
-//    private enum MarkerPlacement {
-//        LEFT,
-//        MIDDLE,
-//        RIGHT
-//    }
-
-    public MarkerPlacement placement = MarkerPlacement.RIGHT;
 
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
@@ -82,11 +74,9 @@ public class AutonRedClose extends AutonDriving {
 
     public static final double BEST_TURN_SPEED = .14;
 
-//    public static final double LIFT_SPEED_SLOW = .2;
-//    public static final double LIFT_SPEED_MED = .5;
-//    public static final double LIFT_SPEED_FAST = .8;
-
     public static final double LIFT_SPEED = .5;
+
+    public MarkerPlacement placement = MarkerPlacement.RIGHT;
 
     private VuforiaLocalizer vuforia;
 
@@ -99,7 +89,7 @@ public class AutonRedClose extends AutonDriving {
     public static final String VUFORIA_KEY =
             "AYy6NYn/////AAABmTW3q+TyLUMbg/IXWlIG3BkMMq0okH0hLmwj3CxhPhvUlEZHaOAmESqfePJ57KC2g6UdWLN7OYvc8ihGAZSUJ2JPWAsHQGv6GUAj4BlrMCjHvqhY0w3tV/Azw2wlPmls4FcUCRTzidzVEDy+dtxqQ7U5ZtiQhjBZetAcnLsCYb58dgwZEjTx2+36jiqcFYvS+FlNJBpbwmnPUyEEb32YBBZj4ra5jB0v4IW4wYYRKTNijAQKxco33VYSCbH0at99SqhXECURA55dtmmJxYpFlT/sMmj0iblOqoG/auapQmmyEEXt/T8hv9StyirabxhbVVSe7fPsAueiXOWVm0kCPO+KN/TyWYB9Hg/mSfnNu9i9";
 
-    public AutonRedClose() {
+    public AutonRedBarrierPark() {
     }
 
     @Override
@@ -128,62 +118,9 @@ public class AutonRedClose extends AutonDriving {
 
         waitForStart();
 
-        //encoderDrive(0.275, 'f', 14, 5);
-        /*turnToPosition(90, "z", .15, 5);
-        encoderDrive(0.5, 'f', 5, 10);
-        turnToPosition(0, "z", 0.15, 5); // position is absolute, turnDegrees is relative
-        encoderDrive(0.5, 'b', 5, 10);
-        */
-
-        encoderDrive(.4, 'f', 7.5, 5);
-        turnToPosition(-90, "z", BEST_TURN_SPEED, 5);
-        encoderDrive(.3, 'b', 6, 5);//TODO: Change this to go forward slowly while waiting until one of the sensors hits or the distance travelled is equivalent to one shift of the squares
-        placement = GetPlacement(true);
-        double startTime = runtime.seconds();
-//        while((runtime.seconds() - startTime < 2) && (placement == MarkerPlacement.RIGHT)) {
-//            normalDrive(.1, .1);
-//            placement = GetPlacement(true);
-//            telemetry.addData("Placement", placement);
-//            telemetry.update();
-//        }
-        placement = GetPlacement(true);
-        telemetry.addData("Placement", placement);
-        telemetry.update();
-        normalDrive(0, 0);
-        sleep(1000);//scan for object
-        encoderDrive(.3, 'f', 20.0, 5);
-        turnToPosition(-145, "z",   BEST_TURN_SPEED, 5);
-        startTime = runtime.seconds();
-        while(!DistanceCheck(15.0, 3.5, 20, 20, startTime, runtime.seconds(), 2))
-        {
-            normalDrive(.05, .05);
-        }
-        CarouselSpin(1.0, false, 2.5);
-        encoderDrive(.3, 'b', 5, 5);
-        turnToPosition(-137, "z",   BEST_TURN_SPEED, 5);
-        switch(placement)
-        {
-            case LEFT:
-            {
-                encoderDrive(.3, 'b', 17, 5);//TODO: this depends on the scanned level from the start
-                LiftExtend(2, LIFT_SPEED);
-                turnToPosition(0, "z",   BEST_TURN_SPEED, 5);
-                encoderDrive(.3, 'b', 5, 5);
-                turnToPosition(90, "z",   BEST_TURN_SPEED, 5);
-                encoderDrive(.6, 'f', 72, 5);
-                break;
-            }
-            case MIDDLE:
-            {
-                break;
-            }
-            case RIGHT:
-            {
-                break;
-            }
-        }
-
-
+        encoderDrive(.4, 'f', 9.3, 5);
+        turnToPosition(90, "z", BEST_TURN_SPEED, 5);
+        encoderDrive(.3, 'b', 52, 5);
 
 //        if (opModeIsActive()) {
 //            runtime.reset();

@@ -10,11 +10,11 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="Final Teleop", group="TeleopTest")
+@TeleOp(name="Final Teleop Solo", group="TeleopTest")
 
 //@Disabled
 
-public class FinalTeleop extends OpMode {
+public class FinalTeleopSolo extends OpMode {
 
     Hardware robot = new Hardware();
 
@@ -68,18 +68,18 @@ public class FinalTeleop extends OpMode {
 
 
         // Intake Motor: LB and RB
-        if (gamepad2.left_bumper) {
+        if (gamepad1.left_bumper && gamepad1.x) {
             robot.intakeMotor.setPower(-intakeMotorPower);
-        } else if (gamepad2.right_bumper) {
+        } else if (gamepad1.left_bumper) {
             robot.intakeMotor.setPower(intakeMotorPower);
         } else {
             robot.intakeMotor.setPower(0);
         }
 
         // Carousel Motor: LT and RT
-        if (gamepad2.left_trigger > 0.3) {
+        if (gamepad1.left_trigger > 0.3) {
             robot.carouselMotor.setPower(carouselMotorPower);
-        } else if (gamepad2.right_trigger > 0.3) {
+        } else if (gamepad1.right_trigger > 0.3) {
             robot.carouselMotor.setPower(-carouselMotorPower);
         } else {
             robot.carouselMotor.setPower(0);
@@ -117,7 +117,7 @@ public class FinalTeleop extends OpMode {
         }
 
         // Close Hatch Servo: A
-        if (gamepad2.a) {
+        if (gamepad1.a) {
             robot.bucketServo.setPosition(1);
         } else {
             robot.bucketServo.setPosition(0);
@@ -134,7 +134,7 @@ public class FinalTeleop extends OpMode {
     }
 
     public void drive(double power) {
-        if(gamepad1.left_bumper)
+        if(gamepad1.b)
         {
             power*=0.2;
         }
@@ -145,7 +145,7 @@ public class FinalTeleop extends OpMode {
         robot.bRMotor.setPower(power);
     }
     public void turn(double power) {
-        if(gamepad1.left_bumper)
+        if(gamepad1.b)
         {
             power*=0.2;
         }

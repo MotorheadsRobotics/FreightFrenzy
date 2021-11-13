@@ -1489,7 +1489,7 @@ public class AutonDriving extends LinearOpMode {
         }
     }
 
-    public void CarouselSpin(double speed, boolean clockwise, double timeoutSec)
+    public void CarouselSpin(double speed, double driveSpeed, boolean clockwise, double timeoutSec)
     {
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < timeoutSec))
@@ -1498,10 +1498,12 @@ public class AutonDriving extends LinearOpMode {
             if (clockwise)
             {
                 robot.carouselMotor.setPower(speed);
+                normalDrive(driveSpeed, driveSpeed, false);
             }
             else
             {
                 robot.carouselMotor.setPower(-speed);
+                normalDrive(driveSpeed, driveSpeed, false);
             }
         }
         robot.carouselMotor.setPower(0);
@@ -1509,21 +1511,79 @@ public class AutonDriving extends LinearOpMode {
 
     public MarkerPlacement GetPlacement(boolean redSide)
     {
-        if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
+        if(redSide)
         {
-            return MarkerPlacement.LEFT;
-        }
-        else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
-        {
-            return MarkerPlacement.MIDDLE;
+            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.RIGHT;
+            }
+            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.MIDDLE;
+            }
+            else
+            {
+                return  MarkerPlacement.LEFT;
+            }
         }
         else
         {
-            return  MarkerPlacement.RIGHT;
+            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.LEFT;
+            }
+            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.MIDDLE;
+            }
+            else
+            {
+                return  MarkerPlacement.RIGHT;
+            }
+
+
+
         }
     }
 
-    public void LiftExtend(double timeOutSec, double liftSpeed)
+    public MarkerPlacement GetPlacementBarrier(boolean redSide)
+    {
+        if(redSide)
+        {
+            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.MIDDLE;
+            }
+            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.LEFT;
+            }
+            else
+            {
+                return  MarkerPlacement.RIGHT;
+            }
+        }
+        else
+        {
+            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.MIDDLE;
+            }
+            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.LEFT;
+            }
+            else
+            {
+                return  MarkerPlacement.RIGHT;
+            }
+
+
+
+        }
+    }
+
+    public void LiftExtend(double timeOutSec, double liftSpeed, boolean deposit)
     {
         double startTime = runtime.seconds();
         while(runtime.seconds() - startTime < timeOutSec)
@@ -1531,5 +1591,16 @@ public class AutonDriving extends LinearOpMode {
             robot.pulleyMotorL.setPower(liftSpeed);
             robot.pulleyMotorR.setPower(liftSpeed);
         }
+
+        robot.pulleyMotorL.setPower(0);
+        robot.pulleyMotorR.setPower(0);
+
+        if(deposit)
+        {
+            robot.bucketServo.setPosition(1);
+            encoderDrive(.1, 'b', 1, 5);
+            sleep(750);
+        }
+
     }
 }

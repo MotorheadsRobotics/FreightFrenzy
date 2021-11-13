@@ -45,9 +45,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-@Autonomous(name="Auton Blue Close", group="Test")
+@Autonomous(name="Auton Red Barrier", group="Test")
 //@Disabled
-public class AutonBlueClose extends AutonDriving {
+public class AutonRedBarrier extends AutonDriving {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
@@ -72,6 +72,12 @@ public class AutonBlueClose extends AutonDriving {
     public static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
 
+    public static final double BEST_TURN_SPEED = .14;
+
+    public static final double LIFT_SPEED = .5;
+
+    public MarkerPlacement placement = MarkerPlacement.RIGHT;
+
     private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
@@ -83,7 +89,7 @@ public class AutonBlueClose extends AutonDriving {
     public static final String VUFORIA_KEY =
             "AYy6NYn/////AAABmTW3q+TyLUMbg/IXWlIG3BkMMq0okH0hLmwj3CxhPhvUlEZHaOAmESqfePJ57KC2g6UdWLN7OYvc8ihGAZSUJ2JPWAsHQGv6GUAj4BlrMCjHvqhY0w3tV/Azw2wlPmls4FcUCRTzidzVEDy+dtxqQ7U5ZtiQhjBZetAcnLsCYb58dgwZEjTx2+36jiqcFYvS+FlNJBpbwmnPUyEEb32YBBZj4ra5jB0v4IW4wYYRKTNijAQKxco33VYSCbH0at99SqhXECURA55dtmmJxYpFlT/sMmj0iblOqoG/auapQmmyEEXt/T8hv9StyirabxhbVVSe7fPsAueiXOWVm0kCPO+KN/TyWYB9Hg/mSfnNu9i9";
 
-    public AutonBlueClose() {
+    public AutonRedBarrier() {
     }
 
     @Override
@@ -110,21 +116,69 @@ public class AutonBlueClose extends AutonDriving {
 
         robot.init(hardwareMap);
 
+        robot.bucketServo.setPosition(0);
+
         waitForStart();
 
-        //encoderDrive(0.275, 'f', 14, 5);
-        /*turnToPosition(90, "z", .15, 5);
-        encoderDrive(0.5, 'f', 5, 10);
-        turnToPosition(0, "z", 0.15, 5); // position is absolute, turnDegrees is relative
-        encoderDrive(0.5, 'b', 5, 10);
-        */
-        encoderDrive(.5, 'f', 5, 5);
-        turnToPosition(-80, "z", .5, 5);
-        encoderDrive(.5, 'f', 5, 5);
-        CarouselSpin(.5, false, 2);
-        encoderDrive(.5, 'b', 5, 5);
-        turnToPosition(-90, "z", .5, 5);
-        encoderDrive(1.0, 'b', 40, 5);
+
+
+        encoderDrive(.4, 'f', 9.3, 5);
+        turnToPosition(90, "z", BEST_TURN_SPEED, 5);
+        encoderDrive(.3, 'f', 1, 5);
+        sleep(1000);
+
+        //placement = GetPlacement(true);
+
+        placement = GetPlacementBarrier(true);
+        telemetry.addData("Placement", placement);
+        telemetry.update();
+        //encoderDrive(.3, 'f', 0.5, 5);
+        normalDrive(0, 0);
+
+        encoderDrive(.2, 'f', 15, 5);
+        turnToPosition(180, "z", BEST_TURN_SPEED, 5);
+        switch(placement)
+        {
+            case LEFT: //lower level
+            {
+                encoderDrive(.3, 'b', 12, 5);
+                LiftExtend(1.25, LIFT_SPEED, true);
+                sleep(750);
+                encoderDrive(.3, 'f', 4, 5);
+                robot.bucketServo.setPosition(0);
+                LiftExtend(.8, -LIFT_SPEED, false);
+                encoderDrive(.3, 'f', 5, 5);
+                turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
+                encoderDrive(.6, 'f', 50, 5);
+                break;
+            }
+            case MIDDLE: //middle level
+            {
+                encoderDrive(.3, 'b', 12, 5);
+                LiftExtend(2.25, LIFT_SPEED, true);
+                sleep(750);
+                encoderDrive(.3, 'f', 4, 5);
+                robot.bucketServo.setPosition(0);
+                LiftExtend(.9, -LIFT_SPEED, false);
+                encoderDrive(.3, 'f', 5, 5);
+                turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
+                encoderDrive(.6, 'f', 50, 5);
+                break;
+            }
+            case RIGHT: //upper level
+            {
+                encoderDrive(.3, 'b', 12.75, 5);
+                LiftExtend(1.7, LIFT_SPEED * 1.5, true);
+                sleep(750);
+                encoderDrive(.3, 'f', 4, 5);
+                robot.bucketServo.setPosition(0);
+                LiftExtend(1, -LIFT_SPEED, false);
+                encoderDrive(.3, 'f', 5, 5);
+                turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
+                encoderDrive(.6, 'f', 50, 5);
+                break;
+            }
+        }
 //        if (opModeIsActive()) {
 //            runtime.reset();
 //            do {
