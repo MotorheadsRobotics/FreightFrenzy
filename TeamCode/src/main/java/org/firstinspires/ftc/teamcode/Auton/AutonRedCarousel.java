@@ -160,26 +160,26 @@ public class AutonRedCarousel extends AutonDriving {
         {
             case LEFT: //lower level
             {
-                encoderDrive(.3, 'b', 11, 5);
-                LiftExtend(1.25, LIFT_SPEED, true);
+                encoderDrive(.3, 'b', 12.25, 5);
+                LiftExtend(1.1, LIFT_SPEED, true);
                 sleep(750);
                 encoderDrive(.3, 'f', 4, 5);
                 robot.bucketServo.setPosition(0);
                 LiftExtend(.8, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
+                encoderDrive(.3, 'f', 3.5, 5);
                 turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
                 encoderDrive(.6, 'f', 50, 5);
                 break;
             }
             case MIDDLE: //middle level
             {
-                encoderDrive(.3, 'b', 11, 5);
-                LiftExtend(2.25, LIFT_SPEED, true);
+                encoderDrive(.3, 'b', 10.5, 5);
+                LiftExtend(2.05, LIFT_SPEED, true);
                 sleep(750);
                 encoderDrive(.3, 'f', 4, 5);
                 robot.bucketServo.setPosition(0);
                 LiftExtend(.9, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
+                encoderDrive(.3, 'f', 3.5, 5);
                 turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
                 encoderDrive(.6, 'f', 50, 5);
                 break;
@@ -192,7 +192,7 @@ public class AutonRedCarousel extends AutonDriving {
                 encoderDrive(.3, 'f', 4, 5);
                 robot.bucketServo.setPosition(0);
                 LiftExtend(1, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
+                encoderDrive(.3, 'f', 3.5, 5);
                 turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
                 encoderDrive(.6, 'f', 50, 5);
                 break;
