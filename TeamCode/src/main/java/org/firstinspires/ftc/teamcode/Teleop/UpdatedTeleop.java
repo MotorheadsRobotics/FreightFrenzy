@@ -10,11 +10,11 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareIntake;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="BasicDrive&Intake", group="Teleop")
+@TeleOp(name="Updated Teleop", group="Teleop")
 
 //@Disabled
 
-public class DriveOnlyTeleop extends OpMode {
+public class UpdatedTeleop extends OpMode {
 
     Hardware robot = new Hardware();
 
@@ -24,7 +24,9 @@ public class DriveOnlyTeleop extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = .5f;
+    private float carouselMotorPower = 0.5f;
+
+    private float pulleyMotorPower = .2f;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -42,6 +44,18 @@ public class DriveOnlyTeleop extends OpMode {
     public void loop()
 
     {
+        // Pulley Motors: D-pad Up and D-pad Down
+        if (gamepad1.dpad_up) {
+            robot.pulleyMotorR.setPower(pulleyMotorPower);
+            robot.pulleyMotorL.setPower(pulleyMotorPower);
+        } else if (gamepad1.dpad_down) {
+            robot.pulleyMotorR.setPower(-pulleyMotorPower);
+            robot.pulleyMotorL.setPower(-pulleyMotorPower);
+        } else {
+            robot.pulleyMotorR.setPower(0);
+            robot.pulleyMotorL.setPower(0);
+        }
+
         // Intake Motor: LB and RB
         if(gamepad1.left_bumper)
         {
@@ -73,11 +87,11 @@ public class DriveOnlyTeleop extends OpMode {
         // Forward Drive: Left Stick
         if(gamepad1.left_stick_y > stickAxesThreshold)
         {
-            standardDrive(drivePower);
+            standardDrive(-drivePower);
         }
         else if(gamepad1.left_stick_y < -stickAxesThreshold)
         {
-            standardDrive(-drivePower);
+            standardDrive(drivePower);
         }
         else
         {
@@ -87,11 +101,11 @@ public class DriveOnlyTeleop extends OpMode {
         // Drive Turning: Right Stick
         if(gamepad1.right_stick_x > stickAxesThreshold)
         {
-            standardDrive(-turnPower, turnPower);
+            standardDrive(turnPower, -turnPower);
         }
         else if(gamepad1.right_stick_x < -stickAxesThreshold)
         {
-            standardDrive(turnPower, -turnPower);
+            standardDrive(-turnPower, turnPower);
         }
         else
         {
@@ -106,6 +120,16 @@ public class DriveOnlyTeleop extends OpMode {
 
         //mecanumMove();
 
+        // Carousel Motor fast: LT and RT
+        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
+            if (gamepad1.left_trigger > 0.3) {
+                robot.carouselMotor.setPower(carouselMotorPower * 2);
+            } else if (gamepad1.right_trigger > 0.3) {
+                robot.carouselMotor.setPower(-carouselMotorPower * 2);
+            } else {
+                robot.carouselMotor.setPower(0);
+            }
+        }
     }
 
     public void mecanumMove()

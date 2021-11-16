@@ -43,16 +43,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Auton.AutonDriving;
-import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
-import java.util.List;
-
-@Autonomous(name="Auton Testing", group="Test")
+@Autonomous(name="Auton Blue Barrier Park", group="Test")
 //@Disabled
-public class TestingAuton extends AutonDriving {
+public class AutonBlueBarrierPark extends AutonDriving {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
@@ -76,10 +71,6 @@ public class TestingAuton extends AutonDriving {
     public static final double     WHEEL_DIAMETER_INCHES = 4.65;     // For figuring circumference
     public static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
-    public static final double DISTANCE_MAX = 333.3;
-    public static final double BEST_TURN_SPEED = .14;
-
-    public static final double LIFT_SPEED = .5;
 
     private VuforiaLocalizer vuforia;
 
@@ -92,14 +83,14 @@ public class TestingAuton extends AutonDriving {
     public static final String VUFORIA_KEY =
             "AYy6NYn/////AAABmTW3q+TyLUMbg/IXWlIG3BkMMq0okH0hLmwj3CxhPhvUlEZHaOAmESqfePJ57KC2g6UdWLN7OYvc8ihGAZSUJ2JPWAsHQGv6GUAj4BlrMCjHvqhY0w3tV/Azw2wlPmls4FcUCRTzidzVEDy+dtxqQ7U5ZtiQhjBZetAcnLsCYb58dgwZEjTx2+36jiqcFYvS+FlNJBpbwmnPUyEEb32YBBZj4ra5jB0v4IW4wYYRKTNijAQKxco33VYSCbH0at99SqhXECURA55dtmmJxYpFlT/sMmj0iblOqoG/auapQmmyEEXt/T8hv9StyirabxhbVVSe7fPsAueiXOWVm0kCPO+KN/TyWYB9Hg/mSfnNu9i9";
 
-    public TestingAuton() {
+    public AutonBlueBarrierPark() {
     }
 
     @Override
     public void runOpMode() {
 
         robot.init(hardwareMap);
-
+        
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -117,26 +108,24 @@ public class TestingAuton extends AutonDriving {
 //            tfod.activate();
 //        }
 
-        // om nom nom ;)
+        robot.init(hardwareMap);
 
         waitForStart();
 
         //encoderDrive(0.275, 'f', 14, 5);
-//        turnToPosition(90, "z", .2, 5);
-//        encoderDrive(0.5, 'f', 5, 10);
-//        turnToPosition(0, "z", .2, 5); // position is absolute, turnDegrees is relative
-//        encoderDrive(0.5, 'b', 5, 10);
-//        CarouselSpin(.5, false, 2);
-
-        //LiftExtend(1, LIFT_SPEED);
-        turnToPosition(90, "z", BEST_TURN_SPEED, 5);
-        normalDrive(0, 0);
-        sleep(4000);
-        turnToPosition(0, "z", BEST_TURN_SPEED, 5);
-        //turnToPosition(90, "z", .1, 5);
-
-
-        if (opModeIsActive()) {
+        /*turnToPosition(90, "z", .15, 5);
+        encoderDrive(0.5, 'f', 5, 10);
+        turnToPosition(0, "z", 0.15, 5); // position is absolute, turnDegrees is relative
+        encoderDrive(0.5, 'b', 5, 10);
+        */
+        encoderDrive(.5, 'f', 5, 5);
+        turnToPosition(100, "z", .5, 5);
+        encoderDrive(.5, 'f', 5, 5);
+        CarouselSpin(.5, .05, true, 2);
+        encoderDrive(.5, 'b', 5, 5);
+        turnToPosition(90, "z", .5, 5);
+        encoderDrive(1.0, 'b', 40, 5);
+//        if (opModeIsActive()) {
 //            runtime.reset();
 //            do {
 //                telemetry.addData("Runtime", runtime.milliseconds());
@@ -200,7 +189,7 @@ public class TestingAuton extends AutonDriving {
 //        }
 
 
-            //robot.launcherMotor.setPower(LAUNCHER_SPEED);
+        //robot.launcherMotor.setPower(LAUNCHER_SPEED);
 
 //        sleep(2250);
 //
@@ -210,8 +199,8 @@ public class TestingAuton extends AutonDriving {
 //            //robot.launcherMotor.setPower(LAUNCHER_SPEED += (.005 * i));
 //        }
 //        encoderDrive(FORWARD_SPEED,'f',12,5);
-        }
     }
+
     public void initVuforia() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

@@ -43,16 +43,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Auton.AutonDriving;
-import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
-import java.util.List;
-
-@Autonomous(name="Auton Testing", group="Test")
+@Autonomous(name="Auton Blue Carousel", group="Test")
 //@Disabled
-public class TestingAuton extends AutonDriving {
+public class AutonBlueCarousel extends AutonDriving {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
@@ -62,6 +57,14 @@ public class TestingAuton extends AutonDriving {
     static double     LAUNCHER_SPEED = 0.62;
 
     private boolean objectInVision = false;
+
+//    private enum MarkerPlacement {
+//        LEFT,
+//        MIDDLE,
+//        RIGHT
+//    }
+
+    public MarkerPlacement placement = MarkerPlacement.RIGHT;
 
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
@@ -76,8 +79,12 @@ public class TestingAuton extends AutonDriving {
     public static final double     WHEEL_DIAMETER_INCHES = 4.65;     // For figuring circumference
     public static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
-    public static final double DISTANCE_MAX = 333.3;
+
     public static final double BEST_TURN_SPEED = .14;
+
+//    public static final double LIFT_SPEED_SLOW = .2;
+//    public static final double LIFT_SPEED_MED = .5;
+//    public static final double LIFT_SPEED_FAST = .8;
 
     public static final double LIFT_SPEED = .5;
 
@@ -92,14 +99,14 @@ public class TestingAuton extends AutonDriving {
     public static final String VUFORIA_KEY =
             "AYy6NYn/////AAABmTW3q+TyLUMbg/IXWlIG3BkMMq0okH0hLmwj3CxhPhvUlEZHaOAmESqfePJ57KC2g6UdWLN7OYvc8ihGAZSUJ2JPWAsHQGv6GUAj4BlrMCjHvqhY0w3tV/Azw2wlPmls4FcUCRTzidzVEDy+dtxqQ7U5ZtiQhjBZetAcnLsCYb58dgwZEjTx2+36jiqcFYvS+FlNJBpbwmnPUyEEb32YBBZj4ra5jB0v4IW4wYYRKTNijAQKxco33VYSCbH0at99SqhXECURA55dtmmJxYpFlT/sMmj0iblOqoG/auapQmmyEEXt/T8hv9StyirabxhbVVSe7fPsAueiXOWVm0kCPO+KN/TyWYB9Hg/mSfnNu9i9";
 
-    public TestingAuton() {
+    public AutonBlueCarousel() {
     }
 
     @Override
     public void runOpMode() {
 
         robot.init(hardwareMap);
-
+        
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -117,26 +124,85 @@ public class TestingAuton extends AutonDriving {
 //            tfod.activate();
 //        }
 
-        // om nom nom ;)
+        robot.init(hardwareMap);
 
         waitForStart();
 
         //encoderDrive(0.275, 'f', 14, 5);
-//        turnToPosition(90, "z", .2, 5);
-//        encoderDrive(0.5, 'f', 5, 10);
-//        turnToPosition(0, "z", .2, 5); // position is absolute, turnDegrees is relative
-//        encoderDrive(0.5, 'b', 5, 10);
-//        CarouselSpin(.5, false, 2);
+        /*turnToPosition(90, "z", .15, 5);
+        encoderDrive(0.5, 'f', 5, 10);
+        turnToPosition(0, "z", 0.15, 5); // position is absolute, turnDegrees is relative
+        encoderDrive(0.5, 'b', 5, 10);
+        */
 
-        //LiftExtend(1, LIFT_SPEED);
-        turnToPosition(90, "z", BEST_TURN_SPEED, 5);
+        encoderDrive(.4, 'f', 8.5, 5);
+        turnToPosition(-90, "z", BEST_TURN_SPEED, 5);
+        encoderDrive(.3, 'b', 6, 5);//TODO: Change this to go forward slowly while waiting until one of the sensors hits or the distance travelled is equivalent to one shift of the squares
+        //placement = GetPlacement(true);
+
+        placement = GetPlacement(false);
+        telemetry.addData("Placement", placement);
+        telemetry.update();
         normalDrive(0, 0);
-        sleep(4000);
-        turnToPosition(0, "z", BEST_TURN_SPEED, 5);
-        //turnToPosition(90, "z", .1, 5);
+        //sleep(750);//scan for object
+        encoderDrive(.2, 'f', 20.0, 5);
+        turnToPosition(-145, "z",   BEST_TURN_SPEED, 5);
+        double startTime = runtime.seconds();
+        while(!DistanceCheck(15.0, 3.5, 20, 20, startTime, runtime.seconds(), 2))
+        {
+            normalDrive(.05, .05);
+        }
+        CarouselSpin(1.0, .05,false, 2.5);
+        encoderDrive(.3, 'b', 5, 5);
+        turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
+        encoderDrive(.3, 'b', 29, 5);
+        turnToPosition(-180, "z", BEST_TURN_SPEED, 5);
+        switch(placement)
+        {
+            case LEFT: //lower level
+            {
+                encoderDrive(.3, 'b', 11, 5);
+                LiftExtend(1.25, LIFT_SPEED, true);
+                sleep(500);
+                encoderDrive(.3, 'f', 4, 5);
+                robot.bucketServo.setPosition(0);
+                LiftExtend(.8, -LIFT_SPEED, false);
+                encoderDrive(.3, 'f', 5, 5);
+                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
+                encoderDrive(.6, 'f', 60, 5);
+                break;
+            }
+            case MIDDLE: //middle level
+            {
+                encoderDrive(.3, 'b', 11, 5);
+                LiftExtend(2.25, LIFT_SPEED, true);
+                sleep(500);
+                encoderDrive(.3, 'f', 4, 5);
+                robot.bucketServo.setPosition(0);
+                LiftExtend(.9, -LIFT_SPEED, false);
+                encoderDrive(.3, 'f', 5, 5);
+                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
+                encoderDrive(.6, 'f', 60, 5);
+                break;
+            }
+            case RIGHT: //upper level
+            {
+                encoderDrive(.3, 'b', 11.85, 5);
+                LiftExtend(1.5, LIFT_SPEED * 1.5, true);
+                sleep(500);
+                encoderDrive(.3, 'f', 4, 5);
+                robot.bucketServo.setPosition(0);
+                LiftExtend(1, -LIFT_SPEED, false);
+                encoderDrive(.3, 'f', 5, 5);
+                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
+                encoderDrive(.6, 'f', 60, 5);
+                break;
+            }
+        }
 
 
-        if (opModeIsActive()) {
+
+//        if (opModeIsActive()) {
 //            runtime.reset();
 //            do {
 //                telemetry.addData("Runtime", runtime.milliseconds());
@@ -200,7 +266,7 @@ public class TestingAuton extends AutonDriving {
 //        }
 
 
-            //robot.launcherMotor.setPower(LAUNCHER_SPEED);
+        //robot.launcherMotor.setPower(LAUNCHER_SPEED);
 
 //        sleep(2250);
 //
@@ -210,8 +276,8 @@ public class TestingAuton extends AutonDriving {
 //            //robot.launcherMotor.setPower(LAUNCHER_SPEED += (.005 * i));
 //        }
 //        encoderDrive(FORWARD_SPEED,'f',12,5);
-        }
     }
+
     public void initVuforia() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
