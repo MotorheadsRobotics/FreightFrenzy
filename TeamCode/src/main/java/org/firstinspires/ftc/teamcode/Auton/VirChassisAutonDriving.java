@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,29 +19,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.robotcore.internal.android.dex.Code;
-import org.firstinspires.ftc.teamcode.Hardware.Hardware;
+import org.firstinspires.ftc.teamcode.Hardware.VirChassisHardware;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
 //@Autonomous(name="AutonDrivingDriveOnly", group="AutonTesting")
-public class AutonDriving extends LinearOpMode {
+public class VirChassisAutonDriving extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();
+    public VirChassisHardware robot = new VirChassisHardware();
     public ElapsedTime runtime = new ElapsedTime();
     public String xyz = "z";
     //CONTAINS ALL METHODS AND VARIABlES TO BE EXTENDED BY OTHER AUTON CLASSES
@@ -45,14 +43,13 @@ public class AutonDriving extends LinearOpMode {
     //static final double     PULLEY_DIAMETER = 1.3;
     // static final double     COUNTS_PER_INCH_ARM = COUNTS_PER_REV_ARM/(PULLEY_DIAMETER * Math.PI);
     static final double     DRIVE_GEAR_REDUCTION = 1.0;    // This is < 1.0 if geared UP //On OUR CENTER MOTOR THE GEAR REDUCTION IS .5
-    static final double     WHEEL_DIAMETER_INCHES = 4.65;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES = 3.75;     // For figuring circumference
     static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
-    static final double     MIN_TURN_POWER = .000001;
 
     public BNO055IMU imu;
 
@@ -96,11 +93,6 @@ public class AutonDriving extends LinearOpMode {
     public Acceleration gravity;
     public double startAngle = 0;
 
-    public enum MarkerPlacement {
-        LEFT,
-        MIDDLE,
-        RIGHT
-    }
 
     //gyro drive variables
     public double gyroDriveThreshold = 10;
@@ -237,22 +229,7 @@ public class AutonDriving extends LinearOpMode {
     }
 
 
-    public boolean DistanceCheck(double fLInches, double fRInches, double bLInches, double bRInches, double startTime, double currentTime, double timeOutS) {
 
-
-        if ((robot.fLDist.getDistance(DistanceUnit.INCH) < fLInches &&
-                robot.fRDist.getDistance(DistanceUnit.INCH) < fRInches &&
-                robot.bLDist.getDistance(DistanceUnit.INCH) < bLInches &&
-                robot.bRDist.getDistance(DistanceUnit.INCH) < bRInches) ||
-                (currentTime - startTime) > timeOutS)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 
 
     public void normalDrive(double lpower, double rpower, boolean encoder)
@@ -478,7 +455,7 @@ public class AutonDriving extends LinearOpMode {
 
         double angle = readAngle(xyz); //variable for gyro correction around z axis
         double error = target - angle;
-        double errorABS = Math.abs(error);
+        //double errorABS = Math.abs(error);
         double powerScaled = topPower;
         double degreesTurned;
         double degreesTurnedABS;
@@ -494,7 +471,6 @@ public class AutonDriving extends LinearOpMode {
             //telemetry.update();
             angle = readAngle(xyz);
             error = target - angle;
-            errorABS = Math.abs(error);
 
             degreesTurned = angle - originalAngle;
             degreesTurnedABS = Math.abs(degreesTurned);
@@ -504,18 +480,18 @@ public class AutonDriving extends LinearOpMode {
             telemetry.addData("current angle", readAngle(xyz));
             telemetry.addData("error", error);
             telemetry.addData("target", target);
-            telemetry.addData("Motor Power", powerScaled/degreesTurnedABS*errorABS);
             //telemetry.addData("degrees", degrees);
             telemetry.update();
             if (error < 0)
             {
-                normalDrive((powerScaled/degreesTurnedABS*errorABS), -(powerScaled/degreesTurnedABS*errorABS), true);
+                normalDrive(powerScaled/degreesTurnedABS*error, -powerScaled/degreesTurnedABS*error, true);
             }
             else if (error > 0)
             {
-                normalDrive(-(powerScaled/degreesTurnedABS*errorABS), (powerScaled/degreesTurnedABS*errorABS), true);
+
+                normalDrive(-powerScaled/degreesTurnedABS*error, powerScaled/degreesTurnedABS*error, true);
             }
-        } while (opModeIsActive() && (Math.abs(error) > 2) && (runtime.seconds() < timeoutS));
+        } while (opModeIsActive() && (Math.abs(error) > 1) && (runtime.seconds() < timeoutS));
 
         normalDrive(0, 0, false);
         //stopAndReset();
@@ -1468,139 +1444,41 @@ public class AutonDriving extends LinearOpMode {
 
 
 
-            sleep(100);   // optional pause after each move
+            sleep(3500);   // optional pause after each move
         }
     }
-    public int getErrorEncoder(double speed) { //me being stupid
+    /*public int getErrorEncoder(double speed) { //me being stupid
         return (int) (speed * 200);
-    }
+    }*/
+    //public int getErrorEncoder()
 
-    public void TryMotors()
-    {
-        for(int i = 0; i < robot.motors.length; i++)
-        {
-            try {
-                robot.motors[i] = hardwareMap.dcMotor.get(robot.motorNames[i]);
-            }
-            catch (Exception e)
-            {
+//    public void TryMotors()
+//    {
+//        for(int i = 0; i < robot.motors.length; i++)
+//        {
+//            try {
+//                robot.motors[i] = hardwareMap.dcMotor.get(robot.motorNames[i]);
+//            }
+//            catch (Exception e)
+//            {
+//
+//            }
+//        }
+//    }
 
-            }
-        }
-    }
-
-    public void CarouselSpin(double speed, double driveSpeed, boolean clockwise, double timeoutSec)
-    {
-        runtime.reset();
-        while(opModeIsActive() && (runtime.seconds() < timeoutSec))
-        {
-            //normalDrive(.05, .05, false);
-            if (clockwise)
-            {
-                robot.carouselMotor.setPower(speed);
-                normalDrive(driveSpeed, driveSpeed, false);
-            }
-            else
-            {
-                robot.carouselMotor.setPower(-speed);
-                normalDrive(driveSpeed, driveSpeed, false);
-            }
-        }
-        robot.carouselMotor.setPower(0);
-    }
-
-    public MarkerPlacement GetPlacement(boolean redSide)
-    {
-        if(redSide)
-        {
-            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.RIGHT;
-            }
-            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.MIDDLE;
-            }
-            else
-            {
-                return  MarkerPlacement.LEFT;
-            }
-        }
-        else
-        {
-            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.LEFT;
-            }
-            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.MIDDLE;
-            }
-            else
-            {
-                return  MarkerPlacement.RIGHT;
-            }
-
-
-
-        }
-    }
-
-    public MarkerPlacement GetPlacementBarrier(boolean redSide)
-    {
-        if(redSide)
-        {
-            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.MIDDLE;
-            }
-            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.LEFT;
-            }
-            else
-            {
-                return  MarkerPlacement.RIGHT;
-            }
-        }
-        else
-        {
-            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.MIDDLE;
-            }
-            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.LEFT;
-            }
-            else
-            {
-                return  MarkerPlacement.RIGHT;
-            }
-
-
-
-        }
-    }
-
-    public void LiftExtend(double timeOutSec, double liftSpeed, boolean deposit)
-    {
-        double startTime = runtime.seconds();
-        while(runtime.seconds() - startTime < timeOutSec)
-        {
-            robot.pulleyMotorL.setPower(liftSpeed);
-            robot.pulleyMotorR.setPower(liftSpeed);
-        }
-
-        robot.pulleyMotorL.setPower(0);
-        robot.pulleyMotorR.setPower(0);
-
-        if(deposit)
-        {
-            robot.bucketServo.setPosition(1);
-            encoderDrive(.1, 'b', 1, 5);
-            sleep(750);
-        }
-
-    }
+//    public void CarouselSpin(double speed, boolean clockwise, double timeoutSec)
+//    {
+//        runtime.reset();
+//        while(opModeIsActive() && (runtime.seconds() < timeoutSec))
+//        {
+//            if (clockwise)
+//            {
+//                robot.carouselMotor.setPower(speed);
+//            }
+//            else
+//            {
+//                robot.carouselMotor.setPower(-speed);
+//            }
+//        }
+//    }
 }

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "Sensor: REV2mDistance", group = "Sensor")
+@TeleOp(name = "Dist Sensor Test", group = "Sensor")
 public class DistanceCheckTest extends LinearOpMode {
 
     private DistanceSensor DistanceSensorLeft, DistanceSensorRight;
