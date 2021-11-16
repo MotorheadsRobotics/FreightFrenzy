@@ -507,11 +507,11 @@ public class AutonDriving extends LinearOpMode {
             telemetry.addData("Motor Power", powerScaled/degreesTurnedABS*errorABS);
             //telemetry.addData("degrees", degrees);
             telemetry.update();
-            if (error < 0)
+            if ((error > -180 && error < 0) || error > 180)
             {
                 normalDrive((powerScaled/degreesTurnedABS*errorABS), -(powerScaled/degreesTurnedABS*errorABS), true);
             }
-            else if (error > 0)
+            else if ((error > 0 && error < 180) || error < -180)
             {
                 normalDrive(-(powerScaled/degreesTurnedABS*errorABS), (powerScaled/degreesTurnedABS*errorABS), true);
             }
