@@ -109,13 +109,14 @@ public class FinalTeleopSoloPartial extends OpMode {
         }
 
         // Drive: Left and Right Stick
-        if (Math.abs(gamepad1.right_stick_x) > stickAxesThreshold) {
-            turn(gamepad1.right_stick_x);
-        } else if (Math.abs(gamepad1.left_stick_y) > stickAxesThreshold) {
-            drive(-gamepad1.left_stick_y);
-        } else {
-            stopMotion();
-        }
+//        if (Math.abs(gamepad1.right_stick_x) > stickAxesThreshold) {
+//            turn(gamepad1.right_stick_x);
+//        }
+//        else {
+//            stopMotion();
+//        }
+
+        mecanumMove();
 
         // Close Hatch Servo: A
 //        if (gamepad1.a) {
@@ -130,7 +131,7 @@ public class FinalTeleopSoloPartial extends OpMode {
 //        telemetry.addData("fRDist", robot.fRDist.getDistance(DistanceUnit.INCH));
 //        telemetry.addData("bLDist", robot.bLDist.getDistance(DistanceUnit.INCH));
 //        telemetry.addData("bRDist", robot.bRDist.getDistance(DistanceUnit.INCH));
-        telemetry.addData("DeltaTime", deltaTime);
+        //telemetry.addData("DeltaTime", deltaTime);
         telemetry.update();
     }
 
@@ -157,5 +158,35 @@ public class FinalTeleopSoloPartial extends OpMode {
     }
     public void stopMotion() {
         drive(0);
+    }
+
+    public void mecanumMove()
+    {
+        //variables
+        double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
+        double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
+        double rightX = -gamepad1.right_stick_x;
+        final double v1 = r * Math.cos(robotAngle) + rightX;
+        final double v2 = r * Math.sin(robotAngle) - rightX;
+        final double v3 = r * Math.sin(robotAngle) + rightX;
+        final double v4 = r * Math.cos(robotAngle) - rightX;
+
+        robot.fLMotor.setPower(-drivePower * v1 * directionMult);
+        robot.fRMotor.setPower(-drivePower * v2 * directionMult);
+        robot.bLMotor.setPower(-drivePower * v3 * directionMult);
+        robot.bRMotor.setPower(-drivePower * v4 * directionMult);
+
+        telemetry.addData("fLPower", -drivePower * v1 * directionMult);
+        telemetry.addData("fRPower", -drivePower * v2 * directionMult);
+        telemetry.addData("bLPower", -drivePower * v3 * directionMult);
+        telemetry.addData("bRPower", -drivePower * v4 * directionMult);
+
+//        telemetry.addData("Encoder port 1 back left",  robot.bLMotor.getCurrentPosition());
+//        telemetry.addData("Encoder port 2 front right", robot.fRMotor.getCurrentPosition());
+//        telemetry.addData("Encoder port 3 back right", robot.bRMotor.getCurrentPosition());
+
+        //telemetry.addData("MagnetLimitSwitch", robot.magnetLimit.isPressed());
+
+        telemetry.update();
     }
 }

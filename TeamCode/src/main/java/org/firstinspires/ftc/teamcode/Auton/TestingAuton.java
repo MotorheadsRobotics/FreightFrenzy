@@ -129,12 +129,13 @@ public class TestingAuton extends AutonDriving {
 //        CarouselSpin(.5, false, 2);
 
         //LiftExtend(1, LIFT_SPEED);
-        turnToPosition(90, "z", BEST_TURN_SPEED, 5);
-        normalDrive(0, 0);
-        sleep(4000);
-        turnToPosition(0, "z", BEST_TURN_SPEED, 5);
+//        turnToPosition(90, "z", BEST_TURN_SPEED, 5);
+//        normalDrive(0, 0);
+//        sleep(4000);
+//        turnToPosition(0, "z", BEST_TURN_SPEED, 5);
         //turnToPosition(90, "z", .1, 5);
 
+        //odometerEncoderDrive(.5, 'f', );
 
         if (opModeIsActive()) {
 //            runtime.reset();

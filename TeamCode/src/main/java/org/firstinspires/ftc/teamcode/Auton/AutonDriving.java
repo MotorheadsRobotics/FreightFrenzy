@@ -1480,7 +1480,7 @@ public class AutonDriving extends LinearOpMode {
 
         stopAndReset();
 
-        int leftOriginal = robot.fLMotor.getCurrentPosition();
+        int leftOriginal = robot.bLMotor.getCurrentPosition(); //TODO: CHANGE ALL INSTANCES OF FL TO BL LIKE THIS LINE
         int midOriginal = robot.bRMotor.getCurrentPosition();
         int rightOriginal = robot.fRMotor.getCurrentPosition();
 
@@ -1587,29 +1587,41 @@ public class AutonDriving extends LinearOpMode {
 
                 int inchesTrav[] = {leftInchesTrav, midInchesTrav, rightInchesTrav};
 
-                switch(direction)
-                {
-                    case 'f':
-                    {
-                        fLSpeedAdjust = Math.abs(leftError/COUNTS_PER_INCH/inches);
-                        fRSpeedAdjust = Math.abs(rightError/COUNTS_PER_INCH/inches);
-                        bLSpeedAdjust = Math.abs(leftError/COUNTS_PER_INCH/inches);
-                        bRSpeedAdjust = Math.abs(rightError/COUNTS_PER_INCH/inches);
-                        break;
-                    }
-                    case 'b':
-                    {
-                        break;
-                    }
-                    case 'l':
-                    {
-                        break;
-                    }
-                    case 'r':
-                    {
-                        break;
-                    }
-                }
+//                switch(direction)
+//                {
+//                    case 'f':
+//                    {
+//                        fLSpeedAdjust = Math.abs(leftError/COUNTS_PER_INCH/inches);
+//                        fRSpeedAdjust = Math.abs(rightError/COUNTS_PER_INCH/inches);
+//                        bLSpeedAdjust = Math.abs(leftError/COUNTS_PER_INCH/inches);
+//                        bRSpeedAdjust = Math.abs(rightError/COUNTS_PER_INCH/inches);
+//                        break;
+//                    }
+//                    case 'b':
+//                    {
+//                        fLSpeedAdjust = -Math.abs(leftError/COUNTS_PER_INCH/inches);
+//                        fRSpeedAdjust = -Math.abs(rightError/COUNTS_PER_INCH/inches);
+//                        bLSpeedAdjust = -Math.abs(leftError/COUNTS_PER_INCH/inches);
+//                        bRSpeedAdjust = -Math.abs(rightError/COUNTS_PER_INCH/inches);
+//                        break;
+//                    }
+//                    case 'l':
+//                    {
+//                        fLSpeedAdjust = Math.abs(midError/COUNTS_PER_INCH/inches);
+//                        fRSpeedAdjust = Math.abs(midError/COUNTS_PER_INCH/inches);
+//                        bLSpeedAdjust = Math.abs(midError/COUNTS_PER_INCH/inches);
+//                        bRSpeedAdjust = Math.abs(midError/COUNTS_PER_INCH/inches);
+//                        break;
+//                    }
+//                    case 'r':
+//                    {
+//                        fLSpeedAdjust = -Math.abs(midError/COUNTS_PER_INCH/inches);
+//                        fRSpeedAdjust = -Math.abs(midError/COUNTS_PER_INCH/inches);
+//                        bLSpeedAdjust = -Math.abs(midError/COUNTS_PER_INCH/inches);
+//                        bRSpeedAdjust = -Math.abs(midError/COUNTS_PER_INCH/inches);
+//                        break;
+//                    }
+//                }
                 for(int i = 0; i < errors.length; i++)
                 {
                     speedAdjusts[i] = Math.abs((errors[i]/COUNTS_PER_INCH)/inches);
@@ -1655,10 +1667,9 @@ public class AutonDriving extends LinearOpMode {
                 robot.bRMotor.setPower(Math.abs(speed) * bRSpeedAdjust); // * bRError
 
                 int countThresh = 10;
-                if (Math.abs(newFrontLeftTarget - robot.fLMotor.getCurrentPosition()) < countThresh || //TODO: this is going to need some more rework than name swap but i must depart
-                        Math.abs(newFrontRightTarget - robot.fRMotor.getCurrentPosition()) < countThresh ||
-                        Math.abs(newBackLeftTarget - robot.bLMotor.getCurrentPosition()) < countThresh ||
-                        Math.abs(newBackRightTarget - robot.bRMotor.getCurrentPosition()) < countThresh) {
+                if (Math.abs(newLeftTarget - robot.fLMotor.getCurrentPosition()) < countThresh || //TODO: this is going to need some more rework than name swap but i must depart
+                        Math.abs(newRightTarget - robot.fRMotor.getCurrentPosition()) < countThresh ||
+                        Math.abs(newMidTarget - robot.bLMotor.getCurrentPosition()) < countThresh) {
                     break;
                 }
             }
@@ -1672,10 +1683,10 @@ public class AutonDriving extends LinearOpMode {
             // Turn off RUN_TO_POSITIOn
 
 
-            robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.fLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
