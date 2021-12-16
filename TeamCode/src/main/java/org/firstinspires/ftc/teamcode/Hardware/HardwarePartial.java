@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -20,6 +21,9 @@ public class HardwarePartial
     public DcMotor bRMotor;
 
     public DcMotor intakeMotor;
+
+    public CRServo rCarousel;
+    public CRServo lCarousel;
 //    public DcMotor carouselMotor;
 //
 //    public DcMotor pulleyMotorL;
@@ -167,6 +171,8 @@ public class HardwarePartial
 
         // Set up Servos
 //        bucketServo = hwMap.get(Servo.class, "bucketServo");
+        lCarousel = hwMap.get(CRServo.class, "lCarousel");
+        rCarousel = hwMap.get(CRServo.class, "rCarousel");
 
 
 

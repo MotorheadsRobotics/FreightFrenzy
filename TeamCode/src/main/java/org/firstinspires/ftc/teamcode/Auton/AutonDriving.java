@@ -1480,7 +1480,7 @@ public class AutonDriving extends LinearOpMode {
 
         stopAndReset();
 
-        int leftOriginal = robot.bLMotor.getCurrentPosition(); //TODO: CHANGE ALL INSTANCES OF FL TO BL LIKE THIS LINE
+        int leftOriginal = robot.bLMotor.getCurrentPosition();
         int midOriginal = robot.bRMotor.getCurrentPosition();
         int rightOriginal = robot.fRMotor.getCurrentPosition();
 
@@ -1498,21 +1498,21 @@ public class AutonDriving extends LinearOpMode {
             switch (direction) {
                 case 'f':
                     //these four statements original had (- error) appended. Seems like a jank fix
-                    newLeftTarget = robot.fLMotor.getCurrentPosition() + targetCounts;
+                    newLeftTarget = robot.bLMotor.getCurrentPosition() + targetCounts;
                     //newMidTarget = robot.bRMotor.getCurrentPosition() + targetCounts;
                     newRightTarget = robot.fRMotor.getCurrentPosition() + targetCounts;
 
-                    robot.fLMotor.setTargetPosition(newLeftTarget);
+                    robot.bLMotor.setTargetPosition(newLeftTarget);
                     //robot.bRMotor.setTargetPosition(newMidTarget);
                     robot.fRMotor.setTargetPosition(newRightTarget);
                     break;
                 case 'b':
                     //same as f but negative
-                    newLeftTarget = robot.fLMotor.getCurrentPosition() - targetCounts;
+                    newLeftTarget = robot.bLMotor.getCurrentPosition() - targetCounts;
                     //newMidTarget = robot.bRMotor.getCurrentPosition() - targetCounts;
                     newRightTarget = robot.fRMotor.getCurrentPosition() - targetCounts;
 
-                    robot.fLMotor.setTargetPosition(newLeftTarget);
+                    robot.bLMotor.setTargetPosition(newLeftTarget);
                     //robot.bRMotor.setTargetPosition(newMidTarget);
                     robot.fRMotor.setTargetPosition(newRightTarget);
                     break;
@@ -1569,7 +1569,7 @@ public class AutonDriving extends LinearOpMode {
                 telemetry.update();
 
 
-                int rightError = targetCounts - robot.fLMotor.getCurrentPosition();
+                int rightError = targetCounts - robot.bLMotor.getCurrentPosition();
                 int midError = targetCounts - robot.bRMotor.getCurrentPosition();
                 int leftError = targetCounts - robot.fRMotor.getCurrentPosition();
 
@@ -1580,7 +1580,7 @@ public class AutonDriving extends LinearOpMode {
 
                 int inchSlowThresh = 5;
 
-                int leftInchesTrav = (int) Math.abs(((robot.fLMotor.getCurrentPosition() - leftOriginal) / COUNTS_PER_INCH));
+                int leftInchesTrav = (int) Math.abs(((robot.bLMotor.getCurrentPosition() - leftOriginal) / COUNTS_PER_INCH));
                 int midInchesTrav = (int) Math.abs(((robot.bRMotor.getCurrentPosition() - midOriginal) / COUNTS_PER_INCH));
                 int rightInchesTrav = (int) Math.abs(((robot.fRMotor.getCurrentPosition() - rightOriginal) / COUNTS_PER_INCH));
                 //int bLInchesTrav = (int) Math.abs(((robot.bLMotor.getCurrentPosition() - bLOriginal) / COUNTS_PER_INCH));
@@ -1667,7 +1667,7 @@ public class AutonDriving extends LinearOpMode {
                 robot.bRMotor.setPower(Math.abs(speed) * bRSpeedAdjust); // * bRError
 
                 int countThresh = 10;
-                if (Math.abs(newLeftTarget - robot.fLMotor.getCurrentPosition()) < countThresh || //TODO: this is going to need some more rework than name swap but i must depart
+                if (Math.abs(newLeftTarget - robot.bLMotor.getCurrentPosition()) < countThresh || //TODO: this is going to need some more rework than name swap but i must depart
                         Math.abs(newRightTarget - robot.fRMotor.getCurrentPosition()) < countThresh ||
                         Math.abs(newMidTarget - robot.bLMotor.getCurrentPosition()) < countThresh) {
                     break;
@@ -1682,13 +1682,10 @@ public class AutonDriving extends LinearOpMode {
 
             // Turn off RUN_TO_POSITIOn
 
-
             robot.fLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             robot.fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
 
             sleep(100);   // optional pause after each move
         }

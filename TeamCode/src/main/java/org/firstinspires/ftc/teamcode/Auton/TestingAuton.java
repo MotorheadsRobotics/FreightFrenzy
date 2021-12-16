@@ -135,7 +135,7 @@ public class TestingAuton extends AutonDriving {
 //        turnToPosition(0, "z", BEST_TURN_SPEED, 5);
         //turnToPosition(90, "z", .1, 5);
 
-        //odometerEncoderDrive(.5, 'f', );
+        odometerEncoderDrive(.5, 'f', 10, 5);
 
         if (opModeIsActive()) {
 //            runtime.reset();
