@@ -48,6 +48,7 @@ public class AutonDriving extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES = 4.65;     // For figuring circumference
     static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
+    static final double     ODO_COUNTS_PER_INCH = 1864.2;
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
@@ -1484,7 +1485,7 @@ public class AutonDriving extends LinearOpMode {
         int midOriginal = robot.bRMotor.getCurrentPosition();
         int rightOriginal = robot.fRMotor.getCurrentPosition();
 
-        int targetCounts = (int)(inches * COUNTS_PER_INCH);
+        int targetCounts = (int)(inches * ODO_COUNTS_PER_INCH);
 
         //int error = getErrorEncoder(speed);
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -45,6 +46,9 @@ public class FinalTeleopSoloPartial extends OpMode {
         //The init() method of the hardware class does all the work here
         robot.init(hardwareMap);
 
+        robot.bLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.bRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.fRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
 
@@ -127,6 +131,10 @@ public class FinalTeleopSoloPartial extends OpMode {
 
         mecanumMove();
 
+        telemetry.addData("Left Encoder", robot.bLMotor.getCurrentPosition());
+        telemetry.addData("Mid Encoder", robot.bRMotor.getCurrentPosition());
+        telemetry.addData("Right Encoder", robot.fRMotor.getCurrentPosition());
+
         // Close Hatch Servo: A
 //        if (gamepad1.a) {
 //            robot.bucketServo.setPosition(1);
@@ -185,10 +193,10 @@ public class FinalTeleopSoloPartial extends OpMode {
         robot.bLMotor.setPower(-drivePower * v3 * directionMult);
         robot.bRMotor.setPower(-drivePower * v4 * directionMult);
 
-        telemetry.addData("fLPower", -drivePower * v1 * directionMult);
-        telemetry.addData("fRPower", -drivePower * v2 * directionMult);
-        telemetry.addData("bLPower", -drivePower * v3 * directionMult);
-        telemetry.addData("bRPower", -drivePower * v4 * directionMult);
+//        telemetry.addData("fLPower", -drivePower * v1 * directionMult);
+//        telemetry.addData("fRPower", -drivePower * v2 * directionMult);
+//        telemetry.addData("bLPower", -drivePower * v3 * directionMult);
+//        telemetry.addData("bRPower", -drivePower * v4 * directionMult);
 
 //        telemetry.addData("Encoder port 1 back left",  robot.bLMotor.getCurrentPosition());
 //        telemetry.addData("Encoder port 2 front right", robot.fRMotor.getCurrentPosition());
