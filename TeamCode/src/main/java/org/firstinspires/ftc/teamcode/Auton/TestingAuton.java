@@ -52,7 +52,7 @@ import java.util.List;
 
 @Autonomous(name="Auton Testing", group="Test")
 //@Disabled
-public class TestingAuton extends AutonDriving {
+public class TestingAuton extends AutonDrivingPartial {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
@@ -133,6 +133,8 @@ public class TestingAuton extends AutonDriving {
         normalDrive(0, 0);
         sleep(4000);
         turnToPosition(0, "z", BEST_TURN_SPEED, 5);
+        telemetry.addData("Reached End", true);
+        telemetry.update();
         //turnToPosition(90, "z", .1, 5);
 
 

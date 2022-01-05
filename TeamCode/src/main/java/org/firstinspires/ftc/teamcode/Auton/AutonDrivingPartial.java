@@ -618,7 +618,7 @@ public class AutonDrivingPartial extends LinearOpMode {
             degreesTurnedABS = Math.abs(degreesTurned);
 
 
-            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (degreesTurnedABS - (error - beginSlowing)));
+            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (degreesTurnedABS - (errorABS - beginSlowing)));
             double adjustedPower = Math.min(maxPower, functionalPower);
 
             //double powerScaled = power*pidMultiplier(error);
