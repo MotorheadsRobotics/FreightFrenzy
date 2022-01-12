@@ -1,23 +1,18 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-import android.graphics.Color;
-
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 //public class package org.firstinspires.ftc.teamcode.src;
 
 //import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 
-public class Hardware
+public class HardwarePartial
 {
     public DcMotor fLMotor;
     public DcMotor fRMotor;
@@ -25,21 +20,21 @@ public class Hardware
     public DcMotor bRMotor;
 
     public DcMotor intakeMotor;
-    public DcMotor carouselMotor;
+//    public DcMotor carouselMotor;
+//
+//    public DcMotor pulleyMotorL;
+//    public DcMotor pulleyMotorR;
+//
+//    public Servo bucketServo;
+//
+//    public DigitalChannel liftLimit;
+//
+//    public DistanceSensor fRDist;
+//    public DistanceSensor fLDist;
+//    public DistanceSensor bLDist;
+//    public DistanceSensor bRDist;
 
-    public DcMotor pulleyMotorL;
-    public DcMotor pulleyMotorR;
-
-    public Servo bucketServo;
-
-    public DigitalChannel liftLimit;
-
-    public DistanceSensor fRDist;
-    public DistanceSensor fLDist;
-    public DistanceSensor bLDist;
-    public DistanceSensor bRDist;
-
-    public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
+    //    public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
     public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
     public boolean[] motorDirections =  {false,     true,       false,      true,       true,           true,               true,           true};
 
@@ -112,10 +107,10 @@ public class Hardware
 //        bLMotor = hwMap.dcMotor.get("bLMotor");
 
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
-        carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
-
-        pulleyMotorL = hwMap.get(DcMotor.class, "pulleyMotorL");
-        pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
+//        carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
+//
+//        pulleyMotorL = hwMap.get(DcMotor.class, "pulleyMotorL");
+//        pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
 
         //motors[0] = fLMotor;
 
@@ -125,10 +120,10 @@ public class Hardware
         bRMotor.setPower(0);
 
         intakeMotor.setPower(0);
-        carouselMotor.setPower(0);
-
-        pulleyMotorL.setPower(0);
-        pulleyMotorR.setPower(0);
+//        carouselMotor.setPower(0);
+//
+//        pulleyMotorL.setPower(0);
+//        pulleyMotorR.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -142,10 +137,10 @@ public class Hardware
         bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        carouselMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        pulleyMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        carouselMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//
+//        pulleyMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        pulleyMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         fLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -153,10 +148,10 @@ public class Hardware
         bRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        pulleyMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        pulleyMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        pulleyMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        pulleyMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         fLMotor.setDirection(DcMotor.Direction.REVERSE);
         fRMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -164,24 +159,24 @@ public class Hardware
         bRMotor.setDirection(DcMotor.Direction.FORWARD);
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        pulleyMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
-        pulleyMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+//        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+//
+//        pulleyMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
+//        pulleyMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         // Set up Servos
-        bucketServo = hwMap.get(Servo.class, "bucketServo");
+//        bucketServo = hwMap.get(Servo.class, "bucketServo");
 
 
 
         //enable lift limit switch
-        liftLimit = hwMap.get(DigitalChannel.class, "liftLimit");
+//        liftLimit = hwMap.get(DigitalChannel.class, "liftLimit");
 
-        fLDist = hwMap.get(DistanceSensor.class, "fLDist");
-        fRDist = hwMap.get(DistanceSensor.class, "fRDist");
-        bLDist = hwMap.get(DistanceSensor.class, "bLDist");
-        bRDist = hwMap.get(DistanceSensor.class, "bRDist");
+//        fLDist = hwMap.get(DistanceSensor.class, "fLDist");
+//        fRDist = hwMap.get(DistanceSensor.class, "fRDist");
+//        bLDist = hwMap.get(DistanceSensor.class, "bLDist");
+//        bRDist = hwMap.get(DistanceSensor.class, "bRDist");
 
 
     }
