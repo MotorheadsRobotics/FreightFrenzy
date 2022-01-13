@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
+import org.firstinspires.ftc.teamcode.Hardware.HardwarePartial;
 
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 public class FinalTeleopSolo extends OpMode {
 
-    Hardware robot = new Hardware();
+    HardwarePartial robot = new HardwarePartial();
 
     private float drivePower = 0.65f;
     private float stickAxesThreshold = .1f;
@@ -54,15 +55,15 @@ public class FinalTeleopSolo extends OpMode {
             startTime = runtime.seconds();
             deltaTime += runtime.seconds() - startTime;
             robot.pulleyMotorR.setPower(pulleyMotorPower);
-            robot.pulleyMotorL.setPower(pulleyMotorPower);
+            //robot.pulleyMotorL.setPower(pulleyMotorPower);
         } else if (gamepad1.dpad_down) {
             startTime = runtime.seconds();
             deltaTime += runtime.seconds() - startTime;
             robot.pulleyMotorR.setPower(-pulleyMotorPower);
-            robot.pulleyMotorL.setPower(-pulleyMotorPower);
+            //robot.pulleyMotorL.setPower(-pulleyMotorPower);
         } else {
             robot.pulleyMotorR.setPower(0);
-            robot.pulleyMotorL.setPower(0);
+            //robot.pulleyMotorL.setPower(0);
             startTime = 0;
         }
 
@@ -77,13 +78,13 @@ public class FinalTeleopSolo extends OpMode {
         }
 
         // Carousel Motor: LT and RT
-        if (gamepad1.left_trigger > 0.3) {
-            robot.carouselMotor.setPower(carouselMotorPower);
-        } else if (gamepad1.right_trigger > 0.3) {
-            robot.carouselMotor.setPower(-carouselMotorPower);
-        } else {
-            robot.carouselMotor.setPower(0);
-        }
+//        if (gamepad1.left_trigger > 0.3) {
+//            robot.carouselMotor.setPower(carouselMotorPower);
+//        } else if (gamepad1.right_trigger > 0.3) {
+//            robot.carouselMotor.setPower(-carouselMotorPower);
+//        } else {
+//            robot.carouselMotor.setPower(0);
+//        }
         // Carousel Motor fast: LT and RT + x
 //        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
 //            if (gamepad1.left_trigger > 0.3) {
@@ -117,18 +118,18 @@ public class FinalTeleopSolo extends OpMode {
         }
 
         // Close Hatch Servo: A
-        if (gamepad1.a) {
-            robot.bucketServo.setPosition(1);
-        } else {
-            robot.bucketServo.setPosition(0);
-        }
+//        if (gamepad1.a) {
+//            robot.bucketServo.setPosition(1);
+//        } else {
+//            robot.bucketServo.setPosition(0);
+//        }
 
 
         //telemetry.addData("Lift Limit", robot.liftLimit.getState());
-        telemetry.addData("fLDist", robot.fLDist.getDistance(DistanceUnit.INCH));
-        telemetry.addData("fRDist", robot.fRDist.getDistance(DistanceUnit.INCH));
-        telemetry.addData("bLDist", robot.bLDist.getDistance(DistanceUnit.INCH));
-        telemetry.addData("bRDist", robot.bRDist.getDistance(DistanceUnit.INCH));
+//        telemetry.addData("fLDist", robot.fLDist.getDistance(DistanceUnit.INCH));
+//        telemetry.addData("fRDist", robot.fRDist.getDistance(DistanceUnit.INCH));
+//        telemetry.addData("bLDist", robot.bLDist.getDistance(DistanceUnit.INCH));
+//        telemetry.addData("bRDist", robot.bRDist.getDistance(DistanceUnit.INCH));
         telemetry.addData("DeltaTime", deltaTime);
         telemetry.update();
     }

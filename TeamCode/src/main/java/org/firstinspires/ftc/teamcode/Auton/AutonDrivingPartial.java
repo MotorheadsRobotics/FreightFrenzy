@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,27 +26,23 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.robotcore.internal.android.dex.Code;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
+import org.firstinspires.ftc.teamcode.Hardware.HardwarePartial;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
 //@Autonomous(name="AutonDrivingDriveOnly", group="AutonTesting")
-public class AutonDriving extends LinearOpMode {
+public class AutonDrivingPartial extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();
+    public HardwarePartial robot = new HardwarePartial();
     public ElapsedTime runtime = new ElapsedTime();
     public String xyz = "z";
     //CONTAINS ALL METHODS AND VARIABlES TO BE EXTENDED BY OTHER AUTON CLASSES
     static final double     COUNTS_PER_MOTOR_REV = 384.5;    // GoBilda 5202 Series 13.7:1
-    //static final double     COUNTS_PER_REV_ARM = 1495; //torquenado
+    //static final double
+    // COUNTS_PER_REV_ARM = 1495; //torquenado
     //static final double     PULLEY_DIAMETER = 1.3;
     // static final double     COUNTS_PER_INCH_ARM = COUNTS_PER_REV_ARM/(PULLEY_DIAMETER * Math.PI);
     static final double     DRIVE_GEAR_REDUCTION = 1.0;    // This is < 1.0 if geared UP //On OUR CENTER MOTOR THE GEAR REDUCTION IS .5
@@ -143,22 +144,6 @@ public class AutonDriving extends LinearOpMode {
             average += arg;
         }
         return average / args.length;
-    }
-
-    public void parallelDrive (double distance, boolean isForward, double speed, boolean isRightWall, double wallDistance, double timeoutS)
-    {
-        stopAndReset();
-        double sensorFrontDistance;
-        double sensorBackDistance;
-        if(isRightWall) { // follow right wall
-            sensorFrontDistance = robot.fRDist.getDistance(DistanceUnit.INCH);
-            sensorBackDistance = robot.bRDist.getDistance(DistanceUnit.INCH);
-        }
-        else { // follow left wall
-            sensorFrontDistance = robot.fLDist.getDistance(DistanceUnit.INCH);
-            sensorBackDistance = robot.bLDist.getDistance(DistanceUnit.INCH);
-        }
-
     }
 
     public void gyroDrive (double distance, double angle, boolean initBoost, double speed, double speedMult, double timeoutS)
@@ -382,25 +367,6 @@ public class AutonDriving extends LinearOpMode {
         }
     }
 
-
-    public boolean DistanceCheck(double fLInches, double fRInches, double bLInches, double bRInches, double startTime, double currentTime, double timeOutS) {
-
-
-        if ((robot.fLDist.getDistance(DistanceUnit.INCH) < fLInches &&
-                robot.fRDist.getDistance(DistanceUnit.INCH) < fRInches &&
-                robot.bLDist.getDistance(DistanceUnit.INCH) < bLInches &&
-                robot.bRDist.getDistance(DistanceUnit.INCH) < bRInches) ||
-                (currentTime - startTime) > timeOutS)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-
     public void normalDrive(double lpower, double rpower, boolean encoder)
     {
 
@@ -613,6 +579,7 @@ public class AutonDriving extends LinearOpMode {
         double originalAngle = readAngle(xyz);
 
         double target = degrees;
+        double targetABS = Math.abs(target);
 
         //wild
 // the line above sounds like Ria
@@ -629,10 +596,10 @@ public class AutonDriving extends LinearOpMode {
         double degreesTurned;
         double degreesTurnedABS;
 
-        double maxPower = 1;
-        double minPower = 0;
-        double beginSlowing = 30; // degrees before target at which point the robot slows down
-        double slowRate = 0.17;
+        double maxPower = topPower;
+        double minPower = 0.15;
+        double beginSlowing = error/2; // degrees before target at which point the robot slows down
+        double slowRate = 0.085;
 
         telemetry.addData("original angle", originalAngle);
         telemetry.addData("current angle", readAngle(xyz));
@@ -652,7 +619,7 @@ public class AutonDriving extends LinearOpMode {
             degreesTurnedABS = Math.abs(degreesTurned);
 
 
-            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (degreesTurnedABS - (error - beginSlowing)));
+            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (-((targetABS - degreesTurnedABS) - beginSlowing)));
             double adjustedPower = Math.min(maxPower, functionalPower);
 
             //double powerScaled = power*pidMultiplier(error);
@@ -660,19 +627,25 @@ public class AutonDriving extends LinearOpMode {
             telemetry.addData("current angle", readAngle(xyz));
             telemetry.addData("error", error);
             telemetry.addData("target", target);
+            telemetry.addData("Functional Power", functionalPower);
             telemetry.addData("Motor Power", adjustedPower);
             //telemetry.addData("degrees", degrees);
             telemetry.update();
 
+            //!!!!!!!!!!!!!!!!!!!!! EXPERIMENTAL
+            //TODO: SEEMS LIKE A STRANGE THING WHERE THE ANGLE TO TURN TO IS ADDED BY WHERE IT SHOULD STOP SLOWING
+            //TODO: ALSO DOESNT SLOW
+//            adjustedPower = functionalPower;
+
             if (error < 0)
             {
-                normalDrive((adjustedPower), -(adjustedPower), true);
+                normalDrive((adjustedPower), -(adjustedPower), false);
             }
             else if (error > 0)
             {
-                normalDrive(-(adjustedPower), (adjustedPower), true);
+                normalDrive(-(adjustedPower), (adjustedPower), false);
             }
-        } while (opModeIsActive() && (Math.abs(error) > 2) && (runtime.seconds() < timeoutS));
+        } while (opModeIsActive() && (Math.abs(error) > 0.5) && (runtime.seconds() < timeoutS));
 
         normalDrive(0, 0, false);
         //stopAndReset();
@@ -1498,134 +1471,5 @@ public class AutonDriving extends LinearOpMode {
     }
     public int getErrorEncoder(double speed) { //me being stupid
         return (int) (speed * 200);
-    }
-
-    public void TryMotors()
-    {
-        for(int i = 0; i < robot.motors.length; i++)
-        {
-            try {
-                robot.motors[i] = hardwareMap.dcMotor.get(robot.motorNames[i]);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-    }
-
-    public void CarouselSpin(double speed, double driveSpeed, boolean clockwise, double timeoutSec)
-    {
-        runtime.reset();
-        while(opModeIsActive() && (runtime.seconds() < timeoutSec))
-        {
-            //normalDrive(.05, .05, false);
-            if (clockwise)
-            {
-                robot.carouselMotor.setPower(speed);
-                normalDrive(driveSpeed, driveSpeed, false);
-            }
-            else
-            {
-                robot.carouselMotor.setPower(-speed);
-                normalDrive(driveSpeed, driveSpeed, false);
-            }
-        }
-        robot.carouselMotor.setPower(0);
-    }
-
-    public MarkerPlacement GetPlacement(boolean redSide)
-    {
-        if(redSide)
-        {
-            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.RIGHT;
-            }
-            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.MIDDLE;
-            }
-            else
-            {
-                return  MarkerPlacement.LEFT;
-            }
-        }
-        else
-        {
-            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.LEFT;
-            }
-            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.MIDDLE;
-            }
-            else
-            {
-                return  MarkerPlacement.RIGHT;
-            }
-
-
-
-        }
-    }
-
-    public MarkerPlacement GetPlacementBarrier(boolean redSide)
-    {
-        if(redSide)
-        {
-            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.MIDDLE;
-            }
-            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.LEFT;
-            }
-            else
-            {
-                return  MarkerPlacement.RIGHT;
-            }
-        }
-        else
-        {
-            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.MIDDLE;
-            }
-            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
-            {
-                return MarkerPlacement.LEFT;
-            }
-            else
-            {
-                return  MarkerPlacement.RIGHT;
-            }
-
-
-
-        }
-    }
-
-    public void LiftExtend(double timeOutSec, double liftSpeed, boolean deposit)
-    {
-        double startTime = runtime.seconds();
-        while(runtime.seconds() - startTime < timeOutSec)
-        {
-            robot.pulleyMotorL.setPower(liftSpeed);
-            robot.pulleyMotorR.setPower(liftSpeed);
-        }
-
-        robot.pulleyMotorL.setPower(0);
-        robot.pulleyMotorR.setPower(0);
-
-        if(deposit)
-        {
-            robot.bucketServo.setPosition(1);
-            encoderDrive(.1, 'b', 1, 5);
-            sleep(750);
-        }
-
     }
 }
