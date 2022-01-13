@@ -23,7 +23,7 @@ public class HardwarePartial
 //    public DcMotor carouselMotor;
 //
 //    public DcMotor pulleyMotorL;
-//    public DcMotor pulleyMotorR;
+    public DcMotor pulleyMotorR;
 //
 //    public Servo bucketServo;
 //
@@ -110,7 +110,7 @@ public class HardwarePartial
 //        carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
 //
 //        pulleyMotorL = hwMap.get(DcMotor.class, "pulleyMotorL");
-//        pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
+          pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
 
         //motors[0] = fLMotor;
 

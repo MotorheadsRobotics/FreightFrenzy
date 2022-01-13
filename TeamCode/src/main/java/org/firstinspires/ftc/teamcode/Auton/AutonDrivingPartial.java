@@ -626,9 +626,15 @@ public class AutonDrivingPartial extends LinearOpMode {
             telemetry.addData("current angle", readAngle(xyz));
             telemetry.addData("error", error);
             telemetry.addData("target", target);
+            telemetry.addData("Functional Power", functionalPower);
             telemetry.addData("Motor Power", adjustedPower);
             //telemetry.addData("degrees", degrees);
             telemetry.update();
+
+            //!!!!!!!!!!!!!!!!!!!!! EXPERIMENTAL
+            //TODO: SEEMS LIKE A STRANGE THING WHERE THE ANGLE TO TURN TO IS ADDED BY WHERE IT SHOULD STOP SLOWING
+            //TODO: ALSO DOESNT SLOW
+            adjustedPower = functionalPower;
 
             if (error < 0)
             {
