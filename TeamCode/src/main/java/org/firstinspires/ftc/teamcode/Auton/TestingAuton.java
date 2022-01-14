@@ -52,7 +52,7 @@ import java.util.List;
 
 @Autonomous(name="Auton Testing", group="Test")
 //@Disabled
-public class TestingAuton extends AutonDriving {
+public class TestingAuton extends AutonDrivingPartial {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
@@ -138,7 +138,8 @@ public class TestingAuton extends AutonDriving {
         odometerEncoderDrive(.5, 'f', 10, 5);
 
         if (opModeIsActive()) {
-//            runtime.reset();
+
+            //            runtime.reset();
 //            do {
 //                telemetry.addData("Runtime", runtime.milliseconds());
 //                if (tfod != null) {

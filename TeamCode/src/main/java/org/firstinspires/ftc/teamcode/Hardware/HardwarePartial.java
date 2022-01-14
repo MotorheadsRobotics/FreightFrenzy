@@ -22,8 +22,8 @@ public class HardwarePartial
 
     public DcMotor intakeMotor;
 
-    public CRServo rCarousel;
-    public CRServo lCarousel;
+    //public CRServo rCarousel;
+    //public CRServo lCarousel;
 //    public DcMotor carouselMotor;
 //
 //    public DcMotor pulleyMotorL;
@@ -171,8 +171,8 @@ public class HardwarePartial
 
         // Set up Servos
 //        bucketServo = hwMap.get(Servo.class, "bucketServo");
-        lCarousel = hwMap.get(CRServo.class, "lCarousel");
-        rCarousel = hwMap.get(CRServo.class, "rCarousel");
+        //lCarousel = hwMap.get(CRServo.class, "lCarousel");
+        //rCarousel = hwMap.get(CRServo.class, "rCarousel");
 
 
 
