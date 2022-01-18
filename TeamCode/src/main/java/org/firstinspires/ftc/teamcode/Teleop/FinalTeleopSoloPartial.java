@@ -55,21 +55,21 @@ public class FinalTeleopSoloPartial extends OpMode {
     @Override
     public void loop() {
         // Pulley Motors: D-pad Up and D-pad Down
-//        if (gamepad1.dpad_up) {
+        if (gamepad1.dpad_up) {
 //            startTime = runtime.seconds();
 //            deltaTime += runtime.seconds() - startTime;
-//            robot.pulleyMotorR.setPower(pulleyMotorPower);
+            robot.pulleyMotor.setPower(pulleyMotorPower);
 //            robot.pulleyMotorL.setPower(pulleyMotorPower);
-//        } else if (gamepad1.dpad_down) {
+        } else if (gamepad1.dpad_down) {
 //            startTime = runtime.seconds();
 //            deltaTime += runtime.seconds() - startTime;
-//            robot.pulleyMotorR.setPower(-pulleyMotorPower);
+            robot.pulleyMotor.setPower(-pulleyMotorPower);
 //            robot.pulleyMotorL.setPower(-pulleyMotorPower);
-//        } else {
-//            robot.pulleyMotorR.setPower(0);
+        } else {
+            robot.pulleyMotor.setPower(0);
 //            robot.pulleyMotorL.setPower(0);
 //            startTime = 0;
-//        }
+        }
 
 
         // Intake Motor: LB and RB

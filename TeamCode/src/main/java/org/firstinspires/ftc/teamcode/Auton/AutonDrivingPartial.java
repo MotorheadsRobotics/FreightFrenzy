@@ -1554,7 +1554,135 @@ public class AutonDrivingPartial extends LinearOpMode {
         sleep(500);
     }
 
+    public void odometerEncoderDriveV2(double distance, double maxSpeed, double minSpeed, char direction, double timeoutS)
+    {
+        //stopAndReset();
+
+        float dirMult = 1;
+        if(direction == 'f' || direction == 'l')
+        {
+            dirMult = -1;
+        }
+        else
+        {
+            dirMult = 1;
+        }
+
+        double distanceABS = Math.abs(distance);
+
+        DcMotor LEncoder = robot.bLMotor;
+        DcMotor MEncoder = robot.bRMotor;
+        DcMotor REncoder = robot.fRMotor;
+
+        double LPosOriginal = LEncoder.getCurrentPosition();
+        double MPosOriginal = MEncoder.getCurrentPosition();
+        double RPosOriginal = REncoder.getCurrentPosition();
+
+        runtime.reset();
+
+        double LPos = LEncoder.getCurrentPosition();
+        double MPos = MEncoder.getCurrentPosition();
+        double RPos = REncoder.getCurrentPosition();
+
+        double LError = distance - LPos;
+        double MError = distance - MPos;
+        double RError = distance - RPos;
+
+        double LErrorABS = Math.abs(LError);
+        double MErrorABS = Math.abs(MError);
+        double RErrorABS = Math.abs(RError);
+
+        double LTravelled = 0;
+        double MTravelled = 0;
+        double RTravelled = 0;
+
+        double LTravelledABS = Math.abs(LTravelled);
+        double MTravelledABS = Math.abs(MTravelled);
+        double RTravelledABS = Math.abs(RTravelled);
+
+        double LBeginSlowing = LError/2;
+        double MBeginSlowing = MError/2;
+        double RBeginSlowing = RError/2;
+
+        double slowRate = 0.085;
+
+        telemetry.addData("Pos L", LPos);
+        telemetry.addData("Pos M", MPos);
+        telemetry.addData("Pos R", RPos);
+        telemetry.addData("target", distance);
+        telemetry.update();
+        sleep(100);
+
+        do {
+            LPos = LEncoder.getCurrentPosition();
+            MPos = MEncoder.getCurrentPosition();
+            RPos = REncoder.getCurrentPosition();
+
+            LError = distance - LPos;
+            MError = distance - MPos;
+            RError = distance - RPos;
+
+            LTravelled = LPos - LPosOriginal;
+            MTravelled = MPos - MPosOriginal;
+            RTravelled = RPos - RPosOriginal;
+
+            LTravelledABS = Math.abs(LTravelled);
+            MTravelledABS = Math.abs(MTravelled);
+            RTravelledABS = Math.abs(RTravelled);
+
+            double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
+            double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
+            double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
+
+            double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
+            double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
+            double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
+
+            //TODO: ADD TELEMETRY BULLSHIT
+
+            if(LError < 0)
+            {
+                robot.fLMotor.setPower(LAdjustedPower);
+                robot.fRMotor.setPower(LAdjustedPower);
+                robot.bLMotor.setPower(LAdjustedPower);
+                robot.bRMotor.setPower(LAdjustedPower);
+            }
+            else if(LError > 0)
+            {
+                robot.fLMotor.setPower(-LAdjustedPower);
+                robot.fRMotor.setPower(-LAdjustedPower);
+                robot.bLMotor.setPower(-LAdjustedPower);
+                robot.bRMotor.setPower(-LAdjustedPower);
+            }
+        } while (true);
+
+//        switch(direction)
+//        {
+//            case 'f':
+//            {
+//
+//                break;
+//            }
+//            case 'b':
+//            {
+//                break;
+//            }
+//            case 'r':
+//            {
+//                break;
+//            }
+//            case 'l':
+//            {
+//                break;
+//            }
+//        }
+    }
+
     public void odometerEncoderDrive(double speed, char direction, double inches, double timeoutS) {
+
+        DcMotor LEncoder = robot.bLMotor;
+        DcMotor MEncoder = robot.bRMotor;
+        DcMotor REncoder = robot.fRMotor;
 
         int newLeftTarget = 0;
         int newMidTarget = 0;
