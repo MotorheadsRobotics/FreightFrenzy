@@ -598,7 +598,7 @@ public class AutonDrivingPartial extends LinearOpMode {
         double degreesTurnedABS;
 
         double maxPower = topPower;
-        double minPower = 0.15;
+        double minPower = 0.2;
         double beginSlowing = error/2; // degrees before target at which point the robot slows down
         double slowRate = 0.085;
 
