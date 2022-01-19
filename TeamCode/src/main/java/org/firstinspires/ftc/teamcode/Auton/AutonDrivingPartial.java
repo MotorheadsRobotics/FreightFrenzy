@@ -579,6 +579,7 @@ public class AutonDrivingPartial extends LinearOpMode {
         double originalAngle = readAngle(xyz);
 
         double target = degrees;
+        double targetABS = Math.abs(target);
 
         //wild
 // the line above sounds like Ria
@@ -595,10 +596,10 @@ public class AutonDrivingPartial extends LinearOpMode {
         double degreesTurned;
         double degreesTurnedABS;
 
-        double maxPower = 1;
-        double minPower = 0;
-        double beginSlowing = 30; // degrees before target at which point the robot slows down
-        double slowRate = 0.17;
+        double maxPower = topPower;
+        double minPower = 0.15;
+        double beginSlowing = error/2; // degrees before target at which point the robot slows down
+        double slowRate = 0.085;
 
         telemetry.addData("original angle", originalAngle);
         telemetry.addData("current angle", readAngle(xyz));
@@ -618,7 +619,7 @@ public class AutonDrivingPartial extends LinearOpMode {
             degreesTurnedABS = Math.abs(degreesTurned);
 
 
-            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (-(errorABS - beginSlowing)));
+            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (-((targetABS - degreesTurnedABS) - beginSlowing)));
             double adjustedPower = Math.min(maxPower, functionalPower);
 
             //double powerScaled = power*pidMultiplier(error);
@@ -626,19 +627,25 @@ public class AutonDrivingPartial extends LinearOpMode {
             telemetry.addData("current angle", readAngle(xyz));
             telemetry.addData("error", error);
             telemetry.addData("target", target);
+            telemetry.addData("Functional Power", functionalPower);
             telemetry.addData("Motor Power", adjustedPower);
             //telemetry.addData("degrees", degrees);
             telemetry.update();
 
+            //!!!!!!!!!!!!!!!!!!!!! EXPERIMENTAL
+            //TODO: SEEMS LIKE A STRANGE THING WHERE THE ANGLE TO TURN TO IS ADDED BY WHERE IT SHOULD STOP SLOWING
+            //TODO: ALSO DOESNT SLOW
+//            adjustedPower = functionalPower;
+
             if (error < 0)
             {
-                normalDrive((adjustedPower), -(adjustedPower), true);
+                normalDrive((adjustedPower), -(adjustedPower), false);
             }
             else if (error > 0)
             {
-                normalDrive(-(adjustedPower), (adjustedPower), true);
+                normalDrive(-(adjustedPower), (adjustedPower), false);
             }
-        } while (opModeIsActive() && (Math.abs(error) > 2) && (runtime.seconds() < timeoutS));
+        } while (opModeIsActive() && (Math.abs(error) > 0.5) && (runtime.seconds() < timeoutS));
 
         normalDrive(0, 0, false);
         //stopAndReset();
