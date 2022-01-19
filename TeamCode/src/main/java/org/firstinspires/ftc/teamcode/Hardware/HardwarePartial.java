@@ -26,9 +26,9 @@ public class HardwarePartial
     //public CRServo lCarousel;
 //    public DcMotor carouselMotor;
 //
-    public DcMotor pulleyMotor;
+//    public DcMotor pulleyMotor;
 //    public DcMotor pulleyMotorL;
-//    public DcMotor pulleyMotorR;
+    public DcMotor pulleyMotorR;
 //
 //    public Servo bucketServo;
 //
@@ -114,9 +114,9 @@ public class HardwarePartial
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
 //        carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
 //
-        pulleyMotor = hwMap.get(DcMotor.class, "pulleyMotor");
+//        pulleyMotor = hwMap.get(DcMotor.class, "pulleyMotor");
 //        pulleyMotorL = hwMap.get(DcMotor.class, "pulleyMotorL");
-//        pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
+        pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
 
         //motors[0] = fLMotor;
 
@@ -128,9 +128,9 @@ public class HardwarePartial
         intakeMotor.setPower(0);
 //        carouselMotor.setPower(0);
 //
-        pulleyMotor.setPower(0);
+//        pulleyMotor.setPower(0);
 //        pulleyMotorL.setPower(0);
-//        pulleyMotorR.setPower(0);
+        pulleyMotorR.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -146,9 +146,9 @@ public class HardwarePartial
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        carouselMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //
-        pulleyMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        pulleyMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        pulleyMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        pulleyMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pulleyMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         fLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -158,9 +158,9 @@ public class HardwarePartial
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //
-        pulleyMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        pulleyMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        pulleyMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        pulleyMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pulleyMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         fLMotor.setDirection(DcMotor.Direction.REVERSE);
         fRMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -170,9 +170,9 @@ public class HardwarePartial
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 //        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 //
-        pulleyMotor.setDirection(DcMotor.Direction.FORWARD);
+//        pulleyMotor.setDirection(DcMotor.Direction.FORWARD);
 //        pulleyMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
-//        pulleyMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+        pulleyMotorR.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         // Set up Servos
