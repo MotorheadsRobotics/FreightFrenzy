@@ -591,6 +591,7 @@ public class AutonDrivingPartial extends LinearOpMode {
 
         double angle = readAngle(xyz); //variable for gyro correction around z axis
         double error = target - angle;
+        final double originalError = error;
         double errorABS = Math.abs(error);
         double powerScaled = topPower;
         double degreesTurned;
@@ -618,17 +619,20 @@ public class AutonDrivingPartial extends LinearOpMode {
             degreesTurned = angle - originalAngle;
             degreesTurnedABS = Math.abs(degreesTurned);
 
-
-            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (-((targetABS - degreesTurnedABS) - beginSlowing)));
-            double adjustedPower = Math.min(maxPower, functionalPower);
+//            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (-((targetABS - degreesTurnedABS) - beginSlowing)));
+//            double adjustedPower = Math.min(maxPower, functionalPower); xander code obliterate :)
+            double adjuster = Math.abs(error/originalError);
+            adjuster += minPower;
+            adjuster = Math.min(1, adjuster);
+            double adjustedPower = adjuster * maxPower;
 
             //double powerScaled = power*pidMultiplier(error);
             telemetry.addData("original angle", originalAngle);
             telemetry.addData("current angle", readAngle(xyz));
             telemetry.addData("error", error);
             telemetry.addData("target", target);
-            telemetry.addData("Functional Power", functionalPower);
-            telemetry.addData("Motor Power", adjustedPower);
+//            telemetry.addData("Functional Power", functionalPower);
+//            telemetry.addData("Motor Power", adjustedPower);
             //telemetry.addData("degrees", degrees);
             telemetry.update();
 
