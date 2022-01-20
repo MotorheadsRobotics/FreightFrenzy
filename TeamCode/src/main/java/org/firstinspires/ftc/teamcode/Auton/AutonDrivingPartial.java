@@ -625,6 +625,7 @@ public class AutonDrivingPartial extends LinearOpMode {
             adjuster += minPower;
             adjuster = Math.min(1, adjuster);
             double adjustedPower = adjuster * maxPower;
+            adjustedPower = Math.max(adjustedPower, minPower);
 
             //double powerScaled = power*pidMultiplier(error);
             telemetry.addData("original angle", originalAngle);

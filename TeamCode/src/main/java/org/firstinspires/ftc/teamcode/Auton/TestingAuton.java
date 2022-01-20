@@ -129,13 +129,13 @@ public class TestingAuton extends AutonDrivingPartial {
 //        CarouselSpin(.5, false, 2);
 
         //LiftExtend(1, LIFT_SPEED);
-        turnToPosition(90, "z", .6, 5);
-        normalDrive(0, 0);
-        sleep(2000);
-        turnToPosition(0, "z", .6, 5);
-        turnToPosition(30, "z", .6, 5);
-        turnToPosition(60, "z", .6,5);
-        turnToPosition(0, "z", .6, 5);
+//        turnToPosition(90, "z", .6, 5);
+//        normalDrive(0, 0);
+//        sleep(2000);
+//        turnToPosition(0, "z", .6, 5);
+//        turnToPosition(30, "z", .6, 5);
+//        turnToPosition(60, "z", .6,5);
+//        turnToPosition(0, "z", .6, 5);
         turnToPosition(-90, "z", .6, 5);
         turnToPosition(0, "z", .6, 5);
         turnToPosition(-30, "z", .6, 5);
