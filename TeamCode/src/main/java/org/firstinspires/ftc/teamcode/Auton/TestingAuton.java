@@ -131,10 +131,15 @@ public class TestingAuton extends AutonDrivingPartial {
         //LiftExtend(1, LIFT_SPEED);
         turnToPosition(90, "z", .6, 5);
         normalDrive(0, 0);
-        sleep(4000);
+        sleep(2000);
         turnToPosition(0, "z", .6, 5);
         turnToPosition(30, "z", .6, 5);
         turnToPosition(60, "z", .6,5);
+        turnToPosition(0, "z", .6, 5);
+        turnToPosition(-90, "z", .6, 5);
+        turnToPosition(0, "z", .6, 5);
+        turnToPosition(-30, "z", .6, 5);
+        turnToPosition(-60, "z", .6,5);
         turnToPosition(0, "z", .6, 5);
         telemetry.addData("Reached End", true);
         telemetry.update();
