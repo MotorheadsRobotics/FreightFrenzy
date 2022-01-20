@@ -1557,9 +1557,9 @@ public class AutonDrivingPartial extends LinearOpMode {
     public void odometerEncoderDriveV2(double distance, double maxSpeed, double minSpeed, char direction, double timeoutS)
     {
         //stopAndReset(); Unnecessary given the nature of encoders
-        //Left Encoder Forward -> +/-
-        //Mid Encoder Right -> +/-
-        //Right Encoder Right -> +/-
+        //Left Encoder Forward -> (+)/-
+        //Mid Encoder Right -> +/(-)
+        //Right Encoder Right -> +/(-)
 
         float dirMult = 1;
         if(direction == 'b' || direction == 'l') // will change depending on how odometers report values
