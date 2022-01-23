@@ -1561,6 +1561,10 @@ public class AutonDrivingPartial extends LinearOpMode {
         //Mid Encoder Right -> +/(-)
         //Right Encoder Right -> +/(-)
 
+
+        distance *= ODO_COUNTS_PER_INCH;
+
+
         float dirMult = 1;
         if(direction == 'b' || direction == 'l') // will change depending on how odometers report values
         {
@@ -1591,6 +1595,10 @@ public class AutonDrivingPartial extends LinearOpMode {
         double MError = distance - MPos;
         double RError = distance - RPos;
 
+        double LTargetPos = distance + LPosOriginal;
+        double MTargetPos = distance + MPosOriginal;
+        double RTargetPos = distance + RPosOriginal;
+
         double LErrorABS = Math.abs(LError);
         double MErrorABS = Math.abs(MError);
         double RErrorABS = Math.abs(RError);
@@ -1607,14 +1615,15 @@ public class AutonDrivingPartial extends LinearOpMode {
         double MBeginSlowing = MError/2;
         double RBeginSlowing = RError/2;
 
-        double slowRate = 0.085;
+        double slowRate = 0.085 * 2;
 
         telemetry.addData("Pos L", LPos);
         telemetry.addData("Pos M", MPos);
         telemetry.addData("Pos R", RPos);
+//        telemetry.addData("FBAdjustedSpeed", Ad)
         telemetry.addData("target", distance);
         telemetry.update();
-        sleep(100);
+        sleep(1000);
 
         /*
         TODO: IMPLEMENT DRIFT CONTROL BASED ON THE READINGS OF THE
@@ -1627,9 +1636,9 @@ public class AutonDrivingPartial extends LinearOpMode {
 //                MPos = MEncoder.getCurrentPosition();
                 RPos = REncoder.getCurrentPosition();
 
-                LError = distance - LPos;
+                LError = LTargetPos - LPos;
 //                MError = distance - MPos;
-                RError = distance - RPos;
+                RError =  RTargetPos + RPos;
 
                 LErrorABS = Math.abs(LError);
 //                MErrorABS = Math.abs(MError);
@@ -1661,19 +1670,27 @@ public class AutonDrivingPartial extends LinearOpMode {
                 //so it wouldn't matter anyways.
                 if(LError < 0)
                 {
-                    robot.fLMotor.setPower(FBAdjustedPower);
-                    robot.fRMotor.setPower(FBAdjustedPower);
-                    robot.bLMotor.setPower(FBAdjustedPower);
-                    robot.bRMotor.setPower(FBAdjustedPower);
-                }
-                else if(LError > 0)
-                {
                     robot.fLMotor.setPower(-FBAdjustedPower);
                     robot.fRMotor.setPower(-FBAdjustedPower);
                     robot.bLMotor.setPower(-FBAdjustedPower);
                     robot.bRMotor.setPower(-FBAdjustedPower);
                 }
-            } while ((LErrorABS < 3 && RErrorABS < 3) && (runtime.seconds() < timeoutS));
+                else if(LError > 0)
+                {
+                    robot.fLMotor.setPower(FBAdjustedPower);
+                    robot.fRMotor.setPower(FBAdjustedPower);
+                    robot.bLMotor.setPower(FBAdjustedPower);
+                    robot.bRMotor.setPower(FBAdjustedPower);
+                }
+
+                telemetry.addData("Pos L", LPos);
+                telemetry.addData("Pos M", MPos);
+                telemetry.addData("Pos R", RPos);
+                telemetry.addData("target", distance);
+                telemetry.addData("LErrorABS", LErrorABS);
+                telemetry.addData("RErrorABS", RErrorABS);
+                telemetry.update();
+            } while ((LErrorABS > 3 && RErrorABS > 3) && (runtime.seconds() < timeoutS));
         }
         else if(direction == 'l' || direction == 'r')
         {
@@ -1725,13 +1742,14 @@ public class AutonDrivingPartial extends LinearOpMode {
                     robot.bLMotor.setPower(-MAdjustedPower);
                     robot.bRMotor.setPower(MAdjustedPower);
                 }
-            } while ((MErrorABS < 3) && (runtime.seconds() < timeoutS));
+            } while ((MErrorABS > 3) && (runtime.seconds() < timeoutS));
         }
 
         robot.fLMotor.setPower(0);
         robot.fRMotor.setPower(0);
         robot.bLMotor.setPower(0);
         robot.bRMotor.setPower(0);
+        telemetry.addData("Path Complete", true);
         sleep(100);
     }
 

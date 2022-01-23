@@ -135,7 +135,9 @@ public class TestingAuton extends AutonDrivingPartial {
 //        turnToPosition(0, "z", BEST_TURN_SPEED, 5);
         //turnToPosition(90, "z", .1, 5);
 
-        odometerEncoderDrive(.5, 'f', 10, 5);
+        odometerEncoderDriveV2(10, FORWARD_SPEED, .015, 'f',  5);
+
+        sleep(5000);
 
         if (opModeIsActive()) {
 
