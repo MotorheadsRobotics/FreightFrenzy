@@ -1624,34 +1624,34 @@ public class AutonDrivingPartial extends LinearOpMode {
         {
             do {
                 LPos = LEncoder.getCurrentPosition();
-                MPos = MEncoder.getCurrentPosition();
+//                MPos = MEncoder.getCurrentPosition();
                 RPos = REncoder.getCurrentPosition();
 
                 LError = distance - LPos;
-                MError = distance - MPos;
+//                MError = distance - MPos;
                 RError = distance - RPos;
 
                 LErrorABS = Math.abs(LError);
-                MErrorABS = Math.abs(MError);
+//                MErrorABS = Math.abs(MError);
                 RErrorABS = Math.abs(RError);
 
                 LTravelled = LPos - LPosOriginal;
-                MTravelled = MPos - MPosOriginal;
+//                MTravelled = MPos - MPosOriginal;
                 RTravelled = RPos - RPosOriginal;
 
                 LTravelledABS = Math.abs(LTravelled);
-                MTravelledABS = Math.abs(MTravelled);
+//                MTravelledABS = Math.abs(MTravelled);
                 RTravelledABS = Math.abs(RTravelled);
 
                 double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
-                double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
+//                double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
                 double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
 
                 double forwardBackFunctionalSpeed = (LFunctionalSpeed + RFunctionalSpeed)/2;
 
                 double FBAdjustedPower = Math.min(maxSpeed, forwardBackFunctionalSpeed);
                 double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
-                double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
+//                double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
                 double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
 
                 //TODO: ADD TELEMETRY BULLSHIT
@@ -1678,36 +1678,36 @@ public class AutonDrivingPartial extends LinearOpMode {
         else if(direction == 'l' || direction == 'r')
         {
             do {
-                LPos = LEncoder.getCurrentPosition();
+//                LPos = LEncoder.getCurrentPosition();
                 MPos = MEncoder.getCurrentPosition();
-                RPos = REncoder.getCurrentPosition();
+//                RPos = REncoder.getCurrentPosition();
 
-                LError = distance - LPos;
+//                LError = distance - LPos;
                 MError = distance - MPos;
-                RError = distance - RPos;
+//                RError = distance - RPos;
 
-                LErrorABS = Math.abs(LError);
+//                LErrorABS = Math.abs(LError);
                 MErrorABS = Math.abs(MError);
-                RErrorABS = Math.abs(RError);
+//                RErrorABS = Math.abs(RError);
 
-                LTravelled = LPos - LPosOriginal;
+//                LTravelled = LPos - LPosOriginal;
                 MTravelled = MPos - MPosOriginal;
-                RTravelled = RPos - RPosOriginal;
+//                RTravelled = RPos - RPosOriginal;
 
-                LTravelledABS = Math.abs(LTravelled);
+//                LTravelledABS = Math.abs(LTravelled);
                 MTravelledABS = Math.abs(MTravelled);
-                RTravelledABS = Math.abs(RTravelled);
+//                RTravelledABS = Math.abs(RTravelled);
 
-                double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
+//                double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
                 double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
-                double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
+//                double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
 
-                double forwardBackFunctionalSpeed = (LFunctionalSpeed + RFunctionalSpeed)/2;
+//                double forwardBackFunctionalSpeed = (LFunctionalSpeed + RFunctionalSpeed)/2;
 
-                double FBAdjustedPower = Math.min(maxSpeed, forwardBackFunctionalSpeed);
-                double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
+//                double FBAdjustedPower = Math.min(maxSpeed, forwardBackFunctionalSpeed);
+//                double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
                 double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
-                double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
+//                double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
 
                 //TODO: ADD TELEMETRY BULLSHIT
 
