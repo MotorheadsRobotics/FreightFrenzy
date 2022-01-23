@@ -25,7 +25,7 @@ public class HardwarePartial
 //    public DcMotor pulleyMotorL;
     public DcMotor pulleyMotorR;
 //
-//    public Servo bucketServo;
+    public Servo bucketServo;
 //
 //    public DigitalChannel liftLimit;
 //
@@ -159,6 +159,8 @@ public class HardwarePartial
         bRMotor.setDirection(DcMotor.Direction.FORWARD);
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
 //        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 //
 //        pulleyMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -166,7 +168,8 @@ public class HardwarePartial
 
 
         // Set up Servos
-//        bucketServo = hwMap.get(Servo.class, "bucketServo");
+        bucketServo = hwMap.get(Servo.class, "bucketServo");
+        bucketServo.scaleRange(.3, .8);
 
 
 
