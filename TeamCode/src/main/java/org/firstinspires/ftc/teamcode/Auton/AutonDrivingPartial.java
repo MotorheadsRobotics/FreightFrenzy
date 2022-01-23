@@ -1591,13 +1591,19 @@ public class AutonDrivingPartial extends LinearOpMode {
         double MPos = MEncoder.getCurrentPosition();
         double RPos = REncoder.getCurrentPosition();
 
-        double LError = distance - LPos;
-        double MError = distance - MPos;
-        double RError = distance - RPos;
+
 
         double LTargetPos = distance + LPosOriginal;
         double MTargetPos = distance + MPosOriginal;
         double RTargetPos = distance + RPosOriginal;
+
+        double LError = LTargetPos - LPos;
+        double MError = MTargetPos - MPos;
+        double RError = RTargetPos + RPos;
+
+        double LErrorOriginal = LTargetPos - LPos;
+        double MErrorOriginal = MTargetPos - MPos;
+        double RErrorOriginal = RTargetPos + RPos;
 
         double LErrorABS = Math.abs(LError);
         double MErrorABS = Math.abs(MError);
@@ -1652,16 +1658,30 @@ public class AutonDrivingPartial extends LinearOpMode {
 //                MTravelledABS = Math.abs(MTravelled);
                 RTravelledABS = Math.abs(RTravelled);
 
-                double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
+//                double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
 //                double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
-                double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
+//                double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
 
-                double forwardBackFunctionalSpeed = (LFunctionalSpeed + RFunctionalSpeed)/2;
+                double LAdjuster = Math.abs(LError / LErrorOriginal);
+                LAdjuster += minSpeed;
+                LAdjuster = Math.min(1, LAdjuster);
+                double LAdjustedPower = LAdjuster * maxSpeed;
+                LAdjustedPower = Math.max(LAdjustedPower, minSpeed);
+//                double LFunctionalSpeed = Math.max(LAdjustedPower, minSpeed);
 
-                double FBAdjustedPower = Math.min(maxSpeed, forwardBackFunctionalSpeed);
-                double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
+                double RAdjuster = Math.abs(RError / RErrorOriginal);
+                RAdjuster += minSpeed;
+                RAdjuster = Math.min(1, RAdjuster);
+                double RAdjustedPower = RAdjuster * maxSpeed;
+                RAdjustedPower = Math.max(RAdjustedPower, minSpeed);
+//                double RFunctionalSpeed = Math.max(RAdjustedPower, minSpeed);
+
+//                double forwardBackFunctionalSpeed = (LFunctionalSpeed + RFunctionalSpeed)/2;
+
+//                double FBAdjustedPower = Math.min(maxSpeed, forwardBackFunctionalSpeed);
+//                double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
 //                double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
-                double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
+//                double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
 
                 //TODO: ADD TELEMETRY BULLSHIT
 
@@ -1670,17 +1690,17 @@ public class AutonDrivingPartial extends LinearOpMode {
                 //so it wouldn't matter anyways.
                 if(LError < 0)
                 {
-                    robot.fLMotor.setPower(-FBAdjustedPower);
-                    robot.fRMotor.setPower(-FBAdjustedPower);
-                    robot.bLMotor.setPower(-FBAdjustedPower);
-                    robot.bRMotor.setPower(-FBAdjustedPower);
+                    robot.fLMotor.setPower(-LAdjustedPower);
+                    robot.fRMotor.setPower(-RAdjustedPower);
+                    robot.bLMotor.setPower(-LAdjustedPower);
+                    robot.bRMotor.setPower(-RAdjustedPower);
                 }
                 else if(LError > 0)
                 {
-                    robot.fLMotor.setPower(FBAdjustedPower);
-                    robot.fRMotor.setPower(FBAdjustedPower);
-                    robot.bLMotor.setPower(FBAdjustedPower);
-                    robot.bRMotor.setPower(FBAdjustedPower);
+                    robot.fLMotor.setPower(LAdjustedPower);
+                    robot.fRMotor.setPower(RAdjustedPower);
+                    robot.bLMotor.setPower(LAdjustedPower);
+                    robot.bRMotor.setPower(RAdjustedPower);
                 }
 
                 telemetry.addData("Pos L", LPos);
