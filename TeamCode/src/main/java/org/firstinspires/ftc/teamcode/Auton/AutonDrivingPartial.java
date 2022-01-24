@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,29 +32,23 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwarePartial;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
 //@Autonomous(name="AutonDrivingDriveOnly", group="AutonTesting")
 public class AutonDrivingPartial extends LinearOpMode {
 
     /* Declare OpMode members. */
     public HardwarePartial robot = new HardwarePartial();
-
     public ElapsedTime runtime = new ElapsedTime();
     public String xyz = "z";
     //CONTAINS ALL METHODS AND VARIABlES TO BE EXTENDED BY OTHER AUTON CLASSES
     static final double     COUNTS_PER_MOTOR_REV = 384.5;    // GoBilda 5202 Series 13.7:1
-    //static final double     COUNTS_PER_REV_ARM = 1495; //torquenado
+    //static final double
+    // COUNTS_PER_REV_ARM = 1495; //torquenado
     //static final double     PULLEY_DIAMETER = 1.3;
     // static final double     COUNTS_PER_INCH_ARM = COUNTS_PER_REV_ARM/(PULLEY_DIAMETER * Math.PI);
     static final double     DRIVE_GEAR_REDUCTION = 1.0;    // This is < 1.0 if geared UP //On OUR CENTER MOTOR THE GEAR REDUCTION IS .5
     static final double     WHEEL_DIAMETER_INCHES = 4.65;     // For figuring circumference
     static final double     COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
-    static final double     ODO_COUNTS_PER_INCH = 1864.2;
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
@@ -137,10 +136,138 @@ public class AutonDrivingPartial extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
     }
 
+    public double avg(double... args) {
+        double average = 0;
+        for (double arg: args) {
+            average += arg;
+        }
+        return average / args.length;
+    }
 
+    public void gyroDrive (double distance, double angle, boolean initBoost, double speed, double speedMult, double timeoutS)
+    {
+        runtime.reset();
+        angle *= -1;
+        stopAndReset();
+
+        int fLTarget;
+        int fRTarget;
+        int bLTarget;
+        int bRTarget;
+
+        int fLInit = robot.fLMotor.getCurrentPosition();
+        int fRInit = robot.fRMotor.getCurrentPosition();
+        int bLInit = robot.bLMotor.getCurrentPosition();
+        int bRInit = robot.bRMotor.getCurrentPosition();
+
+        //int     newRightTarget;
+        int     moveCounts;
+        double  max;
+        double  error;
+        double  steer;
+        double  leftSpeed;
+        double  rightSpeed;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            moveCounts = (int)(distance * COUNTS_PER_INCH);
+            fLTarget = robot.fLMotor.getCurrentPosition() + moveCounts;
+            fRTarget = robot.fRMotor.getCurrentPosition() + moveCounts;
+            bLTarget = robot.bLMotor.getCurrentPosition() + moveCounts;
+            bRTarget = robot.bLMotor.getCurrentPosition() + moveCounts;
+
+            // Set Target and Turn On RUN_TO_POSITION
+            robot.fLMotor.setTargetPosition(fLTarget);
+            robot.fRMotor.setTargetPosition(fRTarget);
+            robot.bLMotor.setTargetPosition(bLTarget);
+            robot.bRMotor.setTargetPosition(bRTarget);
+
+
+            robot.fLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.fRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.bLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.bRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // start motion.
+            //gyroDriveSpeed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            robot.fLMotor.setPower(speed);
+            robot.fRMotor.setPower(speed);
+            robot.bLMotor.setPower(speed);
+            robot.bRMotor.setPower(speed);
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (opModeIsActive() &&
+                    (robot.fLMotor.isBusy() && robot.fRMotor.isBusy() && robot.bLMotor.isBusy() && robot.bRMotor.isBusy()) && runtime.seconds() < timeoutS) {
+
+                // adjust relative speed based on heading error.
+                error = getError(angle);
+
+                if(Math.abs(error) < gyroDriveThreshold)
+                {
+                    error = 0;
+                }
+
+                //changes powers in order to correct for turning while driving
+                steer = -getSteer(error, P_DRIVE_COEFF);
+
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0)
+                    steer *= -1.0;
+
+                leftSpeed = speed + steer;
+                rightSpeed = speed - steer;
+
+                //makes first 100 counts faster bc drive takes a lot of time to accelerate
+                if(initBoost) {
+                    if (Math.abs(robot.fLMotor.getCurrentPosition() - fLInit) < 100 && Math.abs(robot.bLMotor.getCurrentPosition() - bLInit) < 100)
+                    {
+                        leftSpeed += gyroDriveInitBoost;
+                    }
+                    if (Math.abs(robot.fRMotor.getCurrentPosition() - fRInit) < 100 && Math.abs(robot.bRMotor.getCurrentPosition() - bRInit) < 100)
+                    {
+                        rightSpeed += gyroDriveInitBoost;
+                    }
+                }
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                if (max > 1.0)
+                {
+                    leftSpeed /= max;
+                    rightSpeed /= max;
+                }
+
+                leftSpeed *= speedMult;
+                rightSpeed *= speedMult;
+
+                robot.fLMotor.setPower(leftSpeed);
+                robot.fRMotor.setPower(rightSpeed);
+                robot.bLMotor.setPower(leftSpeed);
+                robot.bRMotor.setPower(rightSpeed);
+
+                // Display drive status for the driver.
+                telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
+                telemetry.addData("Target",  "%7d:%7d:%7d:%7d",      fLTarget,  fRTarget, bLTarget, bRTarget);
+                telemetry.addData("Actual",  "%7d:%7d:%7d:%7d",      robot.fLMotor.getCurrentPosition(),
+                        robot.fRMotor.getCurrentPosition(), robot.bLMotor.getCurrentPosition(), robot.bRMotor.getCurrentPosition());
+                telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+                telemetry.addData("Angle", angle);
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            normalDrive(0, 0, false);
+
+            //correct for drift during drive
+            //turnToPosition(-angle, "z", turnSpeed, 3);
+
+            // Turn off RUN_TO_POSITION
+            stopAndReset();
+        }
+    }
 
     public String vuforia(List<VuforiaTrackable> allTrackables, VuforiaTrackables targetsSkyStone)
     {
@@ -221,6 +348,7 @@ public class AutonDrivingPartial extends LinearOpMode {
         EAST = NORTH + 90;
         WEST = NORTH - 90;
     }
+
     public static double counts(double inches)
     {
         double newInches = (inches - 3.7959) / 1.1239;
@@ -238,25 +366,6 @@ public class AutonDrivingPartial extends LinearOpMode {
             telemetry.addData("Null Pointer Exception", "true");
         }
     }
-
-
-//    public boolean DistanceCheck(double fLInches, double fRInches, double bLInches, double bRInches, double startTime, double currentTime, double timeOutS) {
-//
-//
-//        if ((robot.fLDist.getDistance(DistanceUnit.INCH) < fLInches &&
-//                robot.fRDist.getDistance(DistanceUnit.INCH) < fRInches &&
-//                robot.bLDist.getDistance(DistanceUnit.INCH) < bLInches &&
-//                robot.bRDist.getDistance(DistanceUnit.INCH) < bRInches) ||
-//                (currentTime - startTime) > timeOutS)
-//        {
-//            return true;
-//        }
-//        else
-//        {
-//            return false;
-//        }
-//    }
-
 
     public void normalDrive(double lpower, double rpower, boolean encoder)
     {
@@ -470,9 +579,10 @@ public class AutonDrivingPartial extends LinearOpMode {
         double originalAngle = readAngle(xyz);
 
         double target = degrees;
+        double targetABS = Math.abs(target);
 
         //wild
-
+// the line above sounds like Ria
 
         //telemetry.addData("hello", "1");
         //telemetry.update();
@@ -481,10 +591,17 @@ public class AutonDrivingPartial extends LinearOpMode {
 
         double angle = readAngle(xyz); //variable for gyro correction around z axis
         double error = target - angle;
+        final double originalError = error;
         double errorABS = Math.abs(error);
         double powerScaled = topPower;
         double degreesTurned;
         double degreesTurnedABS;
+
+        double maxPower = topPower;
+        double minPower = 0.15;
+        double beginSlowing = error/2; // degrees before target at which point the robot slows down
+        double slowRate = 0.085;
+
         telemetry.addData("original angle", originalAngle);
         telemetry.addData("current angle", readAngle(xyz));
         telemetry.addData("error", error);
@@ -502,23 +619,38 @@ public class AutonDrivingPartial extends LinearOpMode {
             degreesTurned = angle - originalAngle;
             degreesTurnedABS = Math.abs(degreesTurned);
 
+//            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (-((targetABS - degreesTurnedABS) - beginSlowing)));
+//            double adjustedPower = Math.min(maxPower, functionalPower); xander code obliterate :)
+            double adjuster = Math.abs(error/originalError);
+            adjuster += minPower;
+            adjuster = Math.min(1, adjuster);
+            double adjustedPower = adjuster * maxPower;
+            adjustedPower = Math.max(adjustedPower, minPower);
+
             //double powerScaled = power*pidMultiplier(error);
             telemetry.addData("original angle", originalAngle);
             telemetry.addData("current angle", readAngle(xyz));
             telemetry.addData("error", error);
             telemetry.addData("target", target);
-            telemetry.addData("Motor Power", powerScaled/degreesTurnedABS*errorABS);
+//            telemetry.addData("Functional Power", functionalPower);
+//            telemetry.addData("Motor Power", adjustedPower);
             //telemetry.addData("degrees", degrees);
             telemetry.update();
+
+            //!!!!!!!!!!!!!!!!!!!!! EXPERIMENTAL
+            //TODO: SEEMS LIKE A STRANGE THING WHERE THE ANGLE TO TURN TO IS ADDED BY WHERE IT SHOULD STOP SLOWING
+            //TODO: ALSO DOESNT SLOW
+//            adjustedPower = functionalPower;
+
             if (error < 0)
             {
-                normalDrive((powerScaled/degreesTurnedABS*errorABS), -(powerScaled/degreesTurnedABS*errorABS), true);
+                normalDrive((adjustedPower), -(adjustedPower), false);
             }
             else if (error > 0)
             {
-                normalDrive(-(powerScaled/degreesTurnedABS*errorABS), (powerScaled/degreesTurnedABS*errorABS), true);
+                normalDrive(-(adjustedPower), (adjustedPower), false);
             }
-        } while (opModeIsActive() && (Math.abs(error) > 2) && (runtime.seconds() < timeoutS));
+        } while (opModeIsActive() && (Math.abs(error) > 0.5) && (runtime.seconds() < timeoutS));
 
         normalDrive(0, 0, false);
         //stopAndReset();
@@ -660,18 +792,7 @@ public class AutonDrivingPartial extends LinearOpMode {
         robot.bRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.bLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.fRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.fLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.armExt.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.armLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.susan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //
-//        robot.bRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        robot.bLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        robot.fRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        robot.fLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //robot.armExt.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //robot.armLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //robot.susan.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.fLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public double pidMultiplierDriving(double error) {
@@ -701,128 +822,7 @@ public class AutonDrivingPartial extends LinearOpMode {
         }
 }
 
-    public void gyroDrive (double distance, double angle, boolean initBoost, double speed, double speedMult, double timeoutS)
-    {
-        runtime.reset();
-        angle *= -1;
-        stopAndReset();
 
-        int fLTarget;
-        int fRTarget;
-        int bLTarget;
-        int bRTarget;
-
-        int fLInit = robot.fLMotor.getCurrentPosition();
-        int fRInit = robot.fRMotor.getCurrentPosition();
-        int bLInit = robot.bLMotor.getCurrentPosition();
-        int bRInit = robot.bRMotor.getCurrentPosition();
-
-        //int     newRightTarget;
-        int     moveCounts;
-        double  max;
-        double  error;
-        double  steer;
-        double  leftSpeed;
-        double  rightSpeed;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            moveCounts = (int)(distance * COUNTS_PER_INCH);
-            fLTarget = robot.fLMotor.getCurrentPosition() + moveCounts;
-            fRTarget = robot.fRMotor.getCurrentPosition() + moveCounts;
-            bLTarget = robot.bLMotor.getCurrentPosition() + moveCounts;
-            bRTarget = robot.bLMotor.getCurrentPosition() + moveCounts;
-
-            // Set Target and Turn On RUN_TO_POSITION
-            robot.fLMotor.setTargetPosition(fLTarget);
-            robot.fRMotor.setTargetPosition(fRTarget);
-            robot.bLMotor.setTargetPosition(bLTarget);
-            robot.bRMotor.setTargetPosition(bRTarget);
-
-
-            robot.fLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.fRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.bLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.bRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // start motion.
-            //gyroDriveSpeed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.fLMotor.setPower(speed);
-            robot.fRMotor.setPower(speed);
-            robot.bLMotor.setPower(speed);
-            robot.bRMotor.setPower(speed);
-
-            // keep looping while we are still active, and BOTH motors are running.
-            while (opModeIsActive() &&
-                    (robot.fLMotor.isBusy() && robot.fRMotor.isBusy() && robot.bLMotor.isBusy() && robot.bRMotor.isBusy()) && runtime.seconds() < timeoutS) {
-
-                // adjust relative speed based on heading error.
-                error = getError(angle);
-
-                if(Math.abs(error) < gyroDriveThreshold)
-                {
-                    error = 0;
-                }
-
-                //changes powers in order to correct for turning while driving
-                steer = -getSteer(error, P_DRIVE_COEFF);
-
-                // if driving in reverse, the motor correction also needs to be reversed
-                if (distance < 0)
-                    steer *= -1.0;
-
-                leftSpeed = speed + steer;
-                rightSpeed = speed - steer;
-
-                //makes first 100 counts faster bc drive takes a lot of time to accelerate
-                if(initBoost) {
-                    if (Math.abs(robot.fLMotor.getCurrentPosition() - fLInit) < 100 && Math.abs(robot.bLMotor.getCurrentPosition() - bLInit) < 100)
-                    {
-                        leftSpeed += gyroDriveInitBoost;
-                    }
-                    if (Math.abs(robot.fRMotor.getCurrentPosition() - fRInit) < 100 && Math.abs(robot.bRMotor.getCurrentPosition() - bRInit) < 100)
-                    {
-                        rightSpeed += gyroDriveInitBoost;
-                    }
-                }
-                // Normalize speeds if either one exceeds +/- 1.0;
-                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-                if (max > 1.0)
-                {
-                    leftSpeed /= max;
-                    rightSpeed /= max;
-                }
-
-                leftSpeed *= speedMult;
-                rightSpeed *= speedMult;
-
-                robot.fLMotor.setPower(leftSpeed);
-                robot.fRMotor.setPower(rightSpeed);
-                robot.bLMotor.setPower(leftSpeed);
-                robot.bRMotor.setPower(rightSpeed);
-
-                // Display drive status for the driver.
-                telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-                telemetry.addData("Target",  "%7d:%7d:%7d:%7d",      fLTarget,  fRTarget, bLTarget, bRTarget);
-                telemetry.addData("Actual",  "%7d:%7d:%7d:%7d",      robot.fLMotor.getCurrentPosition(),
-                        robot.fRMotor.getCurrentPosition(), robot.bLMotor.getCurrentPosition(), robot.bRMotor.getCurrentPosition());
-                telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
-                telemetry.addData("Angle", angle);
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            normalDrive(0, 0, false);
-
-            //correct for drift during drive
-            //turnToPosition(-angle, "z", turnSpeed, 3);
-
-            // Turn off RUN_TO_POSITION
-            stopAndReset();
-        }
-    }
 
     /*public void gyroStrafe (double distance, double angle, boolean initBoost, double speed, double speedMult)
     {
@@ -1474,657 +1474,7 @@ public class AutonDrivingPartial extends LinearOpMode {
             sleep(100);   // optional pause after each move
         }
     }
-
-    public void turnToPositionKevin (double degrees, String xyz, double topPower, double timeoutS) {
-        //stopAndReset();\
-        //degrees *= -1;
-
-        double originalAngle = readAngle(xyz);
-
-        double target = degrees;
-        double targetABS = Math.abs(target);
-
-        //wild
-// the line above sounds like Ria
-
-        //telemetry.addData("hello", "1");
-        //telemetry.update();
-
-        runtime.reset();
-
-        double angle = readAngle(xyz); //variable for gyro correction around z axis
-        double error = target - angle;
-        double errorABS = Math.abs(error);
-        double powerScaled = topPower;
-        double degreesTurned;
-        double degreesTurnedABS;
-
-        double maxPower = topPower;
-        double minPower = 0.15;
-        double beginSlowing = error/2; // degrees before target at which point the robot slows down
-        double slowRate = 0.085;
-
-        telemetry.addData("original angle", originalAngle);
-        telemetry.addData("current angle", readAngle(xyz));
-        telemetry.addData("error", error);
-        telemetry.addData("target", target);
-        telemetry.update();
-        sleep(250);
-        do {
-            //telemetry.addData("hello", "2");
-            //sleep(1000);
-            //telemetry.update();
-            angle = readAngle(xyz);
-            error = target - angle;
-            errorABS = Math.abs(error);
-
-            degreesTurned = angle - originalAngle;
-            degreesTurnedABS = Math.abs(degreesTurned);
-
-
-            double functionalPower = minPower + (maxPower - minPower) * Math.exp(-slowRate * (-((targetABS - degreesTurnedABS) - beginSlowing)));
-            double adjustedPower = Math.min(maxPower, functionalPower);
-
-            //double powerScaled = power*pidMultiplier(error);
-            telemetry.addData("original angle", originalAngle);
-            telemetry.addData("current angle", readAngle(xyz));
-            telemetry.addData("error", error);
-            telemetry.addData("target", target);
-            telemetry.addData("Functional Power", functionalPower);
-            telemetry.addData("Motor Power", adjustedPower);
-            //telemetry.addData("degrees", degrees);
-            telemetry.update();
-
-            //!!!!!!!!!!!!!!!!!!!!! EXPERIMENTAL
-            //TODO: SEEMS LIKE A STRANGE THING WHERE THE ANGLE TO TURN TO IS ADDED BY WHERE IT SHOULD STOP SLOWING
-            //TODO: ALSO DOESNT SLOW
-//            adjustedPower = functionalPower;
-
-            if (error < 0)
-            {
-                normalDrive((adjustedPower), -(adjustedPower), false);
-            }
-            else if (error > 0)
-            {
-                normalDrive(-(adjustedPower), (adjustedPower), false);
-            }
-        } while (opModeIsActive() && (Math.abs(error) > 0.5) && (runtime.seconds() < timeoutS));
-
-        normalDrive(0, 0, false);
-        //stopAndReset();
-        updateAngles();
-        sleep(500);
-    }
-
-    public void odometerEncoderDriveV2(double distance, double maxSpeed, double minSpeed, char direction, double timeoutS)
-    {
-        //stopAndReset(); Unnecessary given the nature of encoders
-        //Left Encoder Forward -> (+)/-
-        //Mid Encoder Right -> +/(-)
-        //Right Encoder Right -> +/(-)
-
-
-        distance *= ODO_COUNTS_PER_INCH;
-
-
-        float dirMult = 1;
-        if(direction == 'b' || direction == 'l') // will change depending on how odometers report values
-        {
-            dirMult = -1;
-        }
-        else
-        {
-            dirMult = 1;
-        }
-
-        double distanceABS = Math.abs(distance);
-
-        DcMotor LEncoder = robot.bLMotor;
-        DcMotor MEncoder = robot.bRMotor;
-        DcMotor REncoder = robot.fRMotor;
-
-        double LPosOriginal = LEncoder.getCurrentPosition();
-        double MPosOriginal = MEncoder.getCurrentPosition();
-        double RPosOriginal = REncoder.getCurrentPosition();
-
-        runtime.reset();
-
-        double LPos = LEncoder.getCurrentPosition();
-        double MPos = MEncoder.getCurrentPosition();
-        double RPos = REncoder.getCurrentPosition();
-
-
-
-        double LTargetPos = distance + LPosOriginal;
-        double MTargetPos = distance + MPosOriginal;
-        double RTargetPos = distance + RPosOriginal;
-
-        double LError = LTargetPos - LPos;
-        double MError = MTargetPos - MPos;
-        double RError = RTargetPos + RPos;
-
-        double LErrorOriginal = LTargetPos - LPos;
-        double MErrorOriginal = MTargetPos - MPos;
-        double RErrorOriginal = RTargetPos + RPos;
-
-        double LErrorABS = Math.abs(LError);
-        double MErrorABS = Math.abs(MError);
-        double RErrorABS = Math.abs(RError);
-
-        double LTravelled = 0;
-        double MTravelled = 0;
-        double RTravelled = 0;
-
-        double LTravelledABS = Math.abs(LTravelled);
-        double MTravelledABS = Math.abs(MTravelled);
-        double RTravelledABS = Math.abs(RTravelled);
-
-        double LBeginSlowing = LError/2;
-        double MBeginSlowing = MError/2;
-        double RBeginSlowing = RError/2;
-
-        double slowRate = 0.085 * 2;
-
-        telemetry.addData("Pos L", LPos);
-        telemetry.addData("Pos M", MPos);
-        telemetry.addData("Pos R", RPos);
-//        telemetry.addData("FBAdjustedSpeed", Ad)
-        telemetry.addData("target", distance);
-        telemetry.update();
-        sleep(1000);
-
-        /*
-        TODO: IMPLEMENT DRIFT CONTROL BASED ON THE READINGS OF THE
-        TODO: OTHER ENCODERS
-         */
-        if(direction == 'f' || direction == 'b')
-        {
-            do {
-                LPos = LEncoder.getCurrentPosition();
-//                MPos = MEncoder.getCurrentPosition();
-                RPos = REncoder.getCurrentPosition();
-
-                LError = LTargetPos - LPos;
-//                MError = distance - MPos;
-                RError =  RTargetPos + RPos;
-
-                LErrorABS = Math.abs(LError);
-//                MErrorABS = Math.abs(MError);
-                RErrorABS = Math.abs(RError);
-
-                LTravelled = LPos - LPosOriginal;
-//                MTravelled = MPos - MPosOriginal;
-                RTravelled = RPos - RPosOriginal;
-
-                LTravelledABS = Math.abs(LTravelled);
-//                MTravelledABS = Math.abs(MTravelled);
-                RTravelledABS = Math.abs(RTravelled);
-
-//                double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
-//                double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
-//                double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
-
-                double LAdjuster = Math.abs(LError / LErrorOriginal);
-                LAdjuster += minSpeed;
-                LAdjuster = Math.min(1, LAdjuster);
-                double LAdjustedPower = LAdjuster * maxSpeed;
-                LAdjustedPower = Math.max(LAdjustedPower, minSpeed);
-//                double LFunctionalSpeed = Math.max(LAdjustedPower, minSpeed);
-
-                double RAdjuster = Math.abs(RError / RErrorOriginal);
-                RAdjuster += minSpeed;
-                RAdjuster = Math.min(1, RAdjuster);
-                double RAdjustedPower = RAdjuster * maxSpeed;
-                RAdjustedPower = Math.max(RAdjustedPower, minSpeed);
-//                double RFunctionalSpeed = Math.max(RAdjustedPower, minSpeed);
-
-//                double forwardBackFunctionalSpeed = (LFunctionalSpeed + RFunctionalSpeed)/2;
-
-//                double FBAdjustedPower = Math.min(maxSpeed, forwardBackFunctionalSpeed);
-//                double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
-//                double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
-//                double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
-
-                //TODO: ADD TELEMETRY BULLSHIT
-
-                //only checks for LError because it shouldn't matter to check both
-                //if the two somehow desync their sign it means that the motors died
-                //so it wouldn't matter anyways.
-                if(LError < 0)
-                {
-                    robot.fLMotor.setPower(-LAdjustedPower);
-                    robot.fRMotor.setPower(-RAdjustedPower);
-                    robot.bLMotor.setPower(-LAdjustedPower);
-                    robot.bRMotor.setPower(-RAdjustedPower);
-                }
-                else if(LError > 0)
-                {
-                    robot.fLMotor.setPower(LAdjustedPower);
-                    robot.fRMotor.setPower(RAdjustedPower);
-                    robot.bLMotor.setPower(LAdjustedPower);
-                    robot.bRMotor.setPower(RAdjustedPower);
-                }
-
-                telemetry.addData("Pos L", LPos);
-                telemetry.addData("Pos M", MPos);
-                telemetry.addData("Pos R", RPos);
-                telemetry.addData("target", distance);
-                telemetry.addData("LErrorABS", LErrorABS);
-                telemetry.addData("RErrorABS", RErrorABS);
-                telemetry.update();
-            } while ((LErrorABS > 3 && RErrorABS > 3) && (runtime.seconds() < timeoutS));
-        }
-        else if(direction == 'l' || direction == 'r')
-        {
-            do {
-//                LPos = LEncoder.getCurrentPosition();
-                MPos = MEncoder.getCurrentPosition();
-//                RPos = REncoder.getCurrentPosition();
-
-//                LError = distance - LPos;
-                MError = distance - MPos;
-//                RError = distance - RPos;
-
-//                LErrorABS = Math.abs(LError);
-                MErrorABS = Math.abs(MError);
-//                RErrorABS = Math.abs(RError);
-
-//                LTravelled = LPos - LPosOriginal;
-                MTravelled = MPos - MPosOriginal;
-//                RTravelled = RPos - RPosOriginal;
-
-//                LTravelledABS = Math.abs(LTravelled);
-                MTravelledABS = Math.abs(MTravelled);
-//                RTravelledABS = Math.abs(RTravelled);
-
-//                double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
-                double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
-//                double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
-
-//                double forwardBackFunctionalSpeed = (LFunctionalSpeed + RFunctionalSpeed)/2;
-
-//                double FBAdjustedPower = Math.min(maxSpeed, forwardBackFunctionalSpeed);
-//                double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
-                double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
-//                double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
-
-                //TODO: ADD TELEMETRY BULLSHIT
-
-                if(MError < 0)
-                {
-                    robot.fLMotor.setPower(-MAdjustedPower);
-                    robot.fRMotor.setPower(MAdjustedPower);
-                    robot.bLMotor.setPower(MAdjustedPower);
-                    robot.bRMotor.setPower(-MAdjustedPower);
-                }
-                else if(MError > 0)
-                {
-                    robot.fLMotor.setPower(MAdjustedPower);
-                    robot.fRMotor.setPower(-MAdjustedPower);
-                    robot.bLMotor.setPower(-MAdjustedPower);
-                    robot.bRMotor.setPower(MAdjustedPower);
-                }
-            } while ((MErrorABS > 3) && (runtime.seconds() < timeoutS));
-        }
-
-        robot.fLMotor.setPower(0);
-        robot.fRMotor.setPower(0);
-        robot.bLMotor.setPower(0);
-        robot.bRMotor.setPower(0);
-        telemetry.addData("Path Complete", true);
-        sleep(100);
-    }
-
-    public void odometerEncoderDrive(double speed, char direction, double inches, double timeoutS) {
-
-        DcMotor LEncoder = robot.bLMotor;
-        DcMotor MEncoder = robot.bRMotor;
-        DcMotor REncoder = robot.fRMotor;
-
-        int newLeftTarget = 0;
-        int newMidTarget = 0;
-        int newRightTarget = 0;
-
-        stopAndReset();
-
-        int leftOriginal = robot.bLMotor.getCurrentPosition();
-        int midOriginal = robot.bRMotor.getCurrentPosition();
-        int rightOriginal = robot.fRMotor.getCurrentPosition();
-
-        int targetCounts = (int)(inches * ODO_COUNTS_PER_INCH);
-        int targetCountsABS = Math.abs(targetCounts);
-
-        boolean directionIsTrue = true;
-
-
-        // Ensure that the opmode is still active
-            switch (direction) {
-                case 'f':
-                    //these four statements original had (- error) appended. Seems like a jank fix
-                    newLeftTarget = robot.bLMotor.getCurrentPosition() + targetCounts;
-                    //newMidTarget = robot.bRMotor.getCurrentPosition() + targetCounts;
-                    newRightTarget = robot.fRMotor.getCurrentPosition() + targetCounts;
-
-                    robot.bLMotor.setTargetPosition(newLeftTarget);
-                    //robot.bRMotor.setTargetPosition(newMidTarget);
-                    robot.fRMotor.setTargetPosition(newRightTarget);
-                    break;
-                case 'b':
-                    //same as f but negative
-                    newLeftTarget = robot.bLMotor.getCurrentPosition() - targetCounts;
-                    //newMidTarget = robot.bRMotor.getCurrentPosition() - targetCounts;
-                    newRightTarget = robot.fRMotor.getCurrentPosition() - targetCounts;
-
-                    robot.bLMotor.setTargetPosition(newLeftTarget);
-                    //robot.bRMotor.setTargetPosition(newMidTarget);
-                    robot.fRMotor.setTargetPosition(newRightTarget);
-                    break;
-                case 'l':
-                    newMidTarget = robot.bRMotor.getCurrentPosition() - targetCounts;
-                    robot.bRMotor.setTargetPosition(newMidTarget);
-                    break;
-                case 'r':
-                    newMidTarget = robot.bRMotor.getCurrentPosition() + targetCounts;
-                    robot.bRMotor.setTargetPosition(newMidTarget);
-                    break;
-                default:
-                    directionIsTrue = false;
-            }
-            // Determine new target position, and pass to motor controller
-
-            // Turn On RUN_TO_POSITION
-            robot.fLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            if (directionIsTrue) {
-                robot.fLMotor.setPower(Math.abs(speed));
-                robot.fRMotor.setPower(Math.abs(speed));
-                robot.bLMotor.setPower(Math.abs(speed));
-                robot.bRMotor.setPower(Math.abs(speed));
-            }
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (directionIsTrue) &&
-                    (runtime.seconds() < timeoutS) &&
-                    (robot.fLMotor.isBusy() && robot.fRMotor.isBusy() && robot.bLMotor.isBusy() && robot.bRMotor.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Target Positions",  "Running to Left: %7d Mid: %7d Right: %7d",
-                        newLeftTarget,
-                        newMidTarget,
-                        newRightTarget
-                        );
-                telemetry.addData("Current Powers",  "Running at fL: %7d fR: %7d bL: %7d bR: %7d",
-                        robot.fLMotor.getPower(),
-                        robot.fRMotor.getPower(),
-                        robot.bLMotor.getPower(),
-                        robot.bRMotor.getPower());
-                telemetry.update();
-
-
-                int rightError = targetCounts - robot.bLMotor.getCurrentPosition();
-                int midError = targetCounts - robot.bRMotor.getCurrentPosition();
-                int leftError = targetCounts - robot.fRMotor.getCurrentPosition();
-
-                int errors[] = {rightError, midError, leftError};
-
-                double fRSpeedAdjust = 1, fLSpeedAdjust = 1, bRSpeedAdjust = 1, bLSpeedAdjust = 1;
-                double speedAdjusts[] = {fRSpeedAdjust, fLSpeedAdjust, bRSpeedAdjust, bLSpeedAdjust};
-
-                int inchSlowThresh = 5;
-
-                int leftInchesTrav = (int) Math.abs(((robot.bLMotor.getCurrentPosition() - leftOriginal) / COUNTS_PER_INCH));
-                int midInchesTrav = (int) Math.abs(((robot.bRMotor.getCurrentPosition() - midOriginal) / COUNTS_PER_INCH));
-                int rightInchesTrav = (int) Math.abs(((robot.fRMotor.getCurrentPosition() - rightOriginal) / COUNTS_PER_INCH));
-                //int bLInchesTrav = (int) Math.abs(((robot.bLMotor.getCurrentPosition() - bLOriginal) / COUNTS_PER_INCH));
-
-                int inchesTrav[] = {leftInchesTrav, midInchesTrav, rightInchesTrav};
-
-//                switch(direction)
-//                {
-//                    case 'f':
-//                    {
-//                        fLSpeedAdjust = Math.abs(leftError/COUNTS_PER_INCH/inches);
-//                        fRSpeedAdjust = Math.abs(rightError/COUNTS_PER_INCH/inches);
-//                        bLSpeedAdjust = Math.abs(leftError/COUNTS_PER_INCH/inches);
-//                        bRSpeedAdjust = Math.abs(rightError/COUNTS_PER_INCH/inches);
-//                        break;
-//                    }
-//                    case 'b':
-//                    {
-//                        fLSpeedAdjust = -Math.abs(leftError/COUNTS_PER_INCH/inches);
-//                        fRSpeedAdjust = -Math.abs(rightError/COUNTS_PER_INCH/inches);
-//                        bLSpeedAdjust = -Math.abs(leftError/COUNTS_PER_INCH/inches);
-//                        bRSpeedAdjust = -Math.abs(rightError/COUNTS_PER_INCH/inches);
-//                        break;
-//                    }
-//                    case 'l':
-//                    {
-//                        fLSpeedAdjust = Math.abs(midError/COUNTS_PER_INCH/inches);
-//                        fRSpeedAdjust = Math.abs(midError/COUNTS_PER_INCH/inches);
-//                        bLSpeedAdjust = Math.abs(midError/COUNTS_PER_INCH/inches);
-//                        bRSpeedAdjust = Math.abs(midError/COUNTS_PER_INCH/inches);
-//                        break;
-//                    }
-//                    case 'r':
-//                    {
-//                        fLSpeedAdjust = -Math.abs(midError/COUNTS_PER_INCH/inches);
-//                        fRSpeedAdjust = -Math.abs(midError/COUNTS_PER_INCH/inches);
-//                        bLSpeedAdjust = -Math.abs(midError/COUNTS_PER_INCH/inches);
-//                        bRSpeedAdjust = -Math.abs(midError/COUNTS_PER_INCH/inches);
-//                        break;
-//                    }
-//                }
-                for(int i = 0; i < errors.length; i++)
-                {
-                    speedAdjusts[i] = Math.abs((errors[i]/COUNTS_PER_INCH)/inches);
-                    if(speedAdjusts[i] > 1 && inchesTrav[i] > 1)
-                    {
-                        speedAdjusts[i] = inchesTrav[i]/speedAdjusts[i];
-                    }
-                }
-
-                /*
-                fRSpeedAdjust = Math.abs((fRError/COUNTS_PER_INCH)/inches);
-                if(fRSpeedAdjust > 1)
-                {
-                    fRSpeedAdjust = fRInchesTrav/(fRSpeedAdjust);
-                }
-                fLSpeedAdjust = Math.abs((fLError/COUNTS_PER_INCH)/inches);
-                if(fLSpeedAdjust > 1)
-                {
-                    fLSpeedAdjust = fLInchesTrav/(fLSpeedAdjust);
-                }
-                bRSpeedAdjust = Math.abs((bRError/COUNTS_PER_INCH)/inches);
-                if(bRSpeedAdjust > 1)
-                {
-                    bRSpeedAdjust = bRInchesTrav/(bRSpeedAdjust);
-                }
-                bLSpeedAdjust = Math.abs((bLError/COUNTS_PER_INCH)/inches);
-                if(bLSpeedAdjust > 1)
-                {
-                    bLSpeedAdjust = bLInchesTrav/(bLSpeedAdjust);
-                }
-                */
-
-
-                telemetry.addData("Speed Adjust FR", fRSpeedAdjust);
-                telemetry.addData("Speed Adjust FL", fLSpeedAdjust);
-                telemetry.addData("Speed Adjust BR", bRSpeedAdjust);
-                telemetry.addData("Speed Adjust BL", bLSpeedAdjust);
-                telemetry.update();
-
-                robot.fLMotor.setPower(Math.abs(speed) * fLSpeedAdjust); // * fLError
-                robot.fRMotor.setPower(Math.abs(speed) * fRSpeedAdjust); // * fRError
-                robot.bLMotor.setPower(Math.abs(speed) * bLSpeedAdjust); // * bLError
-                robot.bRMotor.setPower(Math.abs(speed) * bRSpeedAdjust); // * bRError
-
-                int countThresh = 10;
-                if (Math.abs(newLeftTarget - robot.bLMotor.getCurrentPosition()) < countThresh || //TODO: this is going to need some more rework than name swap but i must depart
-                        Math.abs(newRightTarget - robot.fRMotor.getCurrentPosition()) < countThresh ||
-                        Math.abs(newMidTarget - robot.bLMotor.getCurrentPosition()) < countThresh) {
-                    break;
-                }
-            }
-
-            // Stop all motion;
-            robot.fLMotor.setPower(0);
-            robot.fRMotor.setPower(0);
-            robot.bLMotor.setPower(0);
-            robot.bRMotor.setPower(0);
-
-            // Turn off RUN_TO_POSITIOn
-
-            robot.fLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-            sleep(10000);   // optional pause after each move
-
-    }
-
     public int getErrorEncoder(double speed) { //me being stupid
         return (int) (speed * 200);
     }
-
-//    public void TryMotors()
-//    {
-//        for(int i = 0; i < robot.motors.length; i++)
-//        {
-//            try {
-//                robot.motors[i] = hardwareMap.dcMotor.get(robot.motorNames[i]);
-//            }
-//            catch (Exception e)
-//            {
-//
-//            }
-//        }
-//    }
-//
-//    public void CarouselSpin(double speed, double driveSpeed, boolean clockwise, double timeoutSec)
-//    {
-//        runtime.reset();
-//        while(opModeIsActive() && (runtime.seconds() < timeoutSec))
-//        {
-//            //normalDrive(.05, .05, false);
-//            if (clockwise)
-//            {
-//                robot.carouselMotor.setPower(speed);
-//                normalDrive(driveSpeed, driveSpeed, false);
-//            }
-//            else
-//            {
-//                robot.carouselMotor.setPower(-speed);
-//                normalDrive(driveSpeed, driveSpeed, false);
-//            }
-//        }
-//        robot.carouselMotor.setPower(0);
-//    }
-//
-//    public MarkerPlacement GetPlacement(boolean redSide)
-//    {
-//        if(redSide)
-//        {
-//            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
-//            {
-//                return MarkerPlacement.RIGHT;
-//            }
-//            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
-//            {
-//                return MarkerPlacement.MIDDLE;
-//            }
-//            else
-//            {
-//                return  MarkerPlacement.LEFT;
-//            }
-//        }
-//        else
-//        {
-//            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
-//            {
-//                return MarkerPlacement.LEFT;
-//            }
-//            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
-//            {
-//                return MarkerPlacement.MIDDLE;
-//            }
-//            else
-//            {
-//                return  MarkerPlacement.RIGHT;
-//            }
-//
-//
-//
-//        }
-//    }
-//
-//    public MarkerPlacement GetPlacementBarrier(boolean redSide)
-//    {
-//        if(redSide)
-//        {
-//            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
-//            {
-//                return MarkerPlacement.MIDDLE;
-//            }
-//            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
-//            {
-//                return MarkerPlacement.LEFT;
-//            }
-//            else
-//            {
-//                return  MarkerPlacement.RIGHT;
-//            }
-//        }
-//        else
-//        {
-//            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
-//            {
-//                return MarkerPlacement.MIDDLE;
-//            }
-//            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
-//            {
-//                return MarkerPlacement.LEFT;
-//            }
-//            else
-//            {
-//                return  MarkerPlacement.RIGHT;
-//            }
-//
-//
-//
-//        }
-//    }
-//
-//    public void LiftExtend(double timeOutSec, double liftSpeed, boolean deposit)
-//    {
-//        double startTime = runtime.seconds();
-//        while(runtime.seconds() - startTime < timeOutSec)
-//        {
-//            robot.pulleyMotorL.setPower(liftSpeed);
-//            robot.pulleyMotorR.setPower(liftSpeed);
-//        }
-//
-//        robot.pulleyMotorL.setPower(0);
-//        robot.pulleyMotorR.setPower(0);
-//
-//        if(deposit)
-//        {
-//            robot.bucketServo.setPosition(1);
-//            encoderDrive(.1, 'b', 1, 5);
-//            sleep(750);
-//        }
-//
-//    }
 }

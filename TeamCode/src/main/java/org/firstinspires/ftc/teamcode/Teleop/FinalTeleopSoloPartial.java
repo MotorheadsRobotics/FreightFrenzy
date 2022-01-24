@@ -25,9 +25,9 @@ public class FinalTeleopSoloPartial extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = .8f;
+    private float carouselMotorPower = 1.0f;
 
-    private float pulleyMotorPower = .65f;
+    private float pulleyMotorPower = .8f;
 
     private int directionMult = 1;
 
@@ -46,9 +46,9 @@ public class FinalTeleopSoloPartial extends OpMode {
         //The init() method of the hardware class does all the work here
         robot.init(hardwareMap);
 
-        robot.bLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.bRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.fRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.bLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.bRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.fRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
 
@@ -63,7 +63,7 @@ public class FinalTeleopSoloPartial extends OpMode {
         } else if (gamepad1.dpad_down) {
 //            startTime = runtime.seconds();
 //            deltaTime += runtime.seconds() - startTime;
-            robot.pulleyMotorR.setPower(-pulleyMotorPower);
+            robot.pulleyMotorR.setPower(-pulleyMotorPower*(0.8));
 //            robot.pulleyMotorL.setPower(-pulleyMotorPower);
         } else {
             robot.pulleyMotorR.setPower(0);
@@ -136,11 +136,11 @@ public class FinalTeleopSoloPartial extends OpMode {
         telemetry.addData("Right Encoder", robot.fRMotor.getCurrentPosition());
 
         // Close Hatch Servo: A
-//        if (gamepad1.a) {
-//            robot.bucketServo.setPosition(1);
-//        } else {
-//            robot.bucketServo.setPosition(0);
-//        }
+        if (gamepad1.a) {
+            robot.bucketServo.setPosition(1);
+        } else {
+            robot.bucketServo.setPosition(0);
+        }
 
 
         //telemetry.addData("Lift Limit", robot.liftLimit.getState());
