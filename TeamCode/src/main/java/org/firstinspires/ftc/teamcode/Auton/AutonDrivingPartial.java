@@ -37,6 +37,7 @@ public class AutonDrivingPartial extends LinearOpMode {
 
     /* Declare OpMode members. */
     public HardwarePartial robot = new HardwarePartial();
+
     public ElapsedTime runtime = new ElapsedTime();
     public String xyz = "z";
     //CONTAINS ALL METHODS AND VARIABlES TO BE EXTENDED BY OTHER AUTON CLASSES
@@ -136,6 +137,7 @@ public class AutonDrivingPartial extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
     }
 
 

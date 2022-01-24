@@ -167,13 +167,7 @@ public class HardwarePartial
         bLMotor.setDirection(DcMotor.Direction.REVERSE);
         bRMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        bLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        fRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 //        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);

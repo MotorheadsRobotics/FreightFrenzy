@@ -110,6 +110,15 @@ public class TestingAuton extends AutonDrivingPartial {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        //things we think are necessary for odometers
+        robot.bLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.bRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.fRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 //        this.initVuforia(); //this should ensure that it calls the Vuforia of this class not the one from the AutonDrivingWIP class. This is a test given an error that appeared to happen during Vuforia initialization.
 //        initTfod();
 //
