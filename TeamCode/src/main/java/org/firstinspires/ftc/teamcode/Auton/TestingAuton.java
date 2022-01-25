@@ -58,7 +58,7 @@ public class TestingAuton extends AutonDrivingPartial {
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.5;
+    static final double     FORWARD_SPEED = 0.45;
     static double     LAUNCHER_SPEED = 0.62;
 
     private boolean objectInVision = false;
@@ -78,6 +78,8 @@ public class TestingAuton extends AutonDrivingPartial {
             (WHEEL_DIAMETER_INCHES * Math.PI);
     public static final double DISTANCE_MAX = 333.3;
     public static final double BEST_TURN_SPEED = .14;
+    public static final double DRIVE_SPEED_MIN = .09;
+    public static final double TURN_SPEED_MIN = .15;
 
     public static final double LIFT_SPEED = .5;
 
@@ -110,6 +112,15 @@ public class TestingAuton extends AutonDrivingPartial {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        //things we think are necessary for odometers
+        robot.bLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.bRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.fRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.fRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.bLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 //        this.initVuforia(); //this should ensure that it calls the Vuforia of this class not the one from the AutonDrivingWIP class. This is a test given an error that appeared to happen during Vuforia initialization.
 //        initTfod();
 //
@@ -136,11 +147,16 @@ public class TestingAuton extends AutonDrivingPartial {
 //        turnToPosition(30, "z", .6, 5);
 //        turnToPosition(60, "z", .6,5);
 //        turnToPosition(0, "z", .6, 5);
-        turnToPosition(-90, "z", .6, 5);
-        turnToPosition(0, "z", .6, 5);
-        turnToPosition(-30, "z", .6, 5);
-        turnToPosition(-60, "z", .6,5);
-        turnToPosition(0, "z", .6, 5);
+//        turnToPosition(-90, "z", .6, 5);
+//        turnToPosition(0, "z", .6, 5);
+//        turnToPosition(-30, "z", .6, 5);
+//        turnToPosition(-60, "z", .6,5);
+//        turnToPosition(0, "z", .6, 5);
+
+        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f',  10); //set to 10 to read sleep statements
+        turnToPosition(0, "z", .15, .05,5);
+        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f',  10);
+
         telemetry.addData("Reached End", true);
         telemetry.update();
         //turnToPosition(90, "z", .1, 5);

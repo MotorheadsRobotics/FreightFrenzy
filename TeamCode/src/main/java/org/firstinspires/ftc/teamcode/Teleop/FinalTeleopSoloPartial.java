@@ -20,14 +20,15 @@ public class FinalTeleopSoloPartial extends OpMode {
 
     HardwarePartial robot = new HardwarePartial();
 
-    private float drivePower = 0.65f;
+    private float drivePower = 0.9f;
     private float stickAxesThreshold = .1f;
 
-    private float intakeMotorPower = .8f;
+    private float intakeMotorPower = 1.0f;
     //private float BRDrive = 1f;
     private float carouselMotorPower = 1.0f;
 
-    private float pulleyMotorPower = .8f;
+    private float pulleyMotorPower = 1.0f;
+    private float pulleyMotorPowerDown = .65f;
 
     private int directionMult = 1;
 
@@ -63,7 +64,7 @@ public class FinalTeleopSoloPartial extends OpMode {
         } else if (gamepad1.dpad_down) {
 //            startTime = runtime.seconds();
 //            deltaTime += runtime.seconds() - startTime;
-            robot.pulleyMotorR.setPower(-pulleyMotorPower*(0.8));
+            robot.pulleyMotorR.setPower(-pulleyMotorPowerDown);
 //            robot.pulleyMotorL.setPower(-pulleyMotorPower);
         } else {
             robot.pulleyMotorR.setPower(0);
@@ -133,7 +134,7 @@ public class FinalTeleopSoloPartial extends OpMode {
 
         telemetry.addData("Left Encoder", robot.bLMotor.getCurrentPosition());
         telemetry.addData("Mid Encoder", robot.bRMotor.getCurrentPosition());
-        telemetry.addData("Right Encoder", robot.fRMotor.getCurrentPosition());
+        telemetry.addData("Right Encoder", -robot.fRMotor.getCurrentPosition());
 
         // Close Hatch Servo: A
         if (gamepad1.a) {
