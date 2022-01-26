@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -26,13 +27,16 @@ public class HardwarePartial
     public DcMotor pulleyMotorR;
 //
     public Servo bucketServo;
+
+    public CRServo lCarousel;
+    public CRServo rCarousel;
 //
 //    public DigitalChannel liftLimit;
 //
-//    public DistanceSensor fRDist;
-//    public DistanceSensor fLDist;
-//    public DistanceSensor bLDist;
-//    public DistanceSensor bRDist;
+    public DistanceSensor fRDist;
+    public DistanceSensor fLDist;
+    public DistanceSensor bLDist;
+    public DistanceSensor bRDist;
 
     //    public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
     public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
@@ -171,15 +175,19 @@ public class HardwarePartial
         bucketServo = hwMap.get(Servo.class, "bucketServo");
         bucketServo.scaleRange(.3, .8);
 
+        lCarousel = hwMap.get(CRServo.class, "lCarousel");
+        rCarousel = hwMap.get(CRServo.class, "rCarousel");
+
+
 
 
         //enable lift limit switch
 //        liftLimit = hwMap.get(DigitalChannel.class, "liftLimit");
 
-//        fLDist = hwMap.get(DistanceSensor.class, "fLDist");
-//        fRDist = hwMap.get(DistanceSensor.class, "fRDist");
-//        bLDist = hwMap.get(DistanceSensor.class, "bLDist");
-//        bRDist = hwMap.get(DistanceSensor.class, "bRDist");
+        fLDist = hwMap.get(DistanceSensor.class, "fLDist");
+        fRDist = hwMap.get(DistanceSensor.class, "fRDist");
+        bLDist = hwMap.get(DistanceSensor.class, "bLDist");
+        bRDist = hwMap.get(DistanceSensor.class, "bRDist");
 
 
     }

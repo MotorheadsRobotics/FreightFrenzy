@@ -668,13 +668,13 @@ public class AutonDrivingPartial extends LinearOpMode {
     public void odometerEncoderDriveV2(double distance, double maxSpeed, double minSpeed, char direction, double timeoutS)
     {
         //stopAndReset(); Unnecessary given the nature of encoders
-        StopAndResetOdo();
+        //StopAndResetOdo();
         //Left Encoder Forward -> (+)/-
         //Mid Encoder Right -> +/(-)
-        //Right Encoder Right -> +/(-)
+        //Right Encoder Forward -> +/(-) is multiplied by negative 1 later to match
 
 
-        distance *= ODO_COUNTS_PER_INCH;
+
 
 
         float dirMult = 1;
@@ -687,6 +687,8 @@ public class AutonDrivingPartial extends LinearOpMode {
             dirMult = 1;
         }
 
+        distance *= ODO_COUNTS_PER_INCH * dirMult;
+
         double distanceABS = Math.abs(distance);
 
         DcMotor LEncoder = robot.bLMotor;
@@ -694,13 +696,13 @@ public class AutonDrivingPartial extends LinearOpMode {
         DcMotor REncoder = robot.fRMotor;
 
         double LPosOriginal = LEncoder.getCurrentPosition();
-        double MPosOriginal = MEncoder.getCurrentPosition();
+        double MPosOriginal = -MEncoder.getCurrentPosition();
         double RPosOriginal = -REncoder.getCurrentPosition();
 
         runtime.reset();
 
         double LPos = LEncoder.getCurrentPosition();
-        double MPos = MEncoder.getCurrentPosition();
+        double MPos = -MEncoder.getCurrentPosition();
         double RPos = -REncoder.getCurrentPosition();
 
 
@@ -752,7 +754,7 @@ public class AutonDrivingPartial extends LinearOpMode {
             do {
                 LPos = LEncoder.getCurrentPosition();
 //                MPos = MEncoder.getCurrentPosition();
-                RPos = REncoder.getCurrentPosition();
+                RPos = -REncoder.getCurrentPosition();
 
                 LError = LTargetPos - LPos;
 //                MError = distance - MPos;
@@ -815,14 +817,14 @@ public class AutonDrivingPartial extends LinearOpMode {
 //                    robot.bRMotor.setPower(RAdjustedPower);
                 }
 
-                if(RError > 0)
+                if(RError < 0)
                 {
 //                    robot.fLMotor.setPower(-LAdjustedPower);
                     robot.fRMotor.setPower(-RAdjustedPower);
 //                    robot.bLMotor.setPower(-LAdjustedPower);
                     robot.bRMotor.setPower(-RAdjustedPower);
                 }
-                else if(RError < 0)
+                else if(RError > 0)
                 {
 //                    robot.fLMotor.setPower(LAdjustedPower);
                     robot.fRMotor.setPower(RAdjustedPower);
@@ -830,23 +832,23 @@ public class AutonDrivingPartial extends LinearOpMode {
                     robot.bRMotor.setPower(RAdjustedPower);
                 }
 
-                telemetry.addData("Pos L", LPos);
-                telemetry.addData("Pos M", MPos);
-                telemetry.addData("Pos R", RPos);
+//                telemetry.addData("Pos L", LPos);
+//                telemetry.addData("Pos M", MPos);
+//                telemetry.addData("Pos R", RPos);
                 telemetry.addData("target", distance);
                 telemetry.addData("LErrorABS", LErrorABS);
                 telemetry.addData("RErrorABS", RErrorABS);
                 telemetry.addData("LError", LError);
                 telemetry.addData("RError", RError);
                 telemetry.update();
-            } while ((LErrorABS > 3 && RErrorABS > 3) && (runtime.seconds() < timeoutS));
+            } while ((LErrorABS > 2 && RErrorABS > 2) && (runtime.seconds() < timeoutS));
         }
         else if(direction == 'l' || direction == 'r')
         {
             do {
 //                LPos = LEncoder.getCurrentPosition();
-                MPos = MEncoder.getCurrentPosition();
-//                RPos = REncoder.getCurrentPosition();
+                MPos = -MEncoder.getCurrentPosition();
+//                RPos = -REncoder.getCurrentPosition();
 
 //                LError = distance - LPos;
                 MError = distance - MPos;
@@ -865,17 +867,31 @@ public class AutonDrivingPartial extends LinearOpMode {
 //                RTravelledABS = Math.abs(RTravelled);
 
 //                double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
-                double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
+//                double MFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - MTravelledABS) - MBeginSlowing)));
 //                double RFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - RTravelledABS) - RBeginSlowing)));
 
 //                double forwardBackFunctionalSpeed = (LFunctionalSpeed + RFunctionalSpeed)/2;
 
 //                double FBAdjustedPower = Math.min(maxSpeed, forwardBackFunctionalSpeed);
 //                double LAdjustedPower = Math.min(maxSpeed, LFunctionalSpeed);
-                double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
+
+                double MAdjuster = Math.abs(MError / MErrorOriginal);
+                MAdjuster += minSpeed;
+                MAdjuster = Math.min(1, MAdjuster);
+                double MAdjustedPower = MAdjuster * maxSpeed;
+                MAdjustedPower = Math.max(MAdjustedPower, minSpeed);
+
+                //double MAdjustedPower = Math.min(maxSpeed, MFunctionalSpeed);
 //                double RAdjustedPower = Math.min(maxSpeed, RFunctionalSpeed);
 
                 //TODO: ADD TELEMETRY BULLSHIT
+                telemetry.addData("Pos L", LPos);
+                telemetry.addData("Pos M", MPos);
+                telemetry.addData("Pos R", RPos);
+                telemetry.addData("target", distance);
+                telemetry.addData("MError", MError);
+                telemetry.addData("MErrorABS", MErrorABS);
+                telemetry.update();
 
                 if(MError < 0)
                 {
@@ -891,7 +907,7 @@ public class AutonDrivingPartial extends LinearOpMode {
                     robot.bLMotor.setPower(-MAdjustedPower);
                     robot.bRMotor.setPower(MAdjustedPower);
                 }
-            } while ((MErrorABS > 3) && (runtime.seconds() < timeoutS));
+            } while ((MErrorABS > 2) && (runtime.seconds() < timeoutS));
         }
 
         robot.fLMotor.setPower(0);
@@ -1732,5 +1748,121 @@ public class AutonDrivingPartial extends LinearOpMode {
     }
     public int getErrorEncoder(double speed) { //me being stupid
         return (int) (speed * 200);
+    }
+
+    public MarkerPlacement GetPlacement(boolean redSide)
+    {
+        if(redSide)
+        {
+            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.RIGHT;
+            }
+            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.MIDDLE;
+            }
+            else
+            {
+                return  MarkerPlacement.LEFT;
+            }
+        }
+        else
+        {
+            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.LEFT;
+            }
+            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.MIDDLE;
+            }
+            else
+            {
+                return MarkerPlacement.RIGHT;
+            }
+
+
+
+        }
+    }
+
+    public MarkerPlacement GetPlacementBarrier(boolean redSide)
+    {
+        if(redSide)
+        {
+            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.MIDDLE;
+            }
+            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.LEFT;
+            }
+            else
+            {
+                return MarkerPlacement.RIGHT;
+            }
+        }
+        else
+        {
+            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.MIDDLE;
+            }
+            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
+            {
+                return MarkerPlacement.LEFT;
+            }
+            else
+            {
+                return MarkerPlacement.RIGHT;
+            }
+
+        }
+    }
+
+    public void LiftExtend(double timeOutSec, double liftSpeed, boolean deposit)
+    {
+        double startTime = runtime.seconds();
+        while(runtime.seconds() - startTime < timeOutSec)
+        {
+//            robot.pulleyMotorL.setPower(liftSpeed);
+            robot.pulleyMotorR.setPower(liftSpeed);
+        }
+
+//        robot.pulleyMotorL.setPower(0);
+        robot.pulleyMotorR.setPower(0);
+
+        if(deposit)
+        {
+            robot.bucketServo.setPosition(1);
+            encoderDrive(.1, 'b', 1, 5);
+            sleep(750);
+        }
+
+    }
+
+    public void CarouselSpin(double speed, boolean clockwise, double timeoutSec)
+    {
+        runtime.reset();
+        while(opModeIsActive() && (runtime.seconds() < timeoutSec))
+        {
+            //normalDrive(.05, .05, false);
+            if (clockwise)
+            {
+                robot.lCarousel.setPower(speed);
+                robot.rCarousel.setPower(speed);
+//                normalDrive(driveSpeed, driveSpeed, false);
+            }
+            else
+            {
+                robot.lCarousel.setPower(-speed);
+                robot.rCarousel.setPower(-speed);
+//                normalDrive(driveSpeed, driveSpeed, false);
+            }
+        }
+        robot.lCarousel.setPower(0);
+        robot.rCarousel.setPower(0);
     }
 }

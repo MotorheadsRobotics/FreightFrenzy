@@ -58,7 +58,7 @@ public class TestingAuton extends AutonDrivingPartial {
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.45;
+
     static double     LAUNCHER_SPEED = 0.62;
 
     private boolean objectInVision = false;
@@ -78,8 +78,12 @@ public class TestingAuton extends AutonDrivingPartial {
             (WHEEL_DIAMETER_INCHES * Math.PI);
     public static final double DISTANCE_MAX = 333.3;
     public static final double BEST_TURN_SPEED = .14;
-    public static final double DRIVE_SPEED_MIN = .09;
-    public static final double TURN_SPEED_MIN = .15;
+
+    static final double     FORWARD_SPEED = 0.45;
+    public static final double DRIVE_SPEED_MIN = .095;
+    public static final double ORIENT_TURN_SPEED_MIN = .145;
+    public static final double ORIENT_TURN_SPEED_MAX = .15;
+    MarkerPlacement MARKER_PLACEMENT = MarkerPlacement.LEFT;
 
     public static final double LIFT_SPEED = .5;
 
@@ -153,9 +157,35 @@ public class TestingAuton extends AutonDrivingPartial {
 //        turnToPosition(-60, "z", .6,5);
 //        turnToPosition(0, "z", .6, 5);
 
-        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f',  10); //set to 10 to read sleep statements
-        turnToPosition(0, "z", .15, .05,5);
-        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f',  10);
+//        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f',  10); //set to 10 to read sleep statements
+//        turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN,2);
+//        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f',  10);
+
+        //scan for team marker
+//        MARKER_PLACEMENT = GetPlacement(false);
+
+        //get a bit of distance from wall ???
+        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 8);
+        turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN,2);
+
+        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'r', 8);
+        turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN,2);
+
+        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'b', 8);
+        turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN,2);
+
+        odometerEncoderDriveV2(12, FORWARD_SPEED, DRIVE_SPEED_MIN, 'l', 8);
+        turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN,2);
+        //drive towards carousel
+//        odometerEncoderDriveV2(34, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 8);
+
+        //spin carousel
+//        CarouselSpin(1, false, 1.5);
+
+        //detach from carousel and navigate towards alliance hub
+
+
+
 
         telemetry.addData("Reached End", true);
         telemetry.update();
