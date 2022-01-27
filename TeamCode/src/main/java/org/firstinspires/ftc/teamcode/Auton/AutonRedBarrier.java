@@ -41,20 +41,23 @@ import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 @Autonomous(name="Auton Red Barrier", group="Test")
 //@Disabled
-public class AutonRedBarrier extends AutonDriving {
+public class AutonRedBarrier extends AutonDrivingPartial {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.5;
+//    static final double     FORWARD_SPEED = 0.5;
     static double     LAUNCHER_SPEED = 0.62;
+
+
 
     private boolean objectInVision = false;
 
@@ -120,65 +123,57 @@ public class AutonRedBarrier extends AutonDriving {
 
         waitForStart();
 
-
-
-        encoderDrive(.4, 'f', 9.3, 5);
-        turnToPosition(90, "z", BEST_TURN_SPEED, 5);
-        encoderDrive(.3, 'f', 1, 5);
+        //scan for team shipping element
+        MARKER_PLACEMENT = GetPlacementBarrier(true);
+        telemetry.addData("bRDist", robot.bRDist.getDistance(DistanceUnit.INCH));
+        telemetry.addData("Placement", MARKER_PLACEMENT);
+        telemetry.update();
         sleep(1000);
 
-        //placement = GetPlacement(true);
+        //detach from wall
+        odometerEncoderDriveV2(19, STRAFE_SPEED_MAX, STRAFE_SPEED_MIN, 'r', 3);
+        turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
 
-        placement = GetPlacementBarrier(true);
-        telemetry.addData("Placement", placement);
-        telemetry.update();
-        //encoderDrive(.3, 'f', 0.5, 5);
-        normalDrive(0, 0);
+//        //move to align with shipping hub
+//        odometerEncoderDriveV2(26, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
 
-        encoderDrive(.2, 'f', 15, 5);
-        turnToPosition(180, "z", BEST_TURN_SPEED, 5);
-        switch(placement)
-        {
-            case LEFT: //lower level
-            {
-                encoderDrive(.3, 'b', 12, 5);
-                LiftExtend(1.25, LIFT_SPEED, true);
-                sleep(750);
-                encoderDrive(.3, 'f', 4, 5);
-                robot.bucketServo.setPosition(0);
-                LiftExtend(.8, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
-                turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
-                encoderDrive(.6, 'f', 50, 5);
-                break;
-            }
-            case MIDDLE: //middle level
-            {
-                encoderDrive(.3, 'b', 12, 5);
-                LiftExtend(2.25, LIFT_SPEED, true);
-                sleep(750);
-                encoderDrive(.3, 'f', 4, 5);
-                robot.bucketServo.setPosition(0);
-                LiftExtend(.9, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
-                turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
-                encoderDrive(.6, 'f', 50, 5);
-                break;
-            }
-            case RIGHT: //upper level
-            {
-                encoderDrive(.3, 'b', 12.75, 5);
-                LiftExtend(1.7, LIFT_SPEED * 1.5, true);
-                sleep(750);
-                encoderDrive(.3, 'f', 4, 5);
-                robot.bucketServo.setPosition(0);
-                LiftExtend(1, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
-                turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
-                encoderDrive(.6, 'f', 50, 5);
-                break;
-            }
-        }
+        //align the lift to extend towards the hub
+        turnToPosition(148, "z", TURN_SPEED_MAX, TURN_SPEED_MIN, 3);
+
+        //get slightly closer to hub
+        odometerEncoderDriveV2(4.2, FORWARD_SPEED, DRIVE_SPEED_MIN, 'b', 3);
+        turnToPosition(148, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
+
+        //TODO: MAKE THE LIFT RUN DEPENDING ON THE MARKER PLACEMENT
+        //TODO: ENSURE THAT THE DISTANCE SENSORS NOT ABOVE WHEELS DONT ANGLE DOWN
+        //extend lift
+        final double LIFT_TOP_TIME = 2.3;
+        final double LIFT_TOP_DOWN_MOD = .4;
+        final double LIFT_SPEED = 1.0;
+        final double LIFT_MID_TIME = 2.0;
+        final double LIFT_BOT_TIME = 1.0;
+
+        LiftExtend(LIFT_TOP_TIME, LIFT_SPEED);
+        robot.bucketServo.setPosition(1);
+        sleep(750);
+        robot.bucketServo.setPosition(0);
+
+        //retract lift
+        LiftExtend(LIFT_TOP_TIME - LIFT_TOP_DOWN_MOD, -LIFT_SPEED);
+
+        //move towards wall
+        odometerEncoderDriveV2(27, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
+
+        //turn to face forwards to warehouse
+        turnToPosition(180, "z", TURN_SPEED_MAX, TURN_SPEED_MIN, 3);
+
+        //strafe until just adjacent to wall
+        double wallDist = (robot.fRDist.getDistance(DistanceUnit.INCH) + robot.bRDist.getDistance(DistanceUnit.INCH))/2;
+        odometerEncoderDriveV2(wallDist - .2, STRAFE_SPEED_MAX, STRAFE_SPEED_MIN, 'r', 3);
+
+        //drive into warehouse
+        odometerEncoderDriveV2(36, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
+
 //        if (opModeIsActive()) {
 //            runtime.reset();
 //            do {

@@ -57,6 +57,16 @@ public class AutonDrivingPartial extends LinearOpMode {
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
     static final double     MIN_TURN_POWER = .000001;
 
+    public static final double     FORWARD_SPEED = 0.45;
+    public static final double STRAFE_SPEED_MAX = .65;
+    public static final double DRIVE_SPEED_MIN = .1;
+    public static final double STRAFE_SPEED_MIN = .2;
+    public static final double ORIENT_TURN_SPEED_MIN = .145;
+    public static final double ORIENT_TURN_SPEED_MAX = .15;
+    public static final double TURN_SPEED_MAX = .6;
+    public static final double TURN_SPEED_MIN = .15;
+    MarkerPlacement MARKER_PLACEMENT = MarkerPlacement.LEFT;
+
     public BNO055IMU imu;
 
     public static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -674,9 +684,6 @@ public class AutonDrivingPartial extends LinearOpMode {
         //Right Encoder Forward -> +/(-) is multiplied by negative 1 later to match
 
 
-
-
-
         float dirMult = 1;
         if(direction == 'b' || direction == 'l') // will change depending on how odometers report values
         {
@@ -687,7 +694,8 @@ public class AutonDrivingPartial extends LinearOpMode {
             dirMult = 1;
         }
 
-        distance *= ODO_COUNTS_PER_INCH * dirMult;
+        distance *= ODO_COUNTS_PER_INCH;
+        distance *= dirMult;
 
         double distanceABS = Math.abs(distance);
 
@@ -704,8 +712,6 @@ public class AutonDrivingPartial extends LinearOpMode {
         double LPos = LEncoder.getCurrentPosition();
         double MPos = -MEncoder.getCurrentPosition();
         double RPos = -REncoder.getCurrentPosition();
-
-
 
         double LTargetPos = distance + LPosOriginal;
         double MTargetPos = distance + MPosOriginal;
@@ -753,11 +759,11 @@ public class AutonDrivingPartial extends LinearOpMode {
         {
             do {
                 LPos = LEncoder.getCurrentPosition();
-//                MPos = MEncoder.getCurrentPosition();
+//                MPos = -MEncoder.getCurrentPosition();
                 RPos = -REncoder.getCurrentPosition();
 
                 LError = LTargetPos - LPos;
-//                MError = distance - MPos;
+//                MError = MTargetPos - MPos;
                 RError =  RTargetPos - RPos;
 
                 LErrorABS = Math.abs(LError);
@@ -843,16 +849,17 @@ public class AutonDrivingPartial extends LinearOpMode {
                 telemetry.update();
             } while ((LErrorABS > 2 && RErrorABS > 2) && (runtime.seconds() < timeoutS));
         }
-        else if(direction == 'l' || direction == 'r')
+
+        if(direction == 'l' || direction == 'r')
         {
             do {
 //                LPos = LEncoder.getCurrentPosition();
                 MPos = -MEncoder.getCurrentPosition();
 //                RPos = -REncoder.getCurrentPosition();
 
-//                LError = distance - LPos;
-                MError = distance - MPos;
-//                RError = distance - RPos;
+
+                MError = MTargetPos - MPos;
+
 
 //                LErrorABS = Math.abs(LError);
                 MErrorABS = Math.abs(MError);
@@ -1754,11 +1761,11 @@ public class AutonDrivingPartial extends LinearOpMode {
     {
         if(redSide)
         {
-            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
+            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.RIGHT;
             }
-            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
+            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.MIDDLE;
             }
@@ -1769,11 +1776,11 @@ public class AutonDrivingPartial extends LinearOpMode {
         }
         else
         {
-            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
+            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.LEFT;
             }
-            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
+            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.MIDDLE;
             }
@@ -1791,11 +1798,11 @@ public class AutonDrivingPartial extends LinearOpMode {
     {
         if(redSide)
         {
-            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 20)
+            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.MIDDLE;
             }
-            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 20)
+            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.LEFT;
             }
@@ -1806,11 +1813,11 @@ public class AutonDrivingPartial extends LinearOpMode {
         }
         else
         {
-            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 20)
+            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.MIDDLE;
             }
-            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 20)
+            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.LEFT;
             }
@@ -1822,7 +1829,7 @@ public class AutonDrivingPartial extends LinearOpMode {
         }
     }
 
-    public void LiftExtend(double timeOutSec, double liftSpeed, boolean deposit)
+    public void LiftExtend(double timeOutSec, double liftSpeed)
     {
         double startTime = runtime.seconds();
         while(runtime.seconds() - startTime < timeOutSec)
@@ -1834,12 +1841,12 @@ public class AutonDrivingPartial extends LinearOpMode {
 //        robot.pulleyMotorL.setPower(0);
         robot.pulleyMotorR.setPower(0);
 
-        if(deposit)
-        {
-            robot.bucketServo.setPosition(1);
-            encoderDrive(.1, 'b', 1, 5);
-            sleep(750);
-        }
+//        if(deposit)
+//        {
+//            robot.bucketServo.setPosition(1);
+//            encoderDrive(.1, 'b', 1, 5);
+//            sleep(750);
+//        }
 
     }
 

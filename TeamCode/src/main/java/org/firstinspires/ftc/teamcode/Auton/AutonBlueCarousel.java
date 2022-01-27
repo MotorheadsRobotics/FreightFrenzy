@@ -47,16 +47,24 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 @Autonomous(name="Auton Blue Carousel", group="Test")
 //@Disabled
-public class AutonBlueCarousel extends AutonDriving {
+public class AutonBlueCarousel extends AutonDrivingPartial {
 
     /* Declare OpMode members. */
     //org.firstinspires.ftc.teamcode.Hardware.Hardware robot = new org.firstinspires.ftc.teamcode.Hardware.Hardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.5;
+//    static final double     FORWARD_SPEED = 0.5;
     static double     LAUNCHER_SPEED = 0.62;
 
     private boolean objectInVision = false;
+
+    static final double     FORWARD_SPEED = 0.45;
+    public static final double DRIVE_SPEED_MIN = .1;
+    public static final double ORIENT_TURN_SPEED_MIN = .145;
+    public static final double ORIENT_TURN_SPEED_MAX = .15;
+    public static final double TURN_SPEED_MAX = .6;
+    public static final double TURN_SPEED_MIN = .15;
+    MarkerPlacement MARKER_PLACEMENT = MarkerPlacement.LEFT;
 
 //    private enum MarkerPlacement {
 //        LEFT,
@@ -135,71 +143,81 @@ public class AutonBlueCarousel extends AutonDriving {
         encoderDrive(0.5, 'b', 5, 10);
         */
 
-        encoderDrive(.4, 'f', 8.5, 5);
-        turnToPosition(-90, "z", BEST_TURN_SPEED, 5);
-        encoderDrive(.3, 'b', 6, 5);//TODO: Change this to go forward slowly while waiting until one of the sensors hits or the distance travelled is equivalent to one shift of the squares
-        //placement = GetPlacement(true);
+//        encoderDrive(.4, 'f', 8.5, 5);
+//        turnToPosition(-90, "z", BEST_TURN_SPEED, 5);
+//        encoderDrive(.3, 'b', 6, 5);//TODO: Change this to go forward slowly while waiting until one of the sensors hits or the distance travelled is equivalent to one shift of the squares
+//        //placement = GetPlacement(true);
+//
+//        placement = GetPlacement(false);
+//        telemetry.addData("Placement", placement);
+//        telemetry.update();
+//        normalDrive(0, 0);
+//        //sleep(750);//scan for object
+//        encoderDrive(.2, 'f', 20.0, 5);
+//        turnToPosition(-145, "z",   BEST_TURN_SPEED, 5);
+//        double startTime = runtime.seconds();
+//        while(!DistanceCheck(15.0, 3.5, 20, 20, startTime, runtime.seconds(), 2))
+//        {
+//            normalDrive(.05, .05);
+//        }
+//        CarouselSpin(1.0, .05,false, 2.5);
+//        encoderDrive(.3, 'b', 5, 5);
+//        turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
+//        encoderDrive(.3, 'b', 29, 5);
+//        turnToPosition(-180, "z", BEST_TURN_SPEED, 5);
+//        switch(placement)
+//        {
+//            case LEFT: //lower level
+//            {
+//                encoderDrive(.3, 'b', 11, 5);
+//                LiftExtend(1.25, LIFT_SPEED, true);
+//                sleep(500);
+//                encoderDrive(.3, 'f', 4, 5);
+//                robot.bucketServo.setPosition(0);
+//                LiftExtend(.8, -LIFT_SPEED, false);
+//                encoderDrive(.3, 'f', 5, 5);
+//                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
+//                encoderDrive(.6, 'f', 60, 5);
+//                break;
+//            }
+//            case MIDDLE: //middle level
+//            {
+//                encoderDrive(.3, 'b', 11, 5);
+//                LiftExtend(2.25, LIFT_SPEED, true);
+//                sleep(500);
+//                encoderDrive(.3, 'f', 4, 5);
+//                robot.bucketServo.setPosition(0);
+//                LiftExtend(.9, -LIFT_SPEED, false);
+//                encoderDrive(.3, 'f', 5, 5);
+//                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
+//                encoderDrive(.6, 'f', 60, 5);
+//                break;
+//            }
+//            case RIGHT: //upper level
+//            {
+//                encoderDrive(.3, 'b', 11.85, 5);
+//                LiftExtend(1.5, LIFT_SPEED * 1.5, true);
+//                sleep(500);
+//                encoderDrive(.3, 'f', 4, 5);
+//                robot.bucketServo.setPosition(0);
+//                LiftExtend(1, -LIFT_SPEED, false);
+//                encoderDrive(.3, 'f', 5, 5);
+//                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
+//                encoderDrive(.6, 'f', 60, 5);
+//                break;
+//            }
+//        }
 
-        placement = GetPlacement(false);
-        telemetry.addData("Placement", placement);
-        telemetry.update();
-        normalDrive(0, 0);
-        //sleep(750);//scan for object
-        encoderDrive(.2, 'f', 20.0, 5);
-        turnToPosition(-145, "z",   BEST_TURN_SPEED, 5);
-        double startTime = runtime.seconds();
-        while(!DistanceCheck(15.0, 3.5, 20, 20, startTime, runtime.seconds(), 2))
-        {
-            normalDrive(.05, .05);
-        }
-        CarouselSpin(1.0, .05,false, 2.5);
-        encoderDrive(.3, 'b', 5, 5);
-        turnToPosition(-90, "z",   BEST_TURN_SPEED, 5);
-        encoderDrive(.3, 'b', 29, 5);
-        turnToPosition(-180, "z", BEST_TURN_SPEED, 5);
-        switch(placement)
-        {
-            case LEFT: //lower level
-            {
-                encoderDrive(.3, 'b', 11, 5);
-                LiftExtend(1.25, LIFT_SPEED, true);
-                sleep(500);
-                encoderDrive(.3, 'f', 4, 5);
-                robot.bucketServo.setPosition(0);
-                LiftExtend(.8, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
-                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
-                encoderDrive(.6, 'f', 60, 5);
-                break;
-            }
-            case MIDDLE: //middle level
-            {
-                encoderDrive(.3, 'b', 11, 5);
-                LiftExtend(2.25, LIFT_SPEED, true);
-                sleep(500);
-                encoderDrive(.3, 'f', 4, 5);
-                robot.bucketServo.setPosition(0);
-                LiftExtend(.9, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
-                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
-                encoderDrive(.6, 'f', 60, 5);
-                break;
-            }
-            case RIGHT: //upper level
-            {
-                encoderDrive(.3, 'b', 11.85, 5);
-                LiftExtend(1.5, LIFT_SPEED * 1.5, true);
-                sleep(500);
-                encoderDrive(.3, 'f', 4, 5);
-                robot.bucketServo.setPosition(0);
-                LiftExtend(1, -LIFT_SPEED, false);
-                encoderDrive(.3, 'f', 5, 5);
-                turnToPosition(90, "z",   BEST_TURN_SPEED + .2, 5);
-                encoderDrive(.6, 'f', 60, 5);
-                break;
-            }
-        }
+        //get a bit of distance from wall ???
+        odometerEncoderDriveV2(4, FORWARD_SPEED, DRIVE_SPEED_MIN, 'l', 8);
 
+        //drive towards carousel
+        odometerEncoderDriveV2(34, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 8);
+
+        //spin carousel
+        CarouselSpin(1, false, 1.5);
+
+        //detach from carousel and navigate towards alliance hub
 
 
 //        if (opModeIsActive()) {
