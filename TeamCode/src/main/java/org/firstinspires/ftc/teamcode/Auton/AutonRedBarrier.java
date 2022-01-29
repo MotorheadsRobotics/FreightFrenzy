@@ -99,7 +99,7 @@ public class AutonRedBarrier extends AutonDrivingPartial {
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -124,130 +124,111 @@ public class AutonRedBarrier extends AutonDrivingPartial {
         waitForStart();
 
         //scan for team shipping element
-        MARKER_PLACEMENT = GetPlacementBarrier(true);
+        placement = GetPlacementBarrier(true);
         telemetry.addData("bRDist", robot.bRDist.getDistance(DistanceUnit.INCH));
-        telemetry.addData("Placement", MARKER_PLACEMENT);
+        telemetry.addData("fRDist", robot.fRDist.getDistance(DistanceUnit.INCH));
+        telemetry.addData("Placement", placement);
         telemetry.update();
-        sleep(1000);
+        sleep(2000);
 
-        //detach from wall
-        odometerEncoderDriveV2(19, STRAFE_SPEED_MAX, STRAFE_SPEED_MIN, 'r', 3);
-        turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
+//detach from wall
+        odometerEncoderDriveV2(15, STRAFE_SPEED_MAX, STRAFE_SPEED_MIN, 'r', 3);
+
+        //turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
 
 //        //move to align with shipping hub
-//        odometerEncoderDriveV2(26, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
+        odometerEncoderDriveV2(9.5, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
+        turnToPosition(0, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
+        odometerEncoderDriveV2(10, STRAFE_SPEED_MAX, STRAFE_SPEED_MIN, 'r', 3);
 
         //align the lift to extend towards the hub
-        turnToPosition(148, "z", TURN_SPEED_MAX, TURN_SPEED_MIN, 3);
+        turnToPosition(130, "z", TURN_SPEED_MAX, TURN_SPEED_MIN, 2);
 
         //get slightly closer to hub
-        odometerEncoderDriveV2(4.2, FORWARD_SPEED, DRIVE_SPEED_MIN, 'b', 3);
-        turnToPosition(148, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
+//        odometerEncoderDriveV2(3.2, FORWARD_SPEED, DRIVE_SPEED_MIN, 'b', 3);
+//        odometerEncoderDriveV2(3.1, FORWARD_SPEED, DRIVE_SPEED_MIN, 'b', 2);
+        turnToPosition(130, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
 
         //TODO: MAKE THE LIFT RUN DEPENDING ON THE MARKER PLACEMENT
-        //TODO: ENSURE THAT THE DISTANCE SENSORS NOT ABOVE WHEELS DONT ANGLE DOWN
         //extend lift
-        final double LIFT_TOP_TIME = 2.3;
-        final double LIFT_TOP_DOWN_MOD = .4;
+        final double LIFT_TOP_TIME = 2.5;
+        final double LIFT_DOWN_MOD_TOP = .4;
+        final double LIFT_DOWN_MOD_MID = .3;
+        final double LIFT_DOWN_MOD_BOT = .6;
         final double LIFT_SPEED = 1.0;
-        final double LIFT_MID_TIME = 2.0;
-        final double LIFT_BOT_TIME = 1.0;
+        final double LIFT_MID_TIME = 1.9;
+        final double LIFT_BOT_TIME = 1.5;
 
-        LiftExtend(LIFT_TOP_TIME, LIFT_SPEED);
-        robot.bucketServo.setPosition(1);
-        sleep(750);
-        robot.bucketServo.setPosition(0);
+        switch(placement)
+        {
+            case LEFT:
+            {
+                turnToPosition(120, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
 
-        //retract lift
-        LiftExtend(LIFT_TOP_TIME - LIFT_TOP_DOWN_MOD, -LIFT_SPEED);
+                //bottom level - extend lift
+                LiftExtend(LIFT_BOT_TIME, LIFT_SPEED);
+                robot.bucketServo.setPosition(1);
+                sleep(750);
+                robot.bucketServo.setPosition(0);
 
-        //move towards wall
-        odometerEncoderDriveV2(27, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
+                //move back a little
+                odometerEncoderDriveV2(5, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
+
+                //retract lift
+                LiftExtend(LIFT_BOT_TIME - LIFT_DOWN_MOD_BOT, -LIFT_SPEED);
+                break;
+            }
+            case MIDDLE:
+            {
+
+
+                //middle level - extend lift
+                LiftExtend(LIFT_MID_TIME, LIFT_SPEED);
+                robot.bucketServo.setPosition(1);
+                sleep(750);
+                robot.bucketServo.setPosition(0);
+
+                //move back a little
+                odometerEncoderDriveV2(5, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
+
+                //retract lift
+                LiftExtend(LIFT_MID_TIME - LIFT_DOWN_MOD_MID, -LIFT_SPEED);
+                break;
+            }
+            case RIGHT:
+            {
+
+                turnToPosition(125, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
+                //top level - extend lift
+                LiftExtend(LIFT_TOP_TIME, LIFT_SPEED);
+                robot.bucketServo.setPosition(1);
+                sleep(750);
+                robot.bucketServo.setPosition(0);
+                turnToPosition(125, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
+
+                //move back a little
+                odometerEncoderDriveV2(5, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
+
+                //retract lift
+                LiftExtend(LIFT_TOP_TIME - LIFT_DOWN_MOD_TOP, -LIFT_SPEED);
+                break;
+            }
+        }
+        //TODO: ENSURE THAT THE DISTANCE SENSORS NOT ABOVE WHEELS DON'T ANGLE DOWN
 
         //turn to face forwards to warehouse
-        turnToPosition(180, "z", TURN_SPEED_MAX, TURN_SPEED_MIN, 3);
+        turnToPosition(180, "z", TURN_SPEED_MAX * .8, TURN_SPEED_MIN, 2.5);
+        turnToPosition(180, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
 
         //strafe until just adjacent to wall
-        double wallDist = (robot.fRDist.getDistance(DistanceUnit.INCH) + robot.bRDist.getDistance(DistanceUnit.INCH))/2;
-        odometerEncoderDriveV2(wallDist - .2, STRAFE_SPEED_MAX, STRAFE_SPEED_MIN, 'r', 3);
+        double wallDist = robot.fRDist.getDistance(DistanceUnit.INCH); // points at picture so is less likely to output something behind the glass
+        odometerEncoderDriveV2(wallDist - .05, STRAFE_SPEED_MAX , STRAFE_SPEED_MIN, 'r', 3);
+        odometerEncoderDriveV2(1, ORIENT_TURN_SPEED_MAX*2 , ORIENT_TURN_SPEED_MIN, 'r', 1);
+//        turnToPosition(180, "z", ORIENT_TURN_SPEED_MAX, ORIENT_TURN_SPEED_MIN, 1);
+//        turnToPosition(180, "z", TURN_SPEED_MAX, TURN_SPEED_MIN, 1);
 
         //drive into warehouse
-        odometerEncoderDriveV2(36, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
-
-//        if (opModeIsActive()) {
-//            runtime.reset();
-//            do {
-//                telemetry.addData("Runtime", runtime.milliseconds());
-//                if (tfod != null) {
-//                    // getUpdatedRecognitions() will return null if no new information is available since
-//                    // the last time that call was made.
-//                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-//                    if (updatedRecognitions != null) {
-//                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-//                        // step through the list of recognitions and display boundary info.
-//                        int i = 0;
-//                        for (Recognition recognition : updatedRecognitions) {
-//                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-//
-//                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f", recognition.getLeft(), recognition.getTop());
-//                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f", recognition.getRight(), recognition.getBottom());
-//
-//                            telemetry.update();
-//
-//                            if (recognition.getLabel().equals("Quad") || recognition.getLabel().equals("Single")) {
-//                                ringLabel = recognition.getLabel();
-//                                objectInVision = true;
-//                            }
-//                        }
-//                    }
-//                }
-//                telemetry.update();
-//            } while ((runtime.milliseconds() < 5000 && !(objectInVision)) || runtime.milliseconds() < 1000);
-//        }
-//        if (ringLabel.equals("Quad")) {
-//            telemetry.addData("Target Zone", "C");
-//            telemetry.update();
-//            encoderDrive(FORWARD_SPEED,'f',100,10);
-//            turnToPosition(90,xyz,0.8,2.5,false);
-//            encoderDrive(FORWARD_SPEED,'f',24,5);
-//            turnToPosition(0, xyz, 0.8, 2.5, false);
-//            encoderDrive(FORWARD_SPEED, 'b', 52, 4);
-//            encoderDrive(FORWARD_SPEED, 'l', 32, 4);
-//            turnToPosition(-7, xyz, 0.8, 2, false);
-//        }
-//        else if (ringLabel.equals("Single")) {
-//            telemetry.addData("Target Zone", "B");
-//            telemetry.update();
-//            encoderDrive(FORWARD_SPEED,'f',81,7);
-//            turnToPosition(90,xyz,0.8,2.5,false);
-//            encoderDrive(FORWARD_SPEED,'f',8,5);
-//            turnToPosition(0, xyz, 0.8, 2.5, false);
-//            encoderDrive(FORWARD_SPEED, 'b', 36, 4);
-//            turnToPosition(-7, xyz, 0.8, 2, false);
-//        }
-//        else {
-//            telemetry.addData("Target Zone", "A");
-//            telemetry.update();
-//            encoderDrive(FORWARD_SPEED,'f',52,5);
-//            turnToPosition(90,xyz,0.8,2.5,false);
-//            encoderDrive(FORWARD_SPEED,'f',24,5);
-//            turnToPosition(0, xyz, 0.8, 2.5, false);
-//            encoderDrive(FORWARD_SPEED, 'b', 10, 4);
-//            encoderDrive(FORWARD_SPEED, 'l', 40, 4);
-//            turnToPosition(-7, xyz, 0.8, 2, false);
-//        }
-
-
-        //robot.launcherMotor.setPower(LAUNCHER_SPEED);
-
-//        sleep(2250);
-//
-//        for (int i = 0; i < 3; i++) {
-//            encoderDrive(FORWARD_SPEED, 'l', 8, 2.5);
-//            //shoot();
-//            //robot.launcherMotor.setPower(LAUNCHER_SPEED += (.005 * i));
-//        }
-//        encoderDrive(FORWARD_SPEED,'f',12,5);
+        odometerEncoderDriveV2(70, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 3);
     }
 
     public void initVuforia() {

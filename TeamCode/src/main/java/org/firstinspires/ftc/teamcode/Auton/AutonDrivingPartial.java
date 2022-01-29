@@ -58,9 +58,9 @@ public class AutonDrivingPartial extends LinearOpMode {
     static final double     MIN_TURN_POWER = .000001;
 
     public static final double     FORWARD_SPEED = 0.45;
-    public static final double STRAFE_SPEED_MAX = .65;
+    public static final double STRAFE_SPEED_MAX = .5;
     public static final double DRIVE_SPEED_MIN = .1;
-    public static final double STRAFE_SPEED_MIN = .2;
+    public static final double STRAFE_SPEED_MIN = .15;
     public static final double ORIENT_TURN_SPEED_MIN = .145;
     public static final double ORIENT_TURN_SPEED_MAX = .15;
     public static final double TURN_SPEED_MAX = .6;
@@ -697,7 +697,7 @@ public class AutonDrivingPartial extends LinearOpMode {
         distance *= ODO_COUNTS_PER_INCH;
         distance *= dirMult;
 
-        double distanceABS = Math.abs(distance);
+//        double distanceABS = Math.abs(distance);
 
         DcMotor LEncoder = robot.bLMotor;
         DcMotor MEncoder = robot.bRMotor;
@@ -737,11 +737,11 @@ public class AutonDrivingPartial extends LinearOpMode {
         double MTravelledABS = Math.abs(MTravelled);
         double RTravelledABS = Math.abs(RTravelled);
 
-        double LBeginSlowing = LError/2;
-        double MBeginSlowing = MError/2;
-        double RBeginSlowing = RError/2;
+//        double LBeginSlowing = LError/2;
+//        double MBeginSlowing = MError/2;
+//        double RBeginSlowing = RError/2;
 
-        double slowRate = 0.085 * 2;
+//        double slowRate = 0.085 * 2;
 
         telemetry.addData("Pos L", LPos);
         telemetry.addData("Pos M", MPos);
@@ -749,7 +749,7 @@ public class AutonDrivingPartial extends LinearOpMode {
 //        telemetry.addData("FBAdjustedSpeed", Ad)
         telemetry.addData("target", distance);
         telemetry.update();
-        sleep(2000);
+        sleep(200);
 
         /*
         TODO: IMPLEMENT DRIFT CONTROL BASED ON THE READINGS OF THE
@@ -847,7 +847,7 @@ public class AutonDrivingPartial extends LinearOpMode {
                 telemetry.addData("LError", LError);
                 telemetry.addData("RError", RError);
                 telemetry.update();
-            } while ((LErrorABS > 2 && RErrorABS > 2) && (runtime.seconds() < timeoutS));
+            } while ((LErrorABS > 5 && RErrorABS > 5) && (runtime.seconds() < timeoutS));
         }
 
         if(direction == 'l' || direction == 'r')
@@ -870,7 +870,7 @@ public class AutonDrivingPartial extends LinearOpMode {
 //                RTravelled = RPos - RPosOriginal;
 
 //                LTravelledABS = Math.abs(LTravelled);
-                MTravelledABS = Math.abs(MTravelled);
+//                MTravelledABS = Math.abs(MTravelled);
 //                RTravelledABS = Math.abs(RTravelled);
 
 //                double LFunctionalSpeed = minSpeed + (maxSpeed - minSpeed) * Math.exp(-slowRate * (-((distanceABS - LTravelledABS) - LBeginSlowing)));
@@ -1761,35 +1761,35 @@ public class AutonDrivingPartial extends LinearOpMode {
     {
         if(redSide)
         {
-            if(robot.bRDist.getDistance(DistanceUnit.INCH) < 40)
+
+            if(robot.fRDist.getDistance(DistanceUnit.INCH) < 40)
             {
-                return MarkerPlacement.RIGHT;
+                return MarkerPlacement.LEFT;
             }
-            else if(robot.fRDist.getDistance(DistanceUnit.INCH) < 40)
+            else if(robot.bRDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.MIDDLE;
             }
             else
             {
-                return  MarkerPlacement.LEFT;
+                return  MarkerPlacement.RIGHT;
             }
         }
         else
         {
-            if(robot.bLDist.getDistance(DistanceUnit.INCH) < 40)
+
+            if(robot.fLDist.getDistance(DistanceUnit.INCH) < 40)
             {
-                return MarkerPlacement.LEFT;
+                return MarkerPlacement.RIGHT;
             }
-            else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 40)
+            else if(robot.bLDist.getDistance(DistanceUnit.INCH) < 40)
             {
                 return MarkerPlacement.MIDDLE;
             }
             else
             {
-                return MarkerPlacement.RIGHT;
+                return MarkerPlacement.LEFT;
             }
-
-
 
         }
     }
@@ -1819,11 +1819,11 @@ public class AutonDrivingPartial extends LinearOpMode {
             }
             else if(robot.fLDist.getDistance(DistanceUnit.INCH) < 40)
             {
-                return MarkerPlacement.LEFT;
+                return MarkerPlacement.RIGHT;
             }
             else
             {
-                return MarkerPlacement.RIGHT;
+                return MarkerPlacement.LEFT;
             }
 
         }
