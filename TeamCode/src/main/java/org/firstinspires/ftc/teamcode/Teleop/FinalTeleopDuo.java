@@ -62,7 +62,7 @@ public class FinalTeleopDuo extends OpMode {
         } else if (gamepad2.dpad_down) {
 //            startTime = runtime.seconds();
 //            deltaTime += runtime.seconds() - startTime;
-            robot.pulleyMotorR.setPower(-pulleyMotorPowerDown);
+            robot.pulleyMotorR.setPower(-pulleyMotorPower);
 //            robot.pulleyMotorL.setPower(-pulleyMotorPower);
         } else {
             robot.pulleyMotorR.setPower(0);
