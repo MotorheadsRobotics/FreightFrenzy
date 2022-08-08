@@ -25,7 +25,7 @@ public class Hardware
     public DcMotor bRMotor;
 
     public DcMotor intakeMotor;
-    public DcMotor carouselMotor;
+//    public DcMotor carouselMotor;
 
     public DcMotor pulleyMotorL;
     public DcMotor pulleyMotorR;
@@ -39,7 +39,7 @@ public class Hardware
     public DistanceSensor bLDist;
     public DistanceSensor bRDist;
 
-    public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,    carouselMotor,      pulleyMotorL,   pulleyMotorR};
+    public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,      pulleyMotorL,   pulleyMotorR};
     public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
     public boolean[] motorDirections =  {false,     true,       false,      true,       true,           true,               true,           true};
 
@@ -112,7 +112,7 @@ public class Hardware
 //        bLMotor = hwMap.dcMotor.get("bLMotor");
 
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
-        carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
+//        carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
 
         pulleyMotorL = hwMap.get(DcMotor.class, "pulleyMotorL");
         pulleyMotorR = hwMap.get(DcMotor.class, "pulleyMotorR");
@@ -125,7 +125,7 @@ public class Hardware
         bRMotor.setPower(0);
 
         intakeMotor.setPower(0);
-        carouselMotor.setPower(0);
+//        carouselMotor.setPower(0);
 
         pulleyMotorL.setPower(0);
         pulleyMotorR.setPower(0);
@@ -142,7 +142,7 @@ public class Hardware
         bRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        carouselMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        carouselMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pulleyMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -153,7 +153,7 @@ public class Hardware
         bRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         pulleyMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pulleyMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -164,7 +164,7 @@ public class Hardware
         bRMotor.setDirection(DcMotor.Direction.FORWARD);
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+//        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         pulleyMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
         pulleyMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
