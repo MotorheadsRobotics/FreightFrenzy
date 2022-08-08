@@ -18,7 +18,7 @@ public class FinalTeleopDuo extends OpMode {
 
     HardwarePartial robot = new HardwarePartial();
 
-    private float drivePower = 0.9f;
+    private float drivePower = 1.0f;
     private float stickAxesThreshold = .1f;
 
     private float intakeMotorPower = 1.0f;
@@ -192,10 +192,10 @@ public class FinalTeleopDuo extends OpMode {
         robot.bLMotor.setPower(-drivePower * v3 * directionMult);
         robot.bRMotor.setPower(-drivePower * v4 * directionMult);
 
-//        telemetry.addData("fLPower", -drivePower * v1 * directionMult);
-//        telemetry.addData("fRPower", -drivePower * v2 * directionMult);
-//        telemetry.addData("bLPower", -drivePower * v3 * directionMult);
-//        telemetry.addData("bRPower", -drivePower * v4 * directionMult);
+        telemetry.addData("fLPower", -drivePower * v1 * directionMult);
+        telemetry.addData("fRPower", -drivePower * v2 * directionMult);
+        telemetry.addData("bLPower", -drivePower * v3 * directionMult);
+        telemetry.addData("bRPower", -drivePower * v4 * directionMult);
 
 //        telemetry.addData("Encoder port 1 back left",  robot.bLMotor.getCurrentPosition());
 //        telemetry.addData("Encoder port 2 front right", robot.fRMotor.getCurrentPosition());

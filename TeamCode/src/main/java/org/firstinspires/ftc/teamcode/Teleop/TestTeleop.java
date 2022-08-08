@@ -24,8 +24,8 @@ public class TestTeleop extends OpMode {
     private float stickAxesThreshold = .1f;
 
     private float intakeMotorPower = .8f;
-    //private float BRDrive = 1f;
-    private float carouselMotorPower = .5f;
+//    private float BRDrive = 1f;
+//    private float carouselMotorPower = .5f;
 
     private float pulleyMotorPower = .65f;
 
@@ -65,23 +65,23 @@ public class TestTeleop extends OpMode {
         }
 
         // Carousel Motor: LT and RT
-        if (gamepad1.left_trigger > 0.3) {
-            robot.carouselMotor.setPower(carouselMotorPower);
-        } else if (gamepad1.right_trigger > 0.3) {
-            robot.carouselMotor.setPower(-carouselMotorPower);
-        } else {
-            robot.carouselMotor.setPower(0);
-        }
+//        if (gamepad1.left_trigger > 0.3) {
+//            robot.carouselMotor.setPower(carouselMotorPower);
+//        } else if (gamepad1.right_trigger > 0.3) {
+//            robot.carouselMotor.setPower(-carouselMotorPower);
+//        } else {
+//            robot.carouselMotor.setPower(0);
+//        }
         // Carousel Motor fast: LT and RT + x
-        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
-            if (gamepad1.left_trigger > 0.3) {
-                robot.carouselMotor.setPower(carouselMotorPower * 2);
-            } else if (gamepad1.right_trigger > 0.3) {
-                robot.carouselMotor.setPower(-carouselMotorPower * 2);
-            } else {
-                robot.carouselMotor.setPower(0);
-            }
-        }
+//        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
+//            if (gamepad1.left_trigger > 0.3) {
+//                robot.carouselMotor.setPower(carouselMotorPower * 2);
+//            } else if (gamepad1.right_trigger > 0.3) {
+//                robot.carouselMotor.setPower(-carouselMotorPower * 2);
+//            } else {
+//                robot.carouselMotor.setPower(0);
+//            }
+//        }
 
         // Drive: Left and Right Stick
         if (Math.abs(gamepad1.right_stick_x) > stickAxesThreshold) {
