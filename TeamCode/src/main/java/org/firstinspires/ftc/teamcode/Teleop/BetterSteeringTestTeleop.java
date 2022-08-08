@@ -22,7 +22,7 @@ public class BetterSteeringTestTeleop extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = .5f;
+//    private float carouselMotorPower = .5f;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -47,15 +47,15 @@ public class BetterSteeringTestTeleop extends OpMode {
             robot.intakeMotor.setPower(0);
         }
 
-        // Carousel Motor: LT and RT
-        if (gamepad1.left_trigger > 0.3) {
-            robot.carouselMotor.setPower(carouselMotorPower);
-        } else if (gamepad1.right_trigger > 0.3) {
-            robot.carouselMotor.setPower(-carouselMotorPower);
-        } else {
-            robot.carouselMotor.setPower(0);
-        }
-        drive();
+//        // Carousel Motor: LT and RT
+//        if (gamepad1.left_trigger > 0.3) {
+//            robot.carouselMotor.setPower(carouselMotorPower);
+//        } else if (gamepad1.right_trigger > 0.3) {
+//            robot.carouselMotor.setPower(-carouselMotorPower);
+//        } else {
+//            robot.carouselMotor.setPower(0);
+//        }
+//        drive();
     }
 
     public void drive() {

@@ -23,7 +23,7 @@ public class FinalTeleop extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = .8f;
+//    private float carouselMotorPower = .8f;
 
     private float pulleyMotorPower = .65f;
 
@@ -76,14 +76,14 @@ public class FinalTeleop extends OpMode {
             robot.intakeMotor.setPower(0);
         }
 
-        // Carousel Motor: LT and RT
-        if (gamepad2.left_trigger > 0.3) {
-            robot.carouselMotor.setPower(carouselMotorPower);
-        } else if (gamepad2.right_trigger > 0.3) {
-            robot.carouselMotor.setPower(-carouselMotorPower);
-        } else {
-            robot.carouselMotor.setPower(0);
-        }
+//        // Carousel Motor: LT and RT
+//        if (gamepad2.left_trigger > 0.3) {
+//            robot.carouselMotor.setPower(carouselMotorPower);
+//        } else if (gamepad2.right_trigger > 0.3) {
+//            robot.carouselMotor.setPower(-carouselMotorPower);
+//        } else {
+//            robot.carouselMotor.setPower(0);
+//        }
         // Carousel Motor fast: LT and RT + x
 //        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
 //            if (gamepad1.left_trigger > 0.3) {

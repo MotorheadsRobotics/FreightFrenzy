@@ -139,7 +139,7 @@ public class AutonBlueCarousel extends AutonDrivingPartial {
         odometerEncoderDriveV2(16, FORWARD_SPEED, DRIVE_SPEED_MIN, 'f', 1.5);
 
         //spin the duck off of the carousel
-        CarouselSpin(1, false, 3.0);
+//        CarouselSpin(1, false, 3.0);
 
         //move backwards
         odometerEncoderDriveV2(37, FORWARD_SPEED, DRIVE_SPEED_MIN, 'b', 1.5);

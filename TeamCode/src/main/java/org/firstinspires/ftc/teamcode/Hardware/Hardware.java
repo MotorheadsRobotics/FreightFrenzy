@@ -40,7 +40,7 @@ public class Hardware
     public DistanceSensor bRDist;
 
     public DcMotor[] motors =           {fLMotor,   fRMotor,    bLMotor,    bRMotor,    intakeMotor,      pulleyMotorL,   pulleyMotorR};
-    public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "carouselMotor",    "pulleyMotorL", "pulleyMotorR"};
+    public String[] motorNames =        {"fLMotor", "fRMotor",  "bLMotor",  "bRMotor",  "intakeMotor",  "pulleyMotorL", "pulleyMotorR"};
     public boolean[] motorDirections =  {false,     true,       false,      true,       true,           true,               true,           true};
 
 

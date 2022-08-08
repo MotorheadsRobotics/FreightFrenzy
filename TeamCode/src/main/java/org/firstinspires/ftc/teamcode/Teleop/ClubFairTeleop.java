@@ -12,11 +12,11 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwarePartial;
 //import org.firstinspires.ftc.teamcode.src.main.java.org.firstinspires.ftc.teamcode.DriveOnlyHardware;
 
 
-@TeleOp(name="Final Teleop Solo Partial", group="TeleopTest")
+@TeleOp(name="Club Fair TeleOp", group="TeleopTest")
 
 //@Disabled
 
-public class FinalTeleopSoloPartial extends OpMode {
+public class ClubFairTeleop extends OpMode {
 
     HardwarePartial robot = new HardwarePartial();
 
@@ -25,7 +25,7 @@ public class FinalTeleopSoloPartial extends OpMode {
 
     private float intakeMotorPower = 1.0f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = 1.0f;
+//    private float carouselMotorPower = 1.0f;
 
     private float pulleyMotorPower = 1.0f;
     private float pulleyMotorPowerDown = .65f;
@@ -85,30 +85,30 @@ public class FinalTeleopSoloPartial extends OpMode {
         //these carousel functions are experimental because we need to use the gobilda
         //servo programmer to set them to be CR servos
         // Carousel Motor: LT and RT
-        if (gamepad1.left_trigger > 0.3) {
-            robot.lCarousel.setPower(carouselMotorPower);
-            robot.rCarousel.setPower(carouselMotorPower);
-        } else if (gamepad1.right_trigger > 0.3) {
-            robot.lCarousel.setPower(-carouselMotorPower);
-            robot.rCarousel.setPower(-carouselMotorPower);
-        } else {
-            robot.lCarousel.setPower(0);
-            robot.rCarousel.setPower(0);
-        }
+//        if (gamepad1.left_trigger > 0.3) {
+//            robot.lCarousel.setPower(carouselMotorPower);
+//            robot.rCarousel.setPower(carouselMotorPower);
+//        } else if (gamepad1.right_trigger > 0.3) {
+//            robot.lCarousel.setPower(-carouselMotorPower);
+//            robot.rCarousel.setPower(-carouselMotorPower);
+//        } else {
+//            robot.lCarousel.setPower(0);
+//            robot.rCarousel.setPower(0);
+//        }
 
          //Carousel Motor fast: LT and RT + x
-        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
-            if (gamepad1.left_trigger > 0.3) {
-                robot.lCarousel.setPower(carouselMotorPower * 2);
-                robot.rCarousel.setPower(carouselMotorPower * 2);
-            } else if (gamepad1.right_trigger > 0.3) {
-                robot.lCarousel.setPower(carouselMotorPower * 2);
-                robot.rCarousel.setPower(carouselMotorPower * 2);
-            } else {
-                robot.lCarousel.setPower(0);
-                robot.rCarousel.setPower(0);
-            }
-      }
+//        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
+//            if (gamepad1.left_trigger > 0.3) {
+//                robot.lCarousel.setPower(carouselMotorPower * 2);
+//                robot.rCarousel.setPower(carouselMotorPower * 2);
+//            } else if (gamepad1.right_trigger > 0.3) {
+//                robot.lCarousel.setPower(carouselMotorPower * 2);
+//                robot.rCarousel.setPower(carouselMotorPower * 2);
+//            } else {
+//                robot.lCarousel.setPower(0);
+//                robot.rCarousel.setPower(0);
+//            }
+//      }
 
         if(gamepad1.right_bumper && !previousBumper)
         {

@@ -24,7 +24,7 @@ public class UpdatedTeleop extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = 0.5f;
+//    private float carouselMotorPower = 0.5f;
 
     private float pulleyMotorPower = .2f;
 
@@ -71,18 +71,18 @@ public class UpdatedTeleop extends OpMode {
         }
 
         // Carousel Motor: LT and RT
-        if(gamepad1.left_trigger > 0.3)
-        {
-            robot.carouselMotor.setPower(carouselMotorPower);
-        }
-        else if(gamepad1.right_trigger > 0.3)
-        {
-            robot.carouselMotor.setPower(-carouselMotorPower);
-        }
-        else
-        {
-            robot.carouselMotor.setPower(0);
-        }
+//        if(gamepad1.left_trigger > 0.3)
+//        {
+//            robot.carouselMotor.setPower(carouselMotorPower);
+//        }
+//        else if(gamepad1.right_trigger > 0.3)
+//        {
+//            robot.carouselMotor.setPower(-carouselMotorPower);
+//        }
+//        else
+//        {
+//            robot.carouselMotor.setPower(0);
+//        }
 
         // Forward Drive: Left Stick
         if(gamepad1.left_stick_y > stickAxesThreshold)
@@ -121,15 +121,15 @@ public class UpdatedTeleop extends OpMode {
         //mecanumMove();
 
         // Carousel Motor fast: LT and RT
-        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
-            if (gamepad1.left_trigger > 0.3) {
-                robot.carouselMotor.setPower(carouselMotorPower * 2);
-            } else if (gamepad1.right_trigger > 0.3) {
-                robot.carouselMotor.setPower(-carouselMotorPower * 2);
-            } else {
-                robot.carouselMotor.setPower(0);
-            }
-        }
+//        if(carouselMotorPower <= 0.5 && carouselMotorPower >= -0.5 && gamepad1.x) {
+//            if (gamepad1.left_trigger > 0.3) {
+//                robot.carouselMotor.setPower(carouselMotorPower * 2);
+//            } else if (gamepad1.right_trigger > 0.3) {
+//                robot.carouselMotor.setPower(-carouselMotorPower * 2);
+//            } else {
+//                robot.carouselMotor.setPower(0);
+//            }
+//        }
     }
 
     public void mecanumMove()

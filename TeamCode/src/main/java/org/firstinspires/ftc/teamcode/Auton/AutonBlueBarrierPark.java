@@ -121,7 +121,7 @@ public class AutonBlueBarrierPark extends AutonDriving {
         encoderDrive(.5, 'f', 5, 5);
         turnToPosition(100, "z", .5, 5);
         encoderDrive(.5, 'f', 5, 5);
-        CarouselSpin(.5, .05, true, 2);
+//        CarouselSpin(.5, .05, true, 2);
         encoderDrive(.5, 'b', 5, 5);
         turnToPosition(90, "z", .5, 5);
         encoderDrive(1.0, 'b', 40, 5);

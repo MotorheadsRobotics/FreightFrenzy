@@ -24,7 +24,7 @@ public class FinalTeleopSolo extends OpMode {
 
     private float intakeMotorPower = .8f;
     //private float BRDrive = 1f;
-    private float carouselMotorPower = .8f;
+//    private float carouselMotorPower = .8f;
 
     private float pulleyMotorPower = .65f;
 

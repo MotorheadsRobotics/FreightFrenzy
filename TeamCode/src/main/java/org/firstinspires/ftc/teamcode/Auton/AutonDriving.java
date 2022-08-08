@@ -1735,25 +1735,25 @@ public class AutonDriving extends LinearOpMode {
         }
     }
 
-    public void CarouselSpin(double speed, double driveSpeed, boolean clockwise, double timeoutSec)
-    {
-        runtime.reset();
-        while(opModeIsActive() && (runtime.seconds() < timeoutSec))
-        {
-            //normalDrive(.05, .05, false);
-            if (clockwise)
-            {
-                robot.carouselMotor.setPower(speed);
-                normalDrive(driveSpeed, driveSpeed, false);
-            }
-            else
-            {
-                robot.carouselMotor.setPower(-speed);
-                normalDrive(driveSpeed, driveSpeed, false);
-            }
-        }
-        robot.carouselMotor.setPower(0);
-    }
+//    public void CarouselSpin(double speed, double driveSpeed, boolean clockwise, double timeoutSec)
+//    {
+//        runtime.reset();
+//        while(opModeIsActive() && (runtime.seconds() < timeoutSec))
+//        {
+//            //normalDrive(.05, .05, false);
+//            if (clockwise)
+//            {
+//                robot.carouselMotor.setPower(speed);
+//                normalDrive(driveSpeed, driveSpeed, false);
+//            }
+//            else
+//            {
+//                robot.carouselMotor.setPower(-speed);
+//                normalDrive(driveSpeed, driveSpeed, false);
+//            }
+//        }
+//        robot.carouselMotor.setPower(0);
+//    }
 
     public MarkerPlacement GetPlacement(boolean redSide)
     {
