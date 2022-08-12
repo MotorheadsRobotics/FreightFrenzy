@@ -74,7 +74,9 @@ public class ClubFairTeleop extends OpMode {
 
 
         // Intake Motor: LB and RB
-        if (gamepad1.left_bumper && gamepad1.x) {
+        if (gamepad1.left_bumper && gamepad1.right_bumper) {
+            robot.intakeMotor.setPower(0);
+        } else if (gamepad1.right_bumper) {
             robot.intakeMotor.setPower(-intakeMotorPower);
         } else if (gamepad1.left_bumper) {
             robot.intakeMotor.setPower(intakeMotorPower);
@@ -110,14 +112,14 @@ public class ClubFairTeleop extends OpMode {
 //            }
 //      }
 
-        if(gamepad1.right_bumper && !previousBumper)
+        if(gamepad1.x && !previousBumper)
         {
             previousBumper = true;
             directionMult *= -1;
             forwardDrive = !forwardDrive;
             deltaTime = 0;
         }
-        else if(!gamepad1.right_bumper)
+        else if(!gamepad1.x)
         {
             previousBumper = false;
         }
